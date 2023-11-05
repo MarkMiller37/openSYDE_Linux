@@ -12,7 +12,9 @@
 #define C_IMPUTIL_H
 
 /* -- Includes ------------------------------------------------------------------------------------------------------ */
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <QWidget>
 #include <QString>
 #include "stwtypes.hpp"
@@ -52,6 +54,7 @@ public:
    static QString h_FormatSourceFileInfoForReport(const QString & orc_FilePath, const QString & orc_ReadContent);
 
 private:
+#ifdef _WIN32
    class C_HandleData
    {
    public:
@@ -60,13 +63,16 @@ private:
    };
 
    static void mh_GetExistingApplicationHandle(const std::wstring & orc_ExeName, std::vector<HWND> & orc_Windows);
+#endif
    static int32_t mh_ExecuteCodeGenerator(const QString & orc_NodeName, const QString & orc_AppName,
                                           const QString & orc_ExportFolder, QStringList & orc_ExportedFiles,
                                           const QString & orc_CodeGenerator, const bool & orq_Erase);
    static int32_t mh_ExportCodeNode(const uint32_t ou32_NodeIndex, const std::vector<uint32_t> & orc_AppIndices,
                                     std::vector<stw::opensyde_gui::C_ImpCodeGenerationReportWidget::C_ReportData> & orc_ExportInfo, const bool & orq_Erase);
+#ifdef _WIN32
    //lint -e{8080} //using type expected by the library for API compatibility
    static WINBOOL CALLBACK mh_EnumWindowsCallback(HWND opc_Handle, const LPARAM ox_LoParam);
+#endif
 };
 
 /* -- Extern Global Variables --------------------------------------------------------------------------------------- */

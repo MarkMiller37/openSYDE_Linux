@@ -335,7 +335,7 @@ C_SclString stw::tgl::TglGetExePath(void)
 
     c_VecPath.resize(1, 0);
 
-    sprintf(acn_Arg, "/proc/%d/exe", getpid());
+    std::sprintf(acn_Arg, "/proc/%d/exe", getpid());
     do
     {
       c_VecPath.resize(c_VecPath.size() + PATH_MAX, 0);

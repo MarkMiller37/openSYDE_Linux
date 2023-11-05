@@ -669,7 +669,8 @@ int32_t C_PuiProject::m_Save(const bool oq_ForceSaveAll, const bool oq_UseDeprec
                const QFileInfo c_RefFile(c_SystemDefintionPath);
                const QDir c_Dir = c_RefFile.dir();
                //Create path (if necessary)
-               if ((c_Dir.mkdir(".") == true) || (c_Dir.exists() == true))
+               //mkdir fails on Linux; not sure why; so use mkpath
+               if ((c_Dir.mkpath(".") == true) || (c_Dir.exists() == true))
                {
                   s32_Retval =
                      C_PuiSdHandler::h_GetInstance()->SaveToFile(
@@ -701,7 +702,8 @@ int32_t C_PuiProject::m_Save(const bool oq_ForceSaveAll, const bool oq_UseDeprec
                   const QFileInfo c_RefFile(c_SystemViewsPath);
                   const QDir c_Dir = c_RefFile.dir();
                   //Create path (if necessary)
-                  if ((c_Dir.mkdir(".") == true) || (c_Dir.exists() == true))
+                  //mkdir fails on Linux; not sure why; so use mkpath
+                  if ((c_Dir.mkpath(".") == true) || (c_Dir.exists() == true))
                   {
                      s32_Retval = C_PuiSvHandler::h_GetInstance()->SaveToFile(
                         c_SystemViewsPath.toStdString().c_str(), oq_UseDeprecatedFileFormatV2);

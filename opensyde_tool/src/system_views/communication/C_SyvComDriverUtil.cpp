@@ -11,7 +11,12 @@
 #include "precomp_headers.hpp"
 
 #include <QFile>
-
+#ifndef _WIN32
+#include <QProcess>
+#include "C_OscIpDispatcherLinuxSock.hpp"
+#else
+#include "C_OscIpDispatcherWinSock.hpp"
+#endif
 #include "stwtypes.hpp"
 #include "stwerrors.hpp"
 #include "C_Uti.hpp"
@@ -62,7 +67,7 @@ int32_t C_SyvComDriverUtil::h_GetOscComDriverParamFromView(const uint32_t ou32_V
                                                            uint32_t & oru32_ActiveBusIndex,
                                                            std::vector<uint8_t> & orc_ActiveNodes,
                                                            stw::can::C_Can ** const oppc_CanDispatcher,
-                                                           C_OscIpDispatcherWinSock ** const oppc_IpDispatcher,
+                                                           C_OscIpDispatcher ** const oppc_IpDispatcher,
                                                            const bool oq_InitCan,
                                                            const bool oq_IgnoreUpdateRoutingErrors,
                                                            bool * const opq_DashboardRoutingErrors)
@@ -108,6 +113,7 @@ int32_t C_SyvComDriverUtil::h_GetOscComDriverParamFromView(const uint32_t ou32_V
                   //No ethernet
                   *oppc_IpDispatcher = NULL;
 
+#ifdef _WIN32
                   c_FilePath = pc_View->GetPuiPcData().GetCanDllAbsolute();
 
                   c_File.setFileName(c_FilePath);
@@ -133,6 +139,36 @@ int32_t C_SyvComDriverUtil::h_GetOscComDriverParamFromView(const uint32_t ou32_V
                   {
                      s32_Retval = C_RD_WR;
                   }
+#else
+                  c_FilePath = pc_View->GetPuiPcData().GetCanDll();
+
+                  //does the interface exist ?
+                  {
+                      QProcess c_Process;
+                      QString c_Command = "ifconfig -a | grep " +  c_FilePath + ":";
+                      QString c_Result;
+
+                      c_Process.start("bin/sh", { c_Command });
+                      c_Process.waitForFinished();
+
+                      c_Result = c_Process.readAllStandardOutput();
+                      if ((c_Result.contains(c_FilePath) == true) && (oq_InitCan == true))
+                      {
+                          *oppc_CanDispatcher = new stw::can::C_Can();
+
+                          //setting bitrate not supported on Linux
+                          s32_Retval = (*oppc_CanDispatcher)->CAN_Init(c_FilePath.toStdString().c_str());
+                          if (s32_Retval != C_NO_ERR)
+                          {
+                              s32_Retval = C_COM;
+                          }
+                      }
+                      else
+                      {
+                          s32_Retval = C_RD_WR;
+                      }
+                  }
+#endif
                }
                else
                {
@@ -143,7 +179,11 @@ int32_t C_SyvComDriverUtil::h_GetOscComDriverParamFromView(const uint32_t ou32_V
                      "User/eth_config.ini");
 
                   *oppc_CanDispatcher = NULL;
+#ifdef _WIN32
                   *oppc_IpDispatcher = new C_OscIpDispatcherWinSock();
+#else
+                  *oppc_IpDispatcher = new C_OscIpDispatcherLinuxSock();
+#endif
 
                   (*oppc_IpDispatcher)->LoadConfigFile(c_EthFilePath.toStdString().c_str());
                }

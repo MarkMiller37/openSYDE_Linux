@@ -1361,10 +1361,10 @@ int32_t C_SdNdeDpContentUtil::h_SimpleConvertToVariant(const C_OscNodeDataPoolCo
          orc_Variant = orc_Content.GetValueS16();
          break;
       case C_OscNodeDataPoolContent::eSINT32:
-         orc_Variant = static_cast<int64_t>(orc_Content.GetValueS32());
+         orc_Variant = static_cast<qlonglong>(orc_Content.GetValueS32());
          break;
       case C_OscNodeDataPoolContent::eSINT64:
-         orc_Variant = orc_Content.GetValueS64();
+         orc_Variant = static_cast<qlonglong>(orc_Content.GetValueS64());
          break;
       case C_OscNodeDataPoolContent::eUINT8:
          orc_Variant = static_cast<int32_t>(orc_Content.GetValueU8());
@@ -1373,10 +1373,10 @@ int32_t C_SdNdeDpContentUtil::h_SimpleConvertToVariant(const C_OscNodeDataPoolCo
          orc_Variant = orc_Content.GetValueU16();
          break;
       case C_OscNodeDataPoolContent::eUINT32:
-         orc_Variant = static_cast<uint64_t>(orc_Content.GetValueU32());
+         orc_Variant = static_cast<qulonglong>(orc_Content.GetValueU32());
          break;
       case C_OscNodeDataPoolContent::eUINT64:
-         orc_Variant = orc_Content.GetValueU64();
+         orc_Variant = static_cast<qulonglong>(orc_Content.GetValueU64());
          break;
       case C_OscNodeDataPoolContent::eFLOAT32:
          orc_Variant = orc_Content.GetValueF32();
@@ -2212,28 +2212,28 @@ QVariant C_SdNdeDpContentUtil::h_ConvertContentToGeneric(const C_OscNodeDataPool
       switch (orc_Input.GetType())
       {
       case C_OscNodeDataPoolContent::E_Type::eUINT8:
-         c_Retval = static_cast<uint64_t>(orc_Input.GetValueU8());
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueU8());
          break;
       case C_OscNodeDataPoolContent::E_Type::eUINT16:
-         c_Retval = static_cast<uint64_t>(orc_Input.GetValueU16());
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueU16());
          break;
       case C_OscNodeDataPoolContent::E_Type::eUINT32:
-         c_Retval = static_cast<uint64_t>(orc_Input.GetValueU32());
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueU32());
          break;
       case C_OscNodeDataPoolContent::E_Type::eUINT64:
-         c_Retval = orc_Input.GetValueU64();
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueU64());
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT8:
-         c_Retval = static_cast<int64_t>(orc_Input.GetValueS8());
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueS8());
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT16:
-         c_Retval = static_cast<int64_t>(orc_Input.GetValueS16());
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueS16());
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT32:
-         c_Retval = static_cast<int64_t>(orc_Input.GetValueS32());
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueS32());
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT64:
-         c_Retval = orc_Input.GetValueS64();
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueS64());
          break;
       case C_OscNodeDataPoolContent::E_Type::eFLOAT32:
          if (os32_Role == static_cast<int32_t>(Qt::ItemDataRole::DisplayRole))
@@ -2269,28 +2269,28 @@ QVariant C_SdNdeDpContentUtil::h_ConvertContentToGeneric(const C_OscNodeDataPool
       switch (orc_Input.GetType())
       {
       case C_OscNodeDataPoolContent::E_Type::eUINT8:
-         c_Retval = static_cast<uint64_t>(orc_Input.GetValueArrU8Element(oru32_Index));
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueArrU8Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eUINT16:
-         c_Retval = static_cast<uint64_t>(orc_Input.GetValueArrU16Element(oru32_Index));
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueArrU16Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eUINT32:
-         c_Retval = static_cast<uint64_t>(orc_Input.GetValueArrU32Element(oru32_Index));
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueArrU32Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eUINT64:
-         c_Retval = orc_Input.GetValueArrU64Element(oru32_Index);
+         c_Retval = static_cast<qulonglong>(orc_Input.GetValueArrU64Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT8:
-         c_Retval = static_cast<int64_t>(orc_Input.GetValueArrS8Element(oru32_Index));
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueArrS8Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT16:
-         c_Retval = static_cast<int64_t>(orc_Input.GetValueArrS16Element(oru32_Index));
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueArrS16Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT32:
-         c_Retval = static_cast<int64_t>(orc_Input.GetValueArrS32Element(oru32_Index));
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueArrS32Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eSINT64:
-         c_Retval = orc_Input.GetValueArrS64Element(oru32_Index);
+         c_Retval = static_cast<qlonglong>(orc_Input.GetValueArrS64Element(oru32_Index));
          break;
       case C_OscNodeDataPoolContent::E_Type::eFLOAT32:
          c_Retval = static_cast<float64_t>(orc_Input.GetValueArrF32Element(oru32_Index));
@@ -2362,12 +2362,12 @@ QVariant C_SdNdeDpContentUtil::h_ConvertScaledContentToGeneric(const C_OscNodeDa
                  (f64_ScaledValue >= static_cast<float64_t>(std::numeric_limits<int64_t>::min()))) &&
                 (f64_ScaledValue <= static_cast<float64_t>(std::numeric_limits<int64_t>::max())))
             {
-               c_Retval = static_cast<int64_t>(f64_ScaledValue);
+               c_Retval = static_cast<qlonglong>(f64_ScaledValue);
             }
             else if ((f64_ScaledValue >= static_cast<float64_t>(std::numeric_limits<uint64_t>::min())) &&
                      (f64_ScaledValue <= static_cast<float64_t>(std::numeric_limits<uint64_t>::max())))
             {
-               c_Retval = static_cast<uint64_t>(f64_ScaledValue);
+               c_Retval = static_cast<qulonglong>(f64_ScaledValue);
             }
             else
             {

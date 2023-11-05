@@ -12,7 +12,9 @@
 #include <QWidget>
 #include <QTimer>
 #include <QElapsedTimer>
+#ifdef _WIN32
 #include <QWinTaskbarProgress>
+#endif
 
 #include "C_OscSuSequences.hpp"
 #include "C_SyvUpDeviceInfo.hpp"
@@ -106,7 +108,9 @@ private:
 
    QTimer mc_Timer;
    QElapsedTimer mc_ElapsedTimer;
+#ifdef _WIN32
    QWinTaskbarProgress * mpc_Progress;
+#endif
    stw::opensyde_gui_logic::C_SyvUpFileSizeInformation mc_FileSizeInformation;
    uint32_t mu32_ItFile;
    uint32_t mu32_ItParamFile;

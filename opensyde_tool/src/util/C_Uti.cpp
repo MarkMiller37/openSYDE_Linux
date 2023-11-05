@@ -28,6 +28,7 @@
 #include "C_OscUtils.hpp"
 #include "C_OscLoggingHandler.hpp"
 #include "C_OscBinaryHash.hpp"
+#include "version_config.hpp"
 
 /* -- Used Namespaces ----------------------------------------------------------------------------------------------- */
 using namespace stw::scl;
@@ -553,43 +554,19 @@ QString C_Uti::h_GetPemDbPath()
 //----------------------------------------------------------------------------------------------------------------------
 QString C_Uti::h_GetApplicationVersion(const bool oq_UseStwFormat)
 {
-   const QFileInfo c_FileInfo(QApplication::applicationFilePath());
-   const QString c_FileName = c_FileInfo.fileName();
-   VS_FIXEDFILEINFO * pc_Info;
-   uint32_t u32_ValSize;
-   int32_t s32_InfoSize;
    C_SclString c_Version;
 
-   c_Version = "V?.\?\?r?";
-
-   s32_InfoSize = GetFileVersionInfoSizeA(c_FileName.toStdString().c_str(), NULL);
-   if (s32_InfoSize != 0)
+   if (oq_UseStwFormat)
    {
-      uint8_t * pu8_Buffer;
-      pu8_Buffer = new uint8_t[static_cast<uint32_t>(s32_InfoSize)];
-      if (GetFileVersionInfoA(c_FileName.toStdString().c_str(), 0, s32_InfoSize, pu8_Buffer) != FALSE)
-      {
-         //reinterpret_cast required due to function interface
-         if (VerQueryValueA(pu8_Buffer, "\\",
-                            reinterpret_cast<PVOID *>(&pc_Info), //lint !e929 !e9176
-                            &u32_ValSize) != FALSE)
-         {
-            if (oq_UseStwFormat)
-            {
-               c_Version.PrintFormatted("V%d.%02dr%d", (pc_Info->dwFileVersionMS >> 16U),
-                                        pc_Info->dwFileVersionMS & 0x0000FFFFUL,
-                                        (pc_Info->dwFileVersionLS >> 16U));
-            }
-            else
-            {
-               c_Version.PrintFormatted("%d.%02d.%d", (pc_Info->dwFileVersionMS >> 16U),
-                                        pc_Info->dwFileVersionMS & 0x0000FFFFUL,
-                                        (pc_Info->dwFileVersionLS >> 16U));
-            }
-         }
-      }
-      delete[] pu8_Buffer;
+      c_Version.PrintFormatted("V%d.%02dr%d", PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR,
+                               PROJECT_VERSION_RELEASE, PROJECT_VERSION_BUILD);
    }
+   else
+   {
+      c_Version.PrintFormatted("%d.%02d.%d", PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR,
+                               PROJECT_VERSION_RELEASE, PROJECT_VERSION_BUILD);
+   }
+
    return c_Version.c_str();
 }
 

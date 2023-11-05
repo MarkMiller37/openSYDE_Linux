@@ -8,7 +8,12 @@ QT       += core gui
 CONFIG   += precompile_header
 CONFIG   += no_keywords
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg winextras printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg printsupport
+
+win32 {
+greaterThan(QT_MAJOR_VERSION, 4): QT += winextras
+}
+
 
 TARGET = openSYDE
 TEMPLATE = app
@@ -890,7 +895,7 @@ SOURCES += ../src/main.cpp \
 #to do that we define an additional compiler named "miniz" and assign miniz.c to be built with that compiler
 #see https://stackoverflow.com/questions/27683777/how-to-specify-compiler-flag-to-a-single-source-file-with-qmake
 # for more information
-win32-g++ {
+*-g++* {
    SOURCES_MINIZ = ../libs/opensyde_core/miniz/miniz.c  #define sources to be built with additional compiler
    miniz.name = miniz
    miniz.input = SOURCES_MINIZ              #assign sources
@@ -908,7 +913,7 @@ win32-g++ {
 #to do that we define an additional compiler named "dbc_scanner" and assign Scanner.cpp to be built with that compiler
 #see https://stackoverflow.com/questions/27683777/how-to-specify-compiler-flag-to-a-single-source-file-with-qmake
 # for more information
-win32-g++ {
+*-g++* {
    SOURCES_DBC_SCANNER = ../libs/dbc_driver_library/src/Vector/DBC/Scanner.cpp  #define sources to be built with additional compiler
    dbc_scanner.name = dbc_scanner
    dbc_scanner.input = SOURCES_DBC_SCANNER              #assign sources
@@ -934,6 +939,7 @@ HEADERS  += \
     ../libs/opensyde_core/C_OscZipData.hpp \
     ../libs/opensyde_core/C_OscZipFile.hpp \
     ../libs/opensyde_core/miniz/miniz.h \
+    ../src/version_config.hpp \
     ../src/com_import_export/C_CieImportDataAssignment.hpp \
     ../src/com_import_export/C_CieImportedMessageVectorData.hpp \
     ../src/graphic_items/system_view_items/C_GiSvNodeData.hpp \
@@ -2054,7 +2060,6 @@ INCLUDEPATH += ../src \
                ../src/precompiled_headers/gui \
                ../libs/opensyde_core/aes \
                ../libs/opensyde_core/miniz \
-               ../libs/gettext \
                ../libs/flexlexer \
                ../libs/dbc_driver_library/src/ \
                ../libs/dbc_driver_library/src/Vector \
@@ -2065,6 +2070,17 @@ INCLUDEPATH += ../src \
 RESOURCES += \
     ../src/application.qrc
 
+linux {
+#"Note that on GNU systems, you don’t need to link with libintl because the gettext library functions are already contained in GNU libc."
+
+LIBS += -L../libs/qcustomplot -lQCustomPlot_linux
+
+#openssl
+LIBS += -lcrypto   #use the one installed on the system; no local path to header files
+}
+
+
+win32 {
 LIBS += -L../libs/gettext -lintl \
         -L../libs/qcustomplot -lqcustomplot \
         -lz
@@ -2077,6 +2093,7 @@ LIBS += -L../libs/openssl -lcrypto
 
 #add windows API libraries
 LIBS += -lversion
+}
 
 #do not warn about c++11 - we need it for Qt anyway and would else get issues with warnings in qobjectdefs_impl.h
 QMAKE_CXXFLAGS += -Wno-c++11-compat

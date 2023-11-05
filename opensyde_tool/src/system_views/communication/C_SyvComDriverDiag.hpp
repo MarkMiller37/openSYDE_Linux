@@ -8,8 +8,8 @@
    \copyright   Copyright 2017 Sensor-Technik Wiedemann GmbH. All rights reserved.
 */
 //----------------------------------------------------------------------------------------------------------------------
-#ifndef C_SYVCOMDRIVERDIAG_H
-#define C_SYVCOMDRIVERDIAG_H
+#ifndef C_SYVCOMDRIVERDIAG_HPP
+#define C_SYVCOMDRIVERDIAG_HPP
 
 /* -- Includes ------------------------------------------------------------------------------------------------------ */
 #include <QObject>
@@ -23,7 +23,7 @@
 #include "C_SyvComPollingThreadDiag.hpp"
 #include "C_SyvComDriverThread.hpp"
 #include "C_Can.hpp"
-#include "C_OscIpDispatcherWinSock.hpp"
+#include "C_OscIpDispatcher.hpp"
 #include "C_OscCanSignal.hpp"
 #include "C_OscSecurityPemDatabase.hpp"
 #include "C_OscDiagProtocolOsy.hpp"
@@ -168,7 +168,7 @@ private:
 
    const uint32_t mu32_ViewIndex;
    stw::can::C_Can * mpc_CanDllDispatcher;
-   stw::opensyde_core::C_OscIpDispatcherWinSock * mpc_EthernetDispatcher;
+   stw::opensyde_core::C_OscIpDispatcher * mpc_EthernetDispatcher;
 
    // Mapping from CAN-ID to registered widget and its used CAN message signal
    QMap<stw::opensyde_core::C_OscCanMessageUniqueId, QList<C_SyvComDriverDiagWidgetRegistration> > mc_AllWidgets;

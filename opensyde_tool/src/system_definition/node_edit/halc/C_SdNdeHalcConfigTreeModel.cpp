@@ -227,7 +227,7 @@ QVariant C_SdNdeHalcConfigTreeModel::data(const QModelIndex & orc_Index, const i
                         }
                         else
                         {
-                           c_Retval = static_cast<int64_t>(u32_Counter);
+                           c_Retval = static_cast<qlonglong>(u32_Counter);
                         }
                         break;
                      }

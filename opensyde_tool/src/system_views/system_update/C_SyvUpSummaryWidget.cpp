@@ -8,7 +8,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include <QFileInfo>
 #include <QFontMetrics>
+#ifdef _WIN32
 #include <QWinTaskbarButton>
+#endif
 #include "stwerrors.hpp"
 #include "constants.hpp"
 #include "C_OgeWiUtil.hpp"

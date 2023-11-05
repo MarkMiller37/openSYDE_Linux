@@ -12,8 +12,10 @@
 /* -- Includes ------------------------------------------------------------------------------------------------------ */
 #include "precomp_headers.hpp"
 
+#ifdef _WIN32
 #include <windows.h> //tlhelp32 does not do this by itself ...
 #include <tlhelp32.h>
+#endif
 #include <QDir>
 #include <QProcess>
 #include <QTextStream>
@@ -499,6 +501,7 @@ int32_t C_ImpUtil::h_OpenIde(const QString & orc_IdeExeCall)
 {
    int32_t s32_Retval = C_NO_ERR;
 
+#ifdef _WIN32
    if (orc_IdeExeCall.compare("") != 0)
    {
       std::vector<HWND> c_Windows;
@@ -581,6 +584,10 @@ int32_t C_ImpUtil::h_OpenIde(const QString & orc_IdeExeCall)
       s32_Retval = C_CONFIG;
       osc_write_log_error("Open IDE", "No path to IDE executable given.");
    }
+#else
+   s32_Retval = C_NOACT;
+#endif
+
    return s32_Retval;
 }
 
@@ -908,6 +915,7 @@ QString C_ImpUtil::h_FormatSourceFileInfoForReport(const QString & orc_FilePath,
    \param[in,out]  orc_Windows   All found windows
 */
 //----------------------------------------------------------------------------------------------------------------------
+#ifdef _WIN32
 void C_ImpUtil::mh_GetExistingApplicationHandle(const std::wstring & orc_ExeName, std::vector<HWND> & orc_Windows)
 {
    PROCESSENTRY32 c_Entry;
@@ -989,6 +997,7 @@ WINBOOL CALLBACK C_ImpUtil::mh_EnumWindowsCallback(HWND opc_Handle, const LPARAM
    }
    return x_Result;
 }
+#endif
 
 //----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Call external file generation tool.

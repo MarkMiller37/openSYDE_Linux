@@ -17,7 +17,7 @@
 #include "TglTasks.hpp"
 #include "C_OscSuSequences.hpp"
 #include "C_SyvComDriverThread.hpp"
-#include "C_OscIpDispatcherWinSock.hpp"
+#include "C_OscIpDispatcher.hpp"
 #include "C_OscSecurityPemDatabase.hpp"
 
 /* -- Namespace ----------------------------------------------------------------------------------------------------- */
@@ -113,7 +113,7 @@ private:
    C_SyvComDriverThread * mpc_Thread;
    stw::tgl::C_TglCriticalSection * mpc_Lock;
    stw::can::C_Can * mpc_CanDllDispatcher;
-   stw::opensyde_core::C_OscIpDispatcherWinSock * mpc_EthernetDispatcher;
+   stw::opensyde_core::C_OscIpDispatcher * mpc_EthernetDispatcher;
    bool mq_AbortFlag;
    uint32_t mu32_ViewIndex;
 

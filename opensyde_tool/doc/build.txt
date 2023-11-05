@@ -2,6 +2,9 @@
 File:      build.txt
 Content:   How to build project
 ---------------------------------------------------------------------
+
+This refers to the original release for Windows.
+
 Used Compiler:
 ==============
 MinGW: 8.1.0

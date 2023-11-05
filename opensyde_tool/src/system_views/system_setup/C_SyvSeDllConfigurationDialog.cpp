@@ -289,6 +289,7 @@ void C_SyvSeDllConfigurationDialog::m_CancelClicked(void) const
 //----------------------------------------------------------------------------------------------------------------------
 void C_SyvSeDllConfigurationDialog::m_ConfigureDllClicked(void) const
 {
+#ifdef _WIN32
    // check path for invalid signs for custom DLL
    if (this->m_CheckCustomDllPath() == true)
    {
@@ -323,11 +324,13 @@ void C_SyvSeDllConfigurationDialog::m_ConfigureDllClicked(void) const
          c_MessageBox.Execute();
       }
    }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void C_SyvSeDllConfigurationDialog::m_TestConnectionClicked(void) const
 {
+#ifdef _WIN32
    // check path for invalid signs for custom DLL
    if (this->m_CheckCustomDllPath() == true)
    {
@@ -383,6 +386,7 @@ void C_SyvSeDllConfigurationDialog::m_TestConnectionClicked(void) const
       c_MessageBox.SetCustomMinHeight(180, 180);
       c_MessageBox.Execute();
    }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------

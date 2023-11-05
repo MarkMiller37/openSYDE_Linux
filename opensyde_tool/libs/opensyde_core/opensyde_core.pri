@@ -16,7 +16,6 @@ INCLUDEPATH += $${PWD} \
                $${PWD}/kefex_diaglib \
                $${PWD}/kefex_diaglib/dl_string_resources \
                $${PWD}/kefex_diaglib/stwcompid \
-               $${PWD}/kefex_diaglib/tgl_windows \
                $${PWD}/logging \
                $${PWD}/md5 \
                $${PWD}/scl \
@@ -31,10 +30,6 @@ SOURCES += \
     $${PWD}/kefex_diaglib/dl_string_resources/C_SclResourceStrings.cpp \
     $${PWD}/kefex_diaglib/dl_string_resources/DLStrings.cpp \
     $${PWD}/kefex_diaglib/stwcompid/stwcompid.c \
-    $${PWD}/kefex_diaglib/tgl_windows/TglFile.cpp \
-    $${PWD}/kefex_diaglib/tgl_windows/TglTasks.cpp \
-    $${PWD}/kefex_diaglib/tgl_windows/TglTime.cpp \
-    $${PWD}/kefex_diaglib/tgl_windows/TglUtils.cpp \
     $${PWD}/logging/C_OscLoggingHandler.cpp \
     $${PWD}/md5/C_Md5Checksum.cpp \
     $${PWD}/scl/C_SclChecksums.cpp \
@@ -55,10 +50,6 @@ HEADERS += \
     $${PWD}/kefex_diaglib/dl_string_resources/C_SclResourceStrings.hpp \
     $${PWD}/kefex_diaglib/dl_string_resources/DLStrings.hpp \
     $${PWD}/kefex_diaglib/stwcompid/stwcompid.h \
-    $${PWD}/kefex_diaglib/tgl_windows/TglFile.hpp \
-    $${PWD}/kefex_diaglib/tgl_windows/TglTasks.hpp \
-    $${PWD}/kefex_diaglib/tgl_windows/TglTime.hpp \
-    $${PWD}/kefex_diaglib/tgl_windows/TglUtils.hpp \
     $${PWD}/logging/C_OscLoggingHandler.hpp \
     $${PWD}/md5/C_Md5Checksum.hpp \
     $${PWD}/scl/C_SclChecksums.hpp \
@@ -75,6 +66,40 @@ HEADERS += \
     $${PWD}/xml_parser/C_OscXmlParserLog.hpp \
     $${PWD}/xml_parser/C_OscChecksummedXml.hpp \
     $${PWD}/xml_parser/tinyxml2/tinyxml2.h
+
+win32 {
+INCLUDEPATH += $${PWD}/kefex_diaglib/tgl_windows
+
+SOURCES += \
+    $${PWD}/kefex_diaglib/tgl_windows/TglFile.cpp \
+    $${PWD}/kefex_diaglib/tgl_windows/TglTasks.cpp \
+    $${PWD}/kefex_diaglib/tgl_windows/TglTime.cpp \
+    $${PWD}/kefex_diaglib/tgl_windows/TglUtils.cpp
+
+HEADERS += \
+    $${PWD}/kefex_diaglib/tgl_windows/TglFile.hpp \
+    $${PWD}/kefex_diaglib/tgl_windows/TglTasks.hpp \
+    $${PWD}/kefex_diaglib/tgl_windows/TglTime.hpp \
+    $${PWD}/kefex_diaglib/tgl_windows/TglUtils.hpp
+}
+
+linux {
+INCLUDEPATH += $${PWD}/kefex_diaglib/tgl_linux
+
+SOURCES += \
+    $${PWD}/kefex_diaglib/tgl_linux/TglFile.cpp \
+    $${PWD}/kefex_diaglib/tgl_linux/TglTasks.cpp \
+    $${PWD}/kefex_diaglib/tgl_linux/TglTime.cpp \
+    $${PWD}/kefex_diaglib/tgl_linux/TglUtils.cpp
+
+HEADERS += \
+    $${PWD}/kefex_diaglib/tgl_linux/TglFile.hpp \
+    $${PWD}/kefex_diaglib/tgl_linux/TglTasks.hpp \
+    $${PWD}/kefex_diaglib/tgl_linux/TglTime.hpp \
+    $${PWD}/kefex_diaglib/tgl_linux/TglUtils.hpp
+}
+
+
 
 # optional: zip/unzip
 contains(opensyde_core_skip_modules, opensyde_core_skip_zipping) {
@@ -400,30 +425,47 @@ contains(opensyde_core_skip_modules, opensyde_core_skip_param_set) {
               $${PWD}/data_dealer/paramset/C_OscParamSetRawNodeFiler.hpp
 }
 
-# optional: CAN and Ethernet dispatcher interface and Windows implementation
+# optional: CAN and Ethernet dispatcher interface and implementation for Windows or Linux
 contains(opensyde_core_skip_modules, opensyde_core_skip_com_dispatchers) {
    message("opensyde_core_skip_com_dispatchers detected ... skipping package")
 } else {
    message("opensyde_core_skip_com_dispatchers not detected ... dragging in package")
 
    INCLUDEPATH += $${PWD}/can_dispatcher/dispatcher \
-                  $${PWD}/can_dispatcher/target_windows_stw_dlls \
-                  $${PWD}/ip_dispatcher/dispatcher \
-                  $${PWD}/ip_dispatcher/target_windows_win_sock
+                  $${PWD}/ip_dispatcher/dispatcher
 
    SOURCES += $${PWD}/can_dispatcher/dispatcher/C_CanBase.cpp \
-            $${PWD}/can_dispatcher/dispatcher/C_CanDispatcher.cpp \
-            $${PWD}/can_dispatcher/target_windows_stw_dlls/C_Can.cpp \
-            $${PWD}/can_dispatcher/target_windows_stw_dlls/C_CanDll.cpp \
-            $${PWD}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.cpp
+            $${PWD}/can_dispatcher/dispatcher/C_CanDispatcher.cpp
 
    HEADERS += $${PWD}/can_dispatcher/dispatcher/stw_can.hpp \
               $${PWD}/can_dispatcher/dispatcher/C_CanBase.hpp \
               $${PWD}/can_dispatcher/dispatcher/C_CanDispatcher.hpp \
-              $${PWD}/can_dispatcher/target_windows_stw_dlls/C_Can.hpp \
-              $${PWD}/can_dispatcher/target_windows_stw_dlls/C_CanDll.hpp \
-              $${PWD}/ip_dispatcher/dispatcher/C_OscIpDispatcher.hpp \
-              $${PWD}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.hpp
+              $${PWD}/ip_dispatcher/dispatcher/C_OscIpDispatcher.hpp
+
+   win32 {
+      INCLUDEPATH += $${PWD}/can_dispatcher/target_windows_stw_dlls \
+                     $${PWD}/ip_dispatcher/target_windows_win_sock
+
+      SOURCES += $${PWD}/can_dispatcher/target_windows_stw_dlls/C_Can.cpp \
+                 $${PWD}/can_dispatcher/target_windows_stw_dlls/C_CanDll.cpp \
+                 $${PWD}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.cpp
+
+      HEADERS += $${PWD}/can_dispatcher/target_windows_stw_dlls/C_Can.hpp \
+                 $${PWD}/can_dispatcher/target_windows_stw_dlls/C_CanDll.hpp \
+                 $${PWD}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.hpp
+   }
+
+   linux {
+      INCLUDEPATH += $${PWD}/can_dispatcher/target_linux_socket_can \
+                     $${PWD}/ip_dispatcher/target_linux_sock
+
+      SOURCES += $${PWD}/can_dispatcher/target_linux_socket_can/C_Can.cpp \
+                 $${PWD}/ip_dispatcher/target_linux_sock/C_OscIpDispatcherLinuxSock.cpp
+
+      HEADERS += $${PWD}/can_dispatcher/target_linux_socket_can/C_Can.hpp \
+                 $${PWD}/ip_dispatcher/target_linux_sock/C_OscIpDispatcherLinuxSock.hpp
+   }
+
 }
 
 

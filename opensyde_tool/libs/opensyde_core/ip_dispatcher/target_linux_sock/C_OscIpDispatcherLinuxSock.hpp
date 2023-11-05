@@ -99,6 +99,8 @@ public:
                                  std::vector<uint8_t> & orc_Data);
    virtual int32_t SendUdp(const std::vector<uint8_t> & orc_Data);
    virtual int32_t ReadUdp(std::vector<uint8_t> &orc_Data, uint8_t(&orau8_Ip)[4]);
+
+   virtual void LoadConfigFile(const stw::scl::C_SclString & orc_FileLocation);
 };
 
 /* -- Extern Global Variables --------------------------------------------------------------------------------------- */

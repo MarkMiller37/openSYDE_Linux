@@ -12,6 +12,7 @@
 #define C_SDNDEDBPROPERTIES_H
 
 /* -- Includes ------------------------------------------------------------------------------------------------------ */
+#include <set>
 #include <QWidget>
 #include "stwtypes.hpp"
 #include "C_OgePopUpDialog.hpp"

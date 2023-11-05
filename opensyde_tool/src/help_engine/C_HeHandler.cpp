@@ -13,8 +13,10 @@
 #include "precomp_headers.hpp"
 
 //Html help
+#ifdef _WIN32
 #include <windows.h>
 #include <htmlhelp.h>
+#endif
 #include <QProcess>
 #include <QKeyEvent>
 #include <iostream>
@@ -59,6 +61,7 @@ C_HeHandler & C_HeHandler::h_GetInstance(void)
 //----------------------------------------------------------------------------------------------------------------------
 void C_HeHandler::CallSpecificHelpPage(const QString & orc_ClassName)
 {
+#ifdef _WIN32
    QString c_PageSearchName = "";
 
    const QString c_PageName = orc_ClassName;
@@ -107,6 +110,7 @@ void C_HeHandler::CallSpecificHelpPage(const QString & orc_ClassName)
          delete[] (pcn_Text);
       }
    }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -154,7 +158,7 @@ C_HeHandler::C_HeHandler() :
    mc_HelpFileRelPath("/Help/openSYDE PC Tool.chm")
 {
    m_InitSpecialHelpPages();
-
+#ifdef _WIN32
    //Load DLL
    this->mpc_InstHtmlHelp = LoadLibraryA("HHCtrl.ocx");
    if (this->mpc_InstHtmlHelp != NULL)
@@ -167,6 +171,7 @@ C_HeHandler::C_HeHandler() :
    {
       this->mpr_HtmlHelp = NULL;
    }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -177,10 +182,12 @@ C_HeHandler::C_HeHandler() :
 C_HeHandler::~C_HeHandler()
 {
    //Free DLL
+#ifdef _WIN32
    if (this->mpc_InstHtmlHelp != NULL)
    {
       FreeLibrary(this->mpc_InstHtmlHelp);
    }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------

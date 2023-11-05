@@ -18,11 +18,12 @@
    \copyright   Copyright 2017 Sensor-Technik Wiedemann GmbH. All rights reserved.
 */
 //----------------------------------------------------------------------------------------------------------------------
-#ifndef C_OSCIPDISPATCHERH
-#define C_OSCIPDISPATCHERH
+#ifndef C_OSCIPDISPATCHERHPP
+#define C_OSCIPDISPATCHERHPP
 
 /* -- Includes ------------------------------------------------------------------------------------------------------ */
 #include "stwtypes.hpp"
+#include "C_SclString.hpp"
 
 /* -- Namespace ----------------------------------------------------------------------------------------------------- */
 namespace stw
@@ -311,6 +312,17 @@ public:
    */
    //-----------------------------------------------------------------------------
    virtual int32_t ReadUdp(std::vector<uint8_t> &orc_Data, uint8_t(&orau8_Ip)[4]) = 0;
+
+   //-----------------------------------------------------------------------------
+   /*!
+      \brief   Load optional configuration file
+
+      Load configuration options from configuration file. Those might be platform specific (or not present at all)
+
+      \param[in]  orc_FileLocation   path to file with configuration options
+   */
+   //-----------------------------------------------------------------------------
+   virtual void LoadConfigFile(const stw::scl::C_SclString & orc_FileLocation) = 0;
 };
 
 /* -- Extern Global Variables --------------------------------------------------------------------------------------- */

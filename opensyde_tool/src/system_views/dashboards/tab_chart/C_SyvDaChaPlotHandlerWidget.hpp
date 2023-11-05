@@ -14,7 +14,7 @@
 #include <QColor>
 #include <QTimer>
 #include <vector>
-#include <qcustomplot.h>
+#include "qcustomplot.h"
 
 #include "stwtypes.hpp"
 
