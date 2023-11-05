@@ -1067,6 +1067,10 @@ int32_t C_ImpUtil::mh_ExecuteCodeGenerator(const QString & orc_NodeName, const Q
       c_Arguments.push_back("-e"); // erase folder (only if user confirmed)
    }
 
+   c_ErrorText = static_cast<C_SclString>("Calling code generator with command line: \"") + c_CodeGenFileInfo.absoluteFilePath().toStdString().c_str() + " " +
+                 c_Arguments.join(' ').toStdString().c_str() + "\"";
+   osc_write_log_info("Generate Files", c_ErrorText);
+
    // call file generation exe with arguments
    pc_Process->start(c_CodeGenFileInfo.absoluteFilePath(), c_Arguments);
    bool q_Tmp = pc_Process->waitForStarted();
