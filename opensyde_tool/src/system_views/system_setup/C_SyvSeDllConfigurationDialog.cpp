@@ -11,6 +11,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
+#ifndef _WIN32
+#include <QProcess>
+#endif
 
 #include "stwtypes.hpp"
 #include "stwerrors.hpp"
@@ -330,15 +333,15 @@ void C_SyvSeDllConfigurationDialog::m_ConfigureDllClicked(void) const
 //----------------------------------------------------------------------------------------------------------------------
 void C_SyvSeDllConfigurationDialog::m_TestConnectionClicked(void) const
 {
-#ifdef _WIN32
    // check path for invalid signs for custom DLL
    if (this->m_CheckCustomDllPath() == true)
    {
+      const QString c_Heading = C_GtGetText::h_GetText("PC CAN Interface configuration");
+      QString c_Description;
       // 3 of 4 message cases are of type "failed"
       C_OgeWiCustomMessage c_MessageBox(this->parentWidget(), C_OgeWiCustomMessage::E_Type::eWARNING);
-      QString c_Description;
+#ifdef _WIN32
       const QString c_Path = this->m_GetAbsoluteDllPath();
-      const QString c_Heading = C_GtGetText::h_GetText("PC CAN Interface configuration");
 
       if (QFile::exists(c_Path) == true)
       {
@@ -380,13 +383,40 @@ void C_SyvSeDllConfigurationDialog::m_TestConnectionClicked(void) const
          c_Description = C_GtGetText::h_GetText("CAN DLL not found.");
       }
 
+#else
+      //Linux: does the interface exist ?
+      //We will not know for sure whether it really is a CAN interface. But at least we know it is an interface.
+
+      const QString c_Path = this->GetCustomDllPath();
+
+      {
+         QProcess c_Process;
+         QStringList c_Command;
+         QString c_Result;
+
+         c_Command << "-c" << ("ifconfig -a | grep " + c_Path + ":");
+
+         c_Process.start("/bin/sh", { c_Command });
+         c_Process.waitForFinished();
+
+         c_Result = c_Process.readAllStandardOutput();
+         if (c_Result.contains(c_Path) == true)
+         {
+             c_MessageBox.SetType(C_OgeWiCustomMessage::E_Type::eINFORMATION);
+             c_Description = C_GtGetText::h_GetText("Specified interface exists as Linux network interface.");
+         }
+         else
+         {
+             c_Description = C_GtGetText::h_GetText("Specified interface is not an existing Linux network interface.");
+         }
+      }
       // Show the result
       c_MessageBox.SetHeading(c_Heading);
       c_MessageBox.SetDescription(c_Description);
       c_MessageBox.SetCustomMinHeight(180, 180);
       c_MessageBox.Execute();
-   }
 #endif
+   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

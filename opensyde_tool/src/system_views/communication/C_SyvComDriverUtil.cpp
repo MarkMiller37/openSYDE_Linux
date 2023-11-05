@@ -145,10 +145,12 @@ int32_t C_SyvComDriverUtil::h_GetOscComDriverParamFromView(const uint32_t ou32_V
                   //does the interface exist ?
                   {
                       QProcess c_Process;
-                      QString c_Command = "ifconfig -a | grep " +  c_FilePath + ":";
+                      QStringList c_Command;
                       QString c_Result;
 
-                      c_Process.start("bin/sh", { c_Command });
+                      c_Command << "-c" << ("ifconfig -a | grep " + c_FilePath + ":");
+
+                      c_Process.start("/bin/sh", { c_Command });
                       c_Process.waitForFinished();
 
                       c_Result = c_Process.readAllStandardOutput();
