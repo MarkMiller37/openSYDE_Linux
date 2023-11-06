@@ -257,6 +257,7 @@ void C_CamMosDllWidget::m_LoadConfig(void) const
 //----------------------------------------------------------------------------------------------------------------------
 void C_CamMosDllWidget::m_ConfigureDllClicked(void)
 {
+#ifdef _WIN32
    QString c_Path;
 
    // Get absolute DLL path (resolve variables and make absolute if it is relative ant not empty)
@@ -295,6 +296,7 @@ void C_CamMosDllWidget::m_ConfigureDllClicked(void)
       c_MessageBox.SetDescription(C_GtGetText::h_GetText("CAN DLL not found."));
       c_MessageBox.Execute();
    }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------

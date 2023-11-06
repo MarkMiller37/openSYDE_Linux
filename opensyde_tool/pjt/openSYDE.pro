@@ -2095,11 +2095,11 @@ LIBS += -L$${PWD}/../libs/openssl -lcrypto
 LIBS += -lversion
 }
 
+*-g++* {
 #do not warn about c++11 - we need it for Qt anyway and would else get issues with warnings in qobjectdefs_impl.h
 QMAKE_CXXFLAGS += -Wno-c++11-compat
 
 #do not issue deprecation warnings (tested code can contain deprecated functions which we do want to provide)
-win32-g++ {
 QMAKE_CXXFLAGS += -Wno-deprecated-declarations
 }
 

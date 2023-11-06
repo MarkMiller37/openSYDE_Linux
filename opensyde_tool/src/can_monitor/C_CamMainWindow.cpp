@@ -13,6 +13,9 @@
 #include "precomp_headers.hpp"
 
 #include <QFileInfo>
+#ifndef _WIN32
+#include <QProcess>
+#endif
 
 #include "stwtypes.hpp"
 #include "stwerrors.hpp"
@@ -569,6 +572,7 @@ int32_t C_CamMainWindow::m_InitCan(int32_t & ors32_Bitrate)
    // Initialize
    ors32_Bitrate = 0;
 
+#ifdef _WIN32
    // Get absolute DLL path (resolve variables and make absolute if it is relative ant not empty)
    c_DllPath = C_CamProHandler::h_GetInstance()->GetCanDllPath();
    if (c_DllPath.isEmpty() == false)
@@ -617,6 +621,46 @@ int32_t C_CamMainWindow::m_InitCan(int32_t & ors32_Bitrate)
          s32_Return = C_CONFIG;
       }
    }
+#else
+   // Get driver name
+   c_DllPath = C_CamProHandler::h_GetInstance()->GetCanDllPath();
+
+   //does the interface exist ?
+   {
+      QProcess c_Process;
+      QStringList c_Command;
+      QString c_Result;
+
+      c_Command << "-c" << ("ifconfig -a | grep " + c_DllPath + ":");
+
+      c_Process.start("/bin/sh", { c_Command });
+      c_Process.waitForFinished();
+
+      c_Result = c_Process.readAllStandardOutput();
+      if (c_Result.contains(c_DllPath) == true)
+      {
+         //setting bitrate not supported on Linux
+         s32_Return = this->mpc_CanDllDispatcher->CAN_Init(c_DllPath.toStdString().c_str());
+
+         if (s32_Return == C_NO_ERR)
+         {
+            //status function not implemented; report static bitrate for now
+            ors32_Bitrate = 125000;
+         }
+         else
+         {
+            // Error
+            s32_Return = C_COM;
+         }
+      }
+      else
+      {
+         // Error
+         s32_Return = C_CONFIG;
+      }
+   }
+
+#endif
 
    return s32_Return;
 }
@@ -628,7 +672,9 @@ int32_t C_CamMainWindow::m_InitCan(int32_t & ors32_Bitrate)
 void C_CamMainWindow::m_CloseCan(void)
 {
    this->mpc_CanDllDispatcher->CAN_Exit();
+#ifdef _WIN32
    this->mpc_CanDllDispatcher->DLL_Close();
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1296,11 +1342,11 @@ void C_CamMainWindow::m_OnCanDllConfigChange(void)
 {
    if (this->mq_LoggingStarted == true)
    {
-      int32_t s32_Result;
-
-      stw::can::T_STWCAN_Status c_Status;
       int32_t s32_Bitrate;
 
+#ifdef _WIN32
+      int32_t s32_Result;
+      stw::can::T_STWCAN_Status c_Status;
       // Get the bitrate of the CAN DLL
       s32_Result = this->mpc_CanDllDispatcher->CAN_Status(c_Status);
       if (s32_Result == C_NO_ERR)
@@ -1318,6 +1364,10 @@ void C_CamMainWindow::m_OnCanDllConfigChange(void)
 
          s32_Bitrate = 0;
       }
+#else
+      //status function not implemented; report static bitrate for now
+      s32_Bitrate = 125000;
+#endif
 
       this->mc_ComDriver.UpdateBitrate(s32_Bitrate);
       this->mpc_Ui->pc_TraceWidget->SetCanBitrate(s32_Bitrate);

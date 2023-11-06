@@ -25,6 +25,7 @@ Used libraries:
 ** dragging the sources in directly caused issues as the sources use Qt macros which are deactivated in the GUI build via "no_keywords"
 ** See pjt/QCustomPlot_library
 ** copied result to libs/qcustomplot
+* BLF (for CAN Monitor): Same approach as QCustomPlot (adding the sources caused conflicts with DBC as files have the same names).
 
 Known issues:
 * tooltips behave oddly
@@ -37,7 +38,7 @@ Known issues:
 ** see https://forum.qt.io/topic/131934/is-there-an-alternative-to-qwintaskbarbutton-in-qt-6
 * CAN "DLLs":
 ** C_SyvSeDllConfigurationDialog needs cleanup; no interactive configuration or "TestConnection" for Linux
-** "DLL_Open" and "DLL_Close" not available for Linux; calls have been #ifdefed and need cleanup
+** "DLL_Open", "DLL_Close", "CAN_Status" not available for Linux; calls have been #ifdefed and need cleanup
 ** Setting bitrate not implemented; needs to be added in C_CAN.cpp via socket CAN
 * Ethernet driver:
 ** instancing Windows or Linux driver is #ifdefed, need cleanup

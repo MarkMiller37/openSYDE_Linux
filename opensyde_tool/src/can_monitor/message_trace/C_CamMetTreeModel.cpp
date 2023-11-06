@@ -855,7 +855,7 @@ QVariant C_CamMetTreeModel::data(const QModelIndex & orc_Index, const int32_t os
                case eCAN_COUNTER:
                   if (os32_Role == ms32_USER_ROLE_SORT)
                   {
-                     c_Retval = pc_CurMessage->c_Counter.ToInt64();
+                     c_Retval = static_cast<qlonglong>(pc_CurMessage->c_Counter.ToInt64());
                   }
                   else
                   {

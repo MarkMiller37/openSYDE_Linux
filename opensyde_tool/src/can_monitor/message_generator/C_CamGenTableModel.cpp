@@ -313,7 +313,7 @@ QVariant C_CamGenTableModel::data(const QModelIndex & orc_Index, const int32_t o
                if (os32_Role == ms32_USER_ROLE_SORT)
                {
                   //Use simple unit value for sorting (better than string)
-                  c_Retval = static_cast<uint64_t>(pc_Message->u32_Id);
+                  c_Retval = static_cast<qulonglong>(pc_Message->u32_Id);
                }
                else
                {
@@ -321,7 +321,7 @@ QVariant C_CamGenTableModel::data(const QModelIndex & orc_Index, const int32_t o
                }
                break;
             case eDLC:
-               c_Retval = static_cast<uint64_t>(pc_Message->u16_Dlc);
+               c_Retval = static_cast<qulonglong>(pc_Message->u16_Dlc);
                break;
             case eDATA:
                //Don't set any data as this column is handled differently
@@ -335,11 +335,11 @@ QVariant C_CamGenTableModel::data(const QModelIndex & orc_Index, const int32_t o
                      u64_Result += static_cast<uint64_t>(pc_Message->c_Bytes[static_cast<uint32_t>(u16_ItByte)]) <<
                                    (56U - (u16_ItByte * 8U));
                   }
-                  c_Retval = u64_Result;
+                  c_Retval = static_cast<qulonglong>(u64_Result);
                }
                break;
             case eCYCLIC_TIME:
-               c_Retval = static_cast<uint64_t>(pc_Message->u32_CyclicTriggerTime);
+               c_Retval = static_cast<qulonglong>(pc_Message->u32_CyclicTriggerTime);
                break;
             case eMANUAL_TRIGGER:
                c_Retval = C_GtGetText::h_GetText("Send now");
@@ -514,7 +514,7 @@ QVariant C_CamGenTableModel::data(const QModelIndex & orc_Index, const int32_t o
             switch (e_Col) //lint !e788 //not all columns explicitly handled
             {
             case eID:
-               c_Retval = C_Uti::h_GetValueAsHex(0ULL);
+               c_Retval = C_Uti::h_GetValueAsHex(0U);
                break;
             case eDLC:
                c_Retval = 0;
@@ -548,11 +548,11 @@ QVariant C_CamGenTableModel::data(const QModelIndex & orc_Index, const int32_t o
             case eID:
                if (pc_Message->GetExtended())
                {
-                  c_Retval = C_Uti::h_GetValueAsHex(0x1FFFFFFFULL);
+                  c_Retval = C_Uti::h_GetValueAsHex(static_cast<uint64_t>(0x1FFFFFFFULL));
                }
                else
                {
-                  c_Retval = C_Uti::h_GetValueAsHex(0x7FFULL);
+                  c_Retval = C_Uti::h_GetValueAsHex(0x7FFU);
                }
                break;
             case eDLC:
