@@ -52,5 +52,5 @@ Known issues:
 
 Setting up virtual CAN interface:
 https://www.pragmaticlinux.com/2021/10/how-to-create-a-virtual-can-interface-on-linux/
-Then use e.g. manual DLL configuration with path "vcan0"
+Then use e.g. manual DLL configuration with path "vcan0" in GUI and CAN Monitor
 
