@@ -17,7 +17,7 @@ find_package(ZLIB REQUIRED) #needed by BLF library
 
 # Set include directories before dragging in core; the core needs the "precomp_header.h" and files included by it
 include_directories(
-   #for Linux libs/gettext is not added as is used from system folders
+   #for Linux libs/gettext is not added as it is used from system folders
    ../../libs/blf_driver_library
    ../../libs/dbc_driver_library/src
    ../../libs/dbc_driver_library/src/Vector
@@ -67,7 +67,7 @@ include_directories(
    ../../src/opensyde_gui_elements/tool_button
    ../../src/opensyde_gui_elements/widget
    ../../src/precompiled_headers/can_monitor
-   ../../src/project_operations/
+   ../../src/project_operations
    ../../src/system_definition
    ../../src/system_definition/node_edit/datapools
    ../../src/system_views/communication
