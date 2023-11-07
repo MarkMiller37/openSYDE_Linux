@@ -428,8 +428,6 @@ else()
    message("OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS not detected ... dragging in package")
 
    set(OPENSYDE_CORE_PROTOCOL_DRIVERS_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanBase.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanDispatcher.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealer.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvm.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvmSafe.cpp
@@ -470,13 +468,10 @@ else()
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuServiceUpdatePackage.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OsyHexFile.cpp
 
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanBase.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanDispatcher.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/stw_can.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealer.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvm.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvmSafe.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/dispatcher/C_OscIpDispatcher.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool/CDLReportEvents.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/hexfile/C_HexFile.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXComm.hpp
@@ -516,9 +511,6 @@ else()
    )
 
    set(OPENSYDE_CORE_PROTOCOL_DRIVERS_INCLUDE_DIRECTORIES
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher
-      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/dispatcher
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer
       ${CMAKE_CURRENT_SOURCE_DIR}/security
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers
@@ -534,47 +526,109 @@ else()
    )
 endif()
 
-# windows target drivers: CAN and Ethernet dispatchers
-if(OPENSYDE_CORE_SKIP_WINDOWS_DRIVERS)
-   message("OPENSYDE_CORE_SKIP_WINDOWS_DRIVERS detected ... skipping package")
+# optional: CAN and Ethernet dispatcher interface and implementation for Windows or Linux
+if(OPENSYDE_CORE_SKIP_COM_DISPATCHERS)
+   message("OPENSYDE_CORE_SKIP_COM_DISPATCHERS detected ... skipping package")
 else()
-   message("OPENSYDE_CORE_SKIP_WINDOWS_DRIVERS not detected ... dragging in package")
+   message("OPENSYDE_CORE_SKIP_COM_DISPATCHERS not detected ... dragging in package")
 
-   set (OPENSYDE_CORE_WINDOWS_DRIVERS_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_Can.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_CanDll.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_Can.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_CanDll.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.hpp
+   set (OPENSYDE_CORE_COM_DISPATCHERS_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanBase.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanDispatcher.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanBase.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanDispatcher.cpp
    )
 
-   set(OPENSYDE_CORE_WINDOWS_DRIVERS_INCLUDE_DIRECTORIES
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls
-      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_windows_win_sock
-   )
+  if (WIN32)
+     set (OPENSYDE_CORE_COM_DISPATCHERS_SOURCES
+        ${OPENSYDE_CORE_COM_DISPATCHERS_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_Can.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_CanDll.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_Can.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls/C_CanDll.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_windows_win_sock/C_OscIpDispatcherWinSock.hpp
+     )
+  else ()
+   set (OPENSYDE_CORE_COM_DISPATCHERS_SOURCES
+      ${OPENSYDE_CORE_COM_DISPATCHERS_SOURCES}
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_linux_socket_can/C_Can.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_linux_sock/C_OscIpDispatcherLinuxSock.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_linux_socket_can/C_Can.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_linux_sock/C_OscIpDispatcherLinuxSock.hpp
+     )
+
+  endif ()
+
+   set(OPENSYDE_CORE_COM_DISPATCHERS_INCLUDE_DIRECTORIES
+
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher
+      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/dispatcher
+     )
+
+   if (WIN32)
+
+      set(OPENSYDE_CORE_COM_DISPATCHERS_INCLUDE_DIRECTORIES
+       ${OPENSYDE_CORE_COM_DISPATCHERS_INCLUDE_DIRECTORIES}
+       ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_windows_stw_dlls
+       ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_windows_win_sock
+      )
+
+   else()
+
+    set(OPENSYDE_CORE_COM_DISPATCHERS_INCLUDE_DIRECTORIES
+     ${OPENSYDE_CORE_COM_DISPATCHERS_INCLUDE_DIRECTORIES}
+     ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/target_linux_socket_can
+     ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/target_linux_sock
+    )
+
+
+   endif()
+
 endif()
 
 # windows target glue layer
-if(OPENSYDE_CORE_SKIP_WINDOWS_TARGET)
-   message("OPENSYDE_CORE_SKIP_WINDOWS_TARGET detected ... skipping package")
+if(OPENSYDE_CORE_SKIP_TARGET_GLUE_LAYER)
+   message("OPENSYDE_CORE_SKIP_TARGET_GLUE_LAYER detected ... skipping package")
 else()
-   message("OPENSYDE_CORE_SKIP_WINDOWS_TARGET not detected ... dragging in package")
+   message("OPENSYDE_CORE_SKIP_TARGET_GLUE_LAYER not detected ... dragging in package")
 
-   set (OPENSYDE_CORE_WINDOWS_TARGET_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLFile.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLTasks.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLTime.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLUtils.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLFile.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLTasks.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLTime.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TGLUtils.hpp
+   if (WIN32)
+
+   set (OPENSYDE_CORE_TGL_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglFile.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTasks.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTime.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglUtils.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglFile.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTasks.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTime.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglUtils.hpp
    )
 
-   set(OPENSYDE_CORE_WINDOWS_TARGET_INCLUDE_DIRECTORIES
+   set(OPENSYDE_CORE_TGL_INCLUDE_DIRECTORIES
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows
    )
+
+   else()
+
+   set (OPENSYDE_CORE_TGL_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglFile.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTasks.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTime.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglUtils.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglFile.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTasks.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTime.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglUtils.hpp
+   )
+
+   set(OPENSYDE_CORE_TGL_INCLUDE_DIRECTORIES
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux
+   )
+
+   endif ()
+
 endif()
 
 
@@ -638,8 +692,8 @@ set(OPENSYDE_CORE_SOURCES
    ${OPENSYDE_CORE_PROJECT_HANDLING_SOURCES}
    ${OPENSYDE_CORE_PARAM_SET_SOURCES}
    ${OPENSYDE_CORE_PROTOCOL_DRIVERS_SOURCES}
-   ${OPENSYDE_CORE_WINDOWS_DRIVERS_SOURCES}
-   ${OPENSYDE_CORE_WINDOWS_TARGET_SOURCES}
+   ${OPENSYDE_CORE_COM_DISPATCHERS_SOURCES}
+   ${OPENSYDE_CORE_TGL_SOURCES}
    ${OPENSYDE_CORE_PROTOCOL_LOGGING_SOURCES}
 )
 
@@ -651,8 +705,8 @@ set(OPENSYDE_CORE_INCLUDE_DIRECTORIES
    ${OPENSYDE_CORE_PROJECT_HANDLING_INCLUDE_DIRECTORIES}
    ${OPENSYDE_CORE_PARAM_SET_INCLUDE_DIRECTORIES}
    ${OPENSYDE_CORE_PROTOCOL_DRIVERS_INCLUDE_DIRECTORIES}
-   ${OPENSYDE_CORE_WINDOWS_DRIVERS_INCLUDE_DIRECTORIES}
-   ${OPENSYDE_CORE_WINDOWS_TARGET_INCLUDE_DIRECTORIES}
+   ${OPENSYDE_CORE_COM_DISPATCHERS_INCLUDE_DIRECTORIES}
+   ${OPENSYDE_CORE_TGL_INCLUDE_DIRECTORIES}
    ${OPENSYDE_CORE_PROTOCOL_LOGGING_INCLUDE_DIRECTORIES}
 )
 

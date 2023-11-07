@@ -2,7 +2,9 @@
 
 openSYDE by STW (https://www.stw-mobile-machines.com/) is a software toolchain that supports implementation, commissioning, analysis and maintenance of control systems for mobile machines.
 
-Purpose of this fork: Try to get the tool(s) ported to desktop linux with 64bit compiler.
+Purpose of this fork: 
+* Try to get the tool(s) ported to desktop linux with 64bit compiler
+* Convert from qmake to cmake project
 
 Status:
 * GUI builds and basic workflows look useable
@@ -15,6 +17,7 @@ Status:
   * Sending between multiple instances of CAN Monitor looks good
 * SYDE Coder C not touched yet
 * GUI has not been verified to still build and behave as expected on Windows
+* GUI project was converted to cmake
 
 Used tool versions:
 * Ubuntu: 23.10

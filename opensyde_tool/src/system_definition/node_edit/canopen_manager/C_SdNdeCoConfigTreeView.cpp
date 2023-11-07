@@ -999,8 +999,8 @@ void C_SdNdeCoConfigTreeView::m_OnItemSelected(void)
                // as selected)
                this->expand(c_Current);
             }
-            this->setCurrentIndex(c_Current.child(C_SdNdeCoConfigTreeModel::hu32_INDEX_DEVICE_USE_CASE_CONFIGURATION,
-                                                  0));
+
+            this->setCurrentIndex(c_Current.model()->index(C_SdNdeCoConfigTreeModel::hu32_INDEX_DEVICE_USE_CASE_CONFIGURATION, 0));
          }
          else
          {
