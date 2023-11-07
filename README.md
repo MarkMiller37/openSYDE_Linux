@@ -15,9 +15,9 @@ Status:
   * UI looks good
   * GUI Dashboard connect services can be seen in trace Window on virtual socket CAN
   * Sending between multiple instances of CAN Monitor looks good
-* SYDE Coder C not touched yet
 * GUI has not been verified to still build and behave as expected on Windows
-* GUI project was converted to cmake
+* GUI and CAN Monitor projects were converted to cmake
+* SYDE Coder C not touched yet
 
 Used tool versions:
 * Ubuntu: 23.10
