@@ -15,7 +15,11 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg PrintSupport)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg PrintSupport)
 find_package(OpenSSL REQUIRED)
 
-# Set include directories before dragging in core; the core needs the "precomp_header.h" and files included by it
+# Include openSYDE core library
+set(OPENSYDE_CORE_SKIP_CODE_GENERATION 1)
+add_subdirectory(../../libs/opensyde_core ${CMAKE_BINARY_DIR}/opensyde_core)
+
+# Set include directories for application
 include_directories(
    #for Linux libs/gettext and libs/openssl are not added as those are used from system folders
    ../../libs/dbc_driver_library/src
@@ -108,10 +112,6 @@ include_directories(
    ../../src/user_settings
    ../../src/util
 )
-
-# Include openSYDE core library
-set(OPENSYDE_CORE_SKIP_CODE_GENERATION 1)
-add_subdirectory(../../libs/opensyde_core ${CMAKE_BINARY_DIR}/opensyde_core)
 
 set(PROJECT_SOURCES
     ../../libs/dbc_driver_library/src/Vector/DBC.h
@@ -2012,10 +2012,11 @@ add_executable(openSYDE
 
 # add required libraries
 
-# add Qt library to core, so precomp_headers.hpp will be able to find Qt headers
-# for this we need a policy
-cmake_policy(SET CMP0079 NEW)
-target_link_libraries(opensyde_core PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+# no need to invoke the Qt preprocessor steps for core sources:
+set_property(TARGET opensyde_core PROPERTY SKIP_AUTOGEN ON)
+set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/location.hh PROPERTY SKIP_AUTOGEN ON)
+set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/position.hh PROPERTY SKIP_AUTOGEN ON)
+set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/stack.hh PROPERTY SKIP_AUTOGEN ON)
 
 # add QCustomPlot as static library
 add_library(qcustomplot STATIC IMPORTED)
@@ -2023,9 +2024,8 @@ set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_S
 
 target_link_libraries(openSYDE PRIVATE opensyde_core qcustomplot OpenSSL::SSL Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::PrintSupport)
 
-# define precompiled headers for core and application
+# define precompiled headers for application
 target_precompile_headers(openSYDE PRIVATE ../../src/precompiled_headers/gui/precomp_headers.hpp)
-target_precompile_headers(opensyde_core PRIVATE ../../src/precompiled_headers/gui/precomp_headers.hpp)
 
 set_target_properties(openSYDE PROPERTIES
     # for windows create "WinMain" instead of plain "main"

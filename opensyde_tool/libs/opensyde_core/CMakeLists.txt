@@ -4,17 +4,11 @@
 #  including this file in order to keep build times low.
 # See the "OPENSYDE_CORE_SKIP_*" checks below for parts that can be skipped
 #
-# This CMakeLists.txt defined the library "opensyde_core" to be linked from the application.
-# As the openSYDE core needs the "precomp_headers.hpp" that is placed with the application the path
-#  to that file needs to be set before this CMakeLists.txt is dragged in.
+# This CMakeLists.txt defines the files from the "opensyde_core" that need to be to be linked from the application.
 #
 # Simplified example usage:
 #
 # <example>
-#
-# include_directories(
-#    ../src
-# )
 #
 # set(OPENSYDE_CORE_SKIP_ZIPPING 1)  #we do not want the zipping stuff
 #
@@ -32,7 +26,10 @@ cmake_minimum_required(VERSION 3.16)
 project("opensyde_core")
 
 # --- Project source files ---------------------------------------------------------------------------------------------
-#basic infrastructure (also requires Windows target layer, or a corresponding implementation for e.g. Linux)
+# basic infrastructure (also requires Windows target layer, or a corresponding implementation for e.g. Linux)
+# drag in SCL
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/scl)
+
 set(OPENSYDE_CORE_COMMON_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/C_OscBinaryHash.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/C_OscBinaryHash.hpp
@@ -51,17 +48,6 @@ set(OPENSYDE_CORE_COMMON_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/logging/C_OscLoggingHandler.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/md5/C_Md5Checksum.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/md5/C_Md5Checksum.hpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclChecksums.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclChecksums.hpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclDateTime.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclDateTime.hpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclDynamicArray.hpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclIniFile.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclIniFile.hpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclString.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclString.hpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclStringList.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl/C_SclStringList.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/stwerrors.h
    ${CMAKE_CURRENT_SOURCE_DIR}/stwerrors.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/stwtypes/stwtypes.h
@@ -82,7 +68,6 @@ set(OPENSYDE_CORE_COMMON_INCLUDE_DIRECTORIES
    ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/stwcompid
    ${CMAKE_CURRENT_SOURCE_DIR}/logging
    ${CMAKE_CURRENT_SOURCE_DIR}/md5
-   ${CMAKE_CURRENT_SOURCE_DIR}/scl
    ${CMAKE_CURRENT_SOURCE_DIR}/stwtypes
    ${CMAKE_CURRENT_SOURCE_DIR}/xml_parser
    ${CMAKE_CURRENT_SOURCE_DIR}/xml_parser/tinyxml2
@@ -582,33 +567,9 @@ else()
    message("OPENSYDE_CORE_SKIP_TARGET_GLUE_LAYER not detected ... dragging in package")
 
    if (WIN32)
-   set (OPENSYDE_CORE_TGL_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglFile.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglFile.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTasks.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTasks.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTime.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglTime.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglUtils.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows/TglUtils.hpp
-   )
-   set(OPENSYDE_CORE_TGL_INCLUDE_DIRECTORIES
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows
-   )
+      add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_windows)
    else()
-   set (OPENSYDE_CORE_TGL_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglFile.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglFile.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTasks.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTasks.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTime.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglTime.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglUtils.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux/TglUtils.hpp
-   )
-   set(OPENSYDE_CORE_TGL_INCLUDE_DIRECTORIES
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux
-   )
+      add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/tgl_linux)
    endif ()
 
 endif()
@@ -680,7 +641,6 @@ set(OPENSYDE_CORE_SOURCES
    ${OPENSYDE_CORE_PARAM_SET_SOURCES}
    ${OPENSYDE_CORE_PROTOCOL_DRIVERS_SOURCES}
    ${OPENSYDE_CORE_COM_DISPATCHERS_SOURCES}
-   ${OPENSYDE_CORE_TGL_SOURCES}
    ${OPENSYDE_CORE_PROTOCOL_LOGGING_SOURCES}
 )
 
@@ -693,12 +653,18 @@ set(OPENSYDE_CORE_INCLUDE_DIRECTORIES
    ${OPENSYDE_CORE_PARAM_SET_INCLUDE_DIRECTORIES}
    ${OPENSYDE_CORE_PROTOCOL_DRIVERS_INCLUDE_DIRECTORIES}
    ${OPENSYDE_CORE_COM_DISPATCHERS_INCLUDE_DIRECTORIES}
-   ${OPENSYDE_CORE_TGL_INCLUDE_DIRECTORIES}
    ${OPENSYDE_CORE_PROTOCOL_LOGGING_INCLUDE_DIRECTORIES}
 )
 
-# define library target including all sources
+# define library target including all sources (OBJECT: just drag in sources, do not really build as separate library)
 add_library(opensyde_core ${OPENSYDE_CORE_SOURCES})
+
+target_link_libraries(opensyde_core PUBLIC stw_class_library stw_target_glue_layer)
+
+# add path to "local" precompiled_header.hpp but do *not* add to public path (so application can provide its own precompiled_headers.hpp)
+target_include_directories(opensyde_core BEFORE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/precompiled_headers)
+# make precompiled_header file known
+target_precompile_headers(opensyde_core PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/precompiled_headers/precomp_headers.hpp)
 
 # add all include directories to library target and make public
 target_include_directories(opensyde_core PUBLIC ${OPENSYDE_CORE_INCLUDE_DIRECTORIES})

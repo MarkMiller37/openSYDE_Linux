@@ -15,7 +15,14 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg)
 find_package(ZLIB REQUIRED) #needed by BLF library
 
-# Set include directories before dragging in core; the core needs the "precomp_header.h" and files included by it
+# Include openSYDE core library
+set(OPENSYDE_CORE_SKIP_CODE_GENERATION  1)
+set(OPENSYDE_CORE_SKIP_ZIPPING 1)
+set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS 1)
+set(OPENSYDE_CORE_SKIP_IMPORTS 1)
+add_subdirectory(../../libs/opensyde_core ${CMAKE_BINARY_DIR}/opensyde_core)
+
+# Set include directories
 include_directories(
    #for Linux libs/gettext is not added as it is used from system folders
    ../../libs/blf_driver_library
@@ -75,13 +82,6 @@ include_directories(
    ../../src/table_base/tree_base
    ../../src/util
 )
-
-# Include openSYDE core library
-set(OPENSYDE_CORE_SKIP_CODE_GENERATION  1)
-set(OPENSYDE_CORE_SKIP_ZIPPING 1)
-set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS 1)
-set(OPENSYDE_CORE_SKIP_IMPORTS 1)
-add_subdirectory(../../libs/opensyde_core ${CMAKE_BINARY_DIR}/opensyde_core)
 
 set(PROJECT_SOURCES
     ../../libs/blf_driver_library/BLF.h
@@ -665,10 +665,14 @@ add_executable(openSYDE_CAN_Monitor
 
 # add required libraries
 
+# no need to invoke the Qt preprocessor steps for core sources:
+set_property(TARGET opensyde_core PROPERTY SKIP_AUTOGEN ON)
+set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/location.hh PROPERTY SKIP_AUTOGEN ON)
+set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/position.hh PROPERTY SKIP_AUTOGEN ON)
+set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/stack.hh PROPERTY SKIP_AUTOGEN ON)
+
 # add Qt library to core, so precomp_headers.hpp will be able to find Qt headers
 # for this we need a policy
-cmake_policy(SET CMP0079 NEW)
-target_link_libraries(opensyde_core PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 # add BLF as static library
 add_library(blf_library STATIC IMPORTED)
@@ -677,9 +681,8 @@ set_target_properties(blf_library PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_S
 
 target_link_libraries(openSYDE_CAN_Monitor PRIVATE opensyde_core blf_library ZLIB::ZLIB Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg)
 
-# define precompiled headers for core and application
+# define precompiled headers for application
 target_precompile_headers(openSYDE_CAN_Monitor PRIVATE ../../src/precompiled_headers/gui/precomp_headers.hpp)
-target_precompile_headers(opensyde_core PRIVATE ../../src/precompiled_headers/gui/precomp_headers.hpp)
 
 set_target_properties(openSYDE_CAN_Monitor PROPERTIES
     # for windows create "WinMain" instead of plain "main"
