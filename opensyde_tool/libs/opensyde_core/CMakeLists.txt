@@ -105,6 +105,8 @@ else()
    message("OPENSYDE_CORE_SKIP_IMPORTS not detected ... dragging in package")
 
    set(OPENSYDE_CORE_IMPORTS_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscEdsDcfImportMessageGroup.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscEdsDcfImportMessageGroup.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscImportEdsDcf.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscImportEdsDcf.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscImportRamView.cpp
@@ -220,8 +222,6 @@ else()
       ${CMAKE_CURRENT_SOURCE_DIR}/halc/magician/C_OscHalcMagicianGenerator.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/halc/magician/C_OscHalcMagicianUtil.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/halc/magician/C_OscHalcMagicianUtil.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscEdsDcfImportMessageGroup.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscEdsDcfImportMessageGroup.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscCanOpenEdsDeviceInfoBlock.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscCanOpenEdsDeviceInfoBlock.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/imports/C_OscCanOpenEdsFileInfoBlock.cpp
@@ -404,15 +404,15 @@ else()
    )
 endif()
 
-#communication protocol drivers basic update (openSYDE, STW Flashloader, KEFEX, Data Dealer, Dispatcher interface)
+#communication protocol drivers basic update
 if(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_BASIC)
    message("OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_BASIC detected ... skipping package")
 else()
    message("OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_BASIC not detected ... dragging in package")
 
    set(OPENSYDE_CORE_PROTOCOL_DRIVERS_BASIC_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanBase.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanDispatcher.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/basic_update/C_OscBuSequences.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/basic_update/C_OscBuSequences.hpp
    )
 
    set(OPENSYDE_CORE_PROTOCOL_DRIVERS_BASIC_INCLUDE_DIRECTORIES
@@ -431,9 +431,7 @@ else()
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuSequencesNodeStates.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuServiceUpdatePackage.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealer.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealer.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvm.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvm.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvmSafe.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPem.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemKeyInfo.cpp
@@ -447,11 +445,12 @@ else()
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/routing/C_OscRoutingCalculation.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/routing/C_OscRoutingRoute.cpp
 
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool/CDLReportEvents.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuSequences.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuSequencesNodeStates.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuServiceUpdatePackage.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/hexfile/C_HexFile.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealer.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvm.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvmSafe.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPem.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemKeyInfo.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemDatabase.hpp
@@ -469,6 +468,7 @@ else()
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update
       ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer
       ${CMAKE_CURRENT_SOURCE_DIR}/security
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/basic_update
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/routing
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update
@@ -484,93 +484,75 @@ else()
    message("OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_COMMON not detected ... dragging in package")
 
    set(OPENSYDE_CORE_PROTOCOL_DRIVERS_COMMON_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpCan.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLHexFile.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXProtocol.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool/CDLReportEvents.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool/CDLReportEvents.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLActions.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLActions.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLECUInformation.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLECUInformation.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLFlashWrite.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLFlashWrite.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLFlashWriteParameters.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLFlashWriteParameters.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLHexFile.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLProtocol.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/hexfile/C_HexFile.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPem.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanBase.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanDispatcher.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemKeyInfo.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemDatabase.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsy.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolSerialNumber.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpBase.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityRsa.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscHexFile.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscCanDispatcherOsyRouter.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscCanDispatcherOsyRouter.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolBase.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolBase.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolKfx.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolKfx.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolOsy.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolOsy.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscFlashProtocolStwFlashloader.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolSerialNumber.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsy.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpBase.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpCan.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpIp.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpIp.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolSerialNumber.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolSerialNumber.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscUpdateUtil.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComDriverBase.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComFlashloaderInformation.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComDriverFlash.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool/CDLReportEvents.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComDriverProtocol.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXComm.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComSequencesBase.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXCommConfiguration.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/routing/C_OscRoutingCalculation.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXCommunicationKEFEX.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/routing/C_OscRoutingRoute.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuSequences.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuSequencesNodeStates.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OscSuServiceUpdatePackage.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXProtocol.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/data_dealer/C_OscDataDealerNvm.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/dispatcher/C_OscIpDispatcher.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool/CDLReportEvents.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/hexfile/C_HexFile.hpp
+
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/stw_can.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpCan.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLHexFile.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLActions.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLECUInformation.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLFlashWrite.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLFlashWriteParameters.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash/CXFLProtocol.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/hexfile/C_HexFile.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/dispatcher/C_OscIpDispatcher.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanBase.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemDatabase.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemKeyInfo.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher/C_CanDispatcher.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsy.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/security/C_OscSecurityPemDatabase.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolSerialNumber.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpBase.hpp
       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscHexFile.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComDriverBase.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComDriverFlash.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComDriverProtocol.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComSequencesBase.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/routing/C_OscRoutingCalculation.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/routing/C_OscRoutingRoute.hpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update/C_OsyHexFile.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscCanDispatcherOsyRouter.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolBase.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolKfx.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscDiagProtocolOsy.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscFlashProtocolStwFlashloader.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscProtocolDriverOsyTpIp.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/C_OscUpdateUtil.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication/C_OscComFlashloaderInformation.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool/CDLReportEvents.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXComm.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXCommConfiguration.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXCommunicationKEFEX.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex/CKFXProtocol.hpp
    )
 
    set(OPENSYDE_CORE_PROTOCOL_DRIVERS_COMMON_INCLUDE_DIRECTORIES
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update
+       ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher
+       ${CMAKE_CURRENT_SOURCE_DIR}/can_dispatcher/dispatcher
+       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers
+       ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/communication
+       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash
        ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/hexfile
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex
+       ${CMAKE_CURRENT_SOURCE_DIR}/ip_dispatcher/dispatcher
        ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_pool
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_stwflash
-      ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/cmonprotocol
-      ${CMAKE_CURRENT_SOURCE_DIR}/protocol_drivers/system_update
-      ${CMAKE_CURRENT_SOURCE_DIR}/security
+       ${CMAKE_CURRENT_SOURCE_DIR}/kefex_diaglib/dl_kefex
    )
 endif()
 

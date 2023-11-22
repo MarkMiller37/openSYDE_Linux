@@ -18,6 +18,7 @@ find_package(ZLIB REQUIRED) #needed by BLF library
 # Include openSYDE core library
 set(OPENSYDE_CORE_SKIP_CODE_GENERATION  1)
 set(OPENSYDE_CORE_SKIP_ZIPPING 1)
+set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_BASIC 1)
 set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS 1)
 set(OPENSYDE_CORE_SKIP_IMPORTS 1)
 add_subdirectory(../../libs/opensyde_core ${CMAKE_BINARY_DIR}/opensyde_core)

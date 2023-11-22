@@ -17,6 +17,7 @@ find_package(OpenSSL REQUIRED)
 
 # Include openSYDE core library
 set(OPENSYDE_CORE_SKIP_CODE_GENERATION 1)
+set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_BASIC 1) #we use the full monty, not just the basic set
 add_subdirectory(../../libs/opensyde_core ${CMAKE_BINARY_DIR}/opensyde_core)
 
 # Set include directories for application
@@ -1068,6 +1069,8 @@ set(PROJECT_SOURCES
     ../../src/project_gui/system_views/dashboard/C_PuiSvDbDataElementScaling.hpp
     ../../src/project_gui/system_views/dashboard/C_PuiSvDbElementIdCrcGroup.cpp
     ../../src/project_gui/system_views/dashboard/C_PuiSvDbElementIdCrcGroup.hpp
+    ../../src/project_gui/system_views/dashboard/C_PuiSvDbWriteWidgetBase.cpp
+    ../../src/project_gui/system_views/dashboard/C_PuiSvDbWriteWidgetBase.hpp
     ../../src/project_gui/system_views/dashboard/C_PuiSvDbLabel.cpp
     ../../src/project_gui/system_views/dashboard/C_PuiSvDbLabel.hpp
     ../../src/project_gui/system_views/dashboard/C_PuiSvDbNodeDataElementConfig.cpp
@@ -1276,10 +1279,8 @@ set(PROJECT_SOURCES
     ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogDialog.cpp
     ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogDialog.hpp
     ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogDialog.ui
-    ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogTableModel.cpp
-    ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogTableModel.hpp
-    ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogTableView.cpp
-    ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogTableView.hpp
+    ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogTreeModel.cpp
+    ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939AddMessagesFromCatalogTreeView.cpp
     ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939PgPropertiesDialog.cpp
     ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939PgPropertiesDialog.hpp
     ../../src/system_definition/bus_edit/j1939/C_SdBueJ1939PgPropertiesDialog.ui
