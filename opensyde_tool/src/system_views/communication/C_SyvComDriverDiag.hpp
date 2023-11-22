@@ -61,7 +61,8 @@ public:
    int32_t SendTesterPresentToActiveNodes(void);
 
    int32_t PollDataPoolRead(const uint32_t ou32_NodeIndex, const uint8_t ou8_DataPoolIndex,
-                            const uint16_t ou16_ListIndex, const uint16_t ou16_ElementIndex);
+                            const uint16_t ou16_ListIndex, const uint16_t ou16_ElementIndex,
+                            stw::opensyde_gui_logic::C_PuiSvDbDataElementHandler * const opc_DashboardWidget);
    int32_t PollDataPoolWrite(const uint32_t ou32_NodeIndex, const uint8_t ou8_DataPoolIndex,
                              const uint16_t ou16_ListIndex, const uint16_t ou16_ElementIndex);
    int32_t PollNvmRead(const uint32_t ou32_NodeIndex, const uint8_t ou8_DataPoolIndex, const uint16_t ou16_ListIndex,
