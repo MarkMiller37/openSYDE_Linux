@@ -141,7 +141,7 @@ void C_TblTreDataElementView::InitSv(const uint32_t ou32_ViewIndex, const bool o
 //----------------------------------------------------------------------------------------------------------------------
 void C_TblTreDataElementView::Search(const QString & orc_Text)
 {
-   const bool q_StartIsEmpty = this->mc_SortModel.filterRegExp().isEmpty();
+   const bool q_StartIsEmpty = this->mc_SortModel.filterRegularExpression().pattern().isEmpty();
 
    //If it was empty and will soon not be empty: remember the expanded indices before filtering anything
    if (q_StartIsEmpty)
@@ -150,7 +150,7 @@ void C_TblTreDataElementView::Search(const QString & orc_Text)
    }
    this->mc_SortModel.SetFilter(orc_Text);
    //If it is empty after previously not being empty restore the last known state
-   if (this->mc_SortModel.filterRegExp().isEmpty())
+   if (this->mc_SortModel.filterRegularExpression().pattern().isEmpty())
    {
       if (q_StartIsEmpty == false)
       {
@@ -374,7 +374,7 @@ QModelIndex C_TblTreDataElementView::m_ManualMapFromSource(const QModelIndex & o
 {
    QModelIndex c_Retval;
 
-   if ((orc_Index.parent().isValid() == true) || (this->mc_SortModel.filterRegExp().isEmpty() == false))
+   if ((orc_Index.parent().isValid() == true) || (this->mc_SortModel.filterRegularExpression().pattern().isEmpty() == false))
    {
       c_Retval = this->mc_SortModel.mapFromSource(orc_Index);
    }

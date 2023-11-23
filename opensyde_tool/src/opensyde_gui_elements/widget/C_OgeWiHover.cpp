@@ -16,7 +16,6 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QGraphicsDropShadowEffect>
-#include <QDesktopWidget>
 #include <QApplication>
 
 #include "C_OgeWiHover.hpp"
@@ -405,12 +404,13 @@ void C_OgeWiHover::m_UpdateParentSize(void)
    }
    else
    {
-      const QDesktopWidget * const pc_Desktop = QApplication::desktop();
-      if (pc_Desktop != NULL)
+      const QScreen * const pc_Screen = QGuiApplication::screenAt(QCursor::pos());
+      if (pc_Screen != NULL)
       {
-         this->mc_ParentWidgetSize = pc_Desktop->size();
-         this->mc_ParentWidgetTopLeft = pc_Desktop->geometry().topLeft();
+         this->mc_ParentWidgetSize = pc_Screen->size();
+         this->mc_ParentWidgetTopLeft = pc_Screen->geometry().topLeft();
       }
+
       this->ms32_OffsetHorizontal = ms32_SHADOW_WIDTH;
       this->ms32_OffsetVertical = ms32_TOP_BORDER_AREA + ms32_SHADOW_WIDTH;
       this->ms32_OffsetHorizontalRight = ms32_SHADOW_WIDTH;

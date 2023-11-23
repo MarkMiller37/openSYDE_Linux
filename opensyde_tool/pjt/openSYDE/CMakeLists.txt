@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
-project(openSYDE VERSION 0.1 LANGUAGES CXX)
+project(openSYDE)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -9,11 +9,19 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# prevent conflicts with DBC library that also uses e.g. "signal"
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg PrintSupport)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg PrintSupport)
+find_package(Qt6 COMPONENTS Core Widgets SvgWidgets PrintSupport)
+if (NOT Qt6_FOUND)
+   message(FATAL_ERROR "Qt6 not found.")
+endif()
+
+# use the openSSL package installed on the system
 find_package(OpenSSL REQUIRED)
+if (NOT Qt6_FOUND)
+   message(FATAL_ERROR "OpenSSL not found.")
+endif()
 
 # Include openSYDE core library
 set(OPENSYDE_CORE_SKIP_CODE_GENERATION 1)
@@ -2007,6 +2015,12 @@ set(PROJECT_SOURCES
 # create code from qrc and add to sources
 qt_add_resources(PROJECT_SOURCES ../../src/application.qrc)
 
+# By default "install" will clear the paths to the needed Qt DLLs from the binary on Linux.
+# This may or may not be a good idea depending on deployment strategy.
+# Deactivate this behavior. Needs to be set before add_executable.
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# add all sources to binary
 add_executable(openSYDE
     ${PROJECT_SOURCES}
 )
@@ -2021,9 +2035,9 @@ set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/stack.hh PROPER
 
 # add QCustomPlot as static library
 add_library(qcustomplot STATIC IMPORTED)
-set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_linux.a)
 
-target_link_libraries(openSYDE PRIVATE opensyde_core qcustomplot OpenSSL::SSL Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::PrintSupport)
+set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_linux.a)
+target_link_libraries(openSYDE PRIVATE opensyde_core qcustomplot OpenSSL::SSL Qt::Core Qt::Widgets Qt::SvgWidgets Qt::PrintSupport)
 
 # define precompiled headers for application
 target_precompile_headers(openSYDE PRIVATE ../../src/precompiled_headers/gui/precomp_headers.hpp)

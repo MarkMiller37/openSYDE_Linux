@@ -115,7 +115,7 @@ bool C_TblTreDataElementSortFilter::filterAcceptsRow(const int32_t os32_SourceRo
 bool C_TblTreDataElementSortFilter::m_Contains(const QModelIndex & orc_Index) const
 {
    const QString c_Name = sourceModel()->data(orc_Index, static_cast<int32_t>(Qt::DisplayRole)).toString();
-   const bool q_Retval = c_Name.contains(filterRegExp());
+   const bool q_Retval = c_Name.contains(filterRegularExpression());
 
    return q_Retval;
 }

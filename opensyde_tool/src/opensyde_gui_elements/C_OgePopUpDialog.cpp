@@ -16,7 +16,6 @@
 #include <QGraphicsColorizeEffect>
 #include <QGraphicsDropShadowEffect>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QScreen>
 #include <QWindow>
 #include <QDebug>
@@ -250,7 +249,7 @@ void C_OgePopUpDialog::HandleMouseMoveEvent(const QMouseEvent * const opc_Event)
 //----------------------------------------------------------------------------------------------------------------------
 void C_OgePopUpDialog::SetSize(const QSize & orc_Size)
 {
-   const QSize c_Size = QApplication::screens()[C_OgePopUpDialog::ApplicationRunningScreen()] -> size();
+   const QSize c_Size = QApplication::screenAt(QCursor::pos())->size();
    const int32_t s32_ScreenWidth = c_Size.width();
    const int32_t s32_ScreenHeight = c_Size.height();
 
@@ -340,22 +339,6 @@ void C_OgePopUpDialog::HideOverlay(void) const
 void C_OgePopUpDialog::SetNotifyAndBlockClose(const bool oq_NotifyAndBlockClose)
 {
    this->mq_NotifyAndBlockClose = oq_NotifyAndBlockClose;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-/*! \brief  Function call is to get the main widget screen index
-
-   We are getting screen index using QApplication::activeWindow() function
-
-   \return
-   Returning integer value (screen index)
-*/
-//----------------------------------------------------------------------------------------------------------------------
-int32_t C_OgePopUpDialog::ApplicationRunningScreen() const
-{
-   const QDesktopWidget c_Widget;
-
-   return c_Widget.screenNumber(QApplication::activeWindow());
 }
 
 //----------------------------------------------------------------------------------------------------------------------

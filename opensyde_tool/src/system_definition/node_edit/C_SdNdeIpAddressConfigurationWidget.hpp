@@ -17,7 +17,6 @@
 //lint -save -e451
 #include <QLineEdit>
 //lint -restore
-#include <QRegExpValidator>
 #include "stwtypes.hpp"
 #include "C_OgePopUpDialog.hpp"
 

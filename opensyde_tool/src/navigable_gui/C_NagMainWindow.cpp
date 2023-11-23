@@ -18,7 +18,6 @@
 
 #include <QApplication>
 #include <QFileInfo>
-#include <QDesktopWidget>
 #include <QMimeData>
 
 #include "C_NagMainWindow.hpp"

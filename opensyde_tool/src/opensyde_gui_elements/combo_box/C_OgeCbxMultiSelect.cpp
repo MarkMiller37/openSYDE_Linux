@@ -15,7 +15,6 @@
 #include <QVBoxLayout>
 #include <QStylePainter>
 #include <QApplication>
-#include <QDesktopWidget>
 
 #include "stwtypes.hpp"
 
@@ -196,7 +195,7 @@ void C_OgeCbxMultiSelect::showPopup()
 {
    QRect c_Rect;
    const int32_t s32_ListHeight = (this->mpc_ListWidget->count() * this->mpc_ListWidget->sizeHintForRow(0)) + 2;
-   const QRect c_ScreenRect = QApplication::desktop()->screenGeometry(this);
+   const QRect c_ScreenRect = QGuiApplication::screenAt(this->pos())->geometry();
    const QPoint c_Above = this->mapToGlobal(QPoint(0, 0));
    const QPoint c_Below = this->mapToGlobal(QPoint(0, this->geometry().height()));
    const int32_t s32_BelowHeight = std::min(abs(c_ScreenRect.bottom() - c_Below.y()), s32_ListHeight);

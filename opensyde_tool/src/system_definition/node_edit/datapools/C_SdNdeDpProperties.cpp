@@ -645,7 +645,7 @@ void C_SdNdeDpProperties::m_OkClicked(void)
          tgl_assert(c_Version.size() <= 9);
          if (c_Version.size() <= 9)
          {
-            const QRegExp c_Separators("(\\.|r)");
+            const QRegularExpression c_Separators("(\\.|r)");
             const QStringList c_Parts = c_Version.remove(0, 1).split(c_Separators);
             tgl_assert(c_Parts.size() == 3);
             if (c_Parts.size() == 3)

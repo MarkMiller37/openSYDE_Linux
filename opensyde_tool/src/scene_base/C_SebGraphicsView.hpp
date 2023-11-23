@@ -115,7 +115,7 @@ private:
    bool mq_ViewPortPosVerSet;
    bool mq_ScrollingActive;
    bool mq_DarkMode;
-   QMouseEvent mc_LastMouseEvent;
+   QPoint mc_LastMouseEventPos;
    QPointF mc_DragMoveDistance;
 
    // zoom functionality

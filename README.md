@@ -5,6 +5,7 @@ openSYDE by STW (https://www.stw-mobile-machines.com/) is a software toolchain t
 Purpose of this fork: 
 * Try to get the tool(s) ported to desktop linux with 64bit compiler
 * Convert from qmake to cmake project
+* Upgrade to Qt 6.6
 
 Status:
 * GUI builds and basic workflows look useable
@@ -21,8 +22,8 @@ Status:
 
 Used tool versions:
 * Ubuntu: 23.10
-* Qt Creator: 10.0.2
-* Qt: 5.15.10
+* Qt Creator: 11.0.3
+* Qt: 6.6.0
 * GCC: Ubuntu 13.2.0-4ubuntu3 (64bit)
 
 Used libraries:
@@ -32,9 +33,12 @@ Used libraries:
   * dragging the sources in directly caused issues as the sources use Qt macros which are deactivated in the GUI build via "no_keywords"
   * See pjt/QCustomPlot_library
   * copied result to libs/qcustomplot
+  * Upgraded to V2.1.1 (as 2.0.1 is not compatible with Qt6)
 * BLF (for CAN Monitor): Same approach as QCustomPlot (adding the sources caused conflicts with DBC as files have the same names).
 
 Known issues:
+* A few changes needed to be made due to Qt API incompatibilities between V5 and V6
+  * Inspection and regression test needed
 * tooltips behave oddly
 * positions of some widgets are off in the UI
 * calling external tools:

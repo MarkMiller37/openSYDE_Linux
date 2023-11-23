@@ -2084,18 +2084,18 @@ void C_SdBueMessageSelectorTreeWidget::startDrag(const Qt::DropActions oc_Suppor
    Mime data for drag event
 */
 //----------------------------------------------------------------------------------------------------------------------
-QMimeData * C_SdBueMessageSelectorTreeWidget::mimeData(const QList<QTreeWidgetItem *> oc_Items) const
+QMimeData * C_SdBueMessageSelectorTreeWidget::mimeData(const QList<QTreeWidgetItem *> & orc_Items) const
 {
    QMimeData * pc_Retval = NULL;
 
-   if ((oc_Items.size() > 0) && (this->mimeTypes().size() > 2))
+   if ((orc_Items.size() > 0) && (this->mimeTypes().size() > 2))
    {
       std::vector<C_OscCanMessageIdentificationIndices> c_MessageIds;
       std::vector<uint32_t> c_SignalIndices;
       bool q_SignalsOnly = true;
 
       //Get selected indices
-      for (QList<QTreeWidgetItem *>::const_iterator c_ItItem = oc_Items.begin(); c_ItItem != oc_Items.end();
+      for (QList<QTreeWidgetItem *>::const_iterator c_ItItem = orc_Items.begin(); c_ItItem != orc_Items.end();
            ++c_ItItem)
       {
          QTreeWidgetItem * const pc_Child = *c_ItItem;

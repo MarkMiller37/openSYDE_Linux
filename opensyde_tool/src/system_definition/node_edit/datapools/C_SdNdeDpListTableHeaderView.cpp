@@ -81,24 +81,6 @@ C_SdNdeDpListTableHeaderView::~C_SdNdeDpListTableHeaderView(void)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-/*! \brief   Overwritten view options event slot
-
-   \return
-   Currently active view options
-*/
-//----------------------------------------------------------------------------------------------------------------------
-QStyleOptionViewItem C_SdNdeDpListTableHeaderView::viewOptions(void) const
-{
-   //Seems to ignore drawing delegate which might be the only use for this virtual function
-   QStyleOptionViewItem c_Retval = QHeaderView::viewOptions();
-
-   c_Retval.decorationAlignment = Qt::AlignVCenter | Qt::AlignRight;
-   c_Retval.decorationPosition = QStyleOptionViewItem::Right;
-
-   return c_Retval;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Overwritten paint section event slot
 
    Here: Draw icon manually
@@ -135,7 +117,7 @@ void C_SdNdeDpListTableHeaderView::paintSection(QPainter * const opc_Painter, co
    \param[in,out] opc_Event Event identification and information
 */
 //----------------------------------------------------------------------------------------------------------------------
-void C_SdNdeDpListTableHeaderView::enterEvent(QEvent * const opc_Event)
+void C_SdNdeDpListTableHeaderView::enterEvent(QEnterEvent * const opc_Event)
 {
    QHeaderView::enterEvent(opc_Event);
    C_OgeWiUtil::h_ApplyStylesheetProperty(this, "IsHovered", true);

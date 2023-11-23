@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(openSYDE_CAN_Monitor VERSION 0.1 LANGUAGES CXX)
+project(openSYDE_CAN_Monitor)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -9,10 +9,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# prevent conflicts with DBC library that also uses e.g. "signal"
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg)
+find_package(Qt6 COMPONENTS Core Widgets SvgWidgets PrintSupport)
+if (NOT Qt6_FOUND)
+   message(FATAL_ERROR "Qt6 not found.")
+endif()
 find_package(ZLIB REQUIRED) #needed by BLF library
 
 # Include openSYDE core library
@@ -660,6 +663,12 @@ set(PROJECT_SOURCES
 # create code from qrc and add to sources
 qt_add_resources(PROJECT_SOURCES ../../src/can_monitor/cam_application.qrc)
 
+# By default "install" will clear the paths to the needed Qt DLLs from the binary on Linux.
+# This may or may not be a good idea depending on deployment strategy.
+# Deactivate this behavior. Needs to be set before add_executable.
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# add all sources to binary
 add_executable(openSYDE_CAN_Monitor
     ${PROJECT_SOURCES}
 )
@@ -672,15 +681,12 @@ set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/location.hh PRO
 set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/position.hh PROPERTY SKIP_AUTOGEN ON)
 set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/stack.hh PROPERTY SKIP_AUTOGEN ON)
 
-# add Qt library to core, so precomp_headers.hpp will be able to find Qt headers
-# for this we need a policy
-
 # add BLF as static library
 add_library(blf_library STATIC IMPORTED)
 set_target_properties(blf_library PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/blf_driver_library/libvector_blf_linux.a)
 
 
-target_link_libraries(openSYDE_CAN_Monitor PRIVATE opensyde_core blf_library ZLIB::ZLIB Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg)
+target_link_libraries(openSYDE_CAN_Monitor PRIVATE opensyde_core blf_library ZLIB::ZLIB Qt::Core Qt::Widgets Qt::SvgWidgets)
 
 # define precompiled headers for application
 target_precompile_headers(openSYDE_CAN_Monitor PRIVATE ../../src/precompiled_headers/gui/precomp_headers.hpp)

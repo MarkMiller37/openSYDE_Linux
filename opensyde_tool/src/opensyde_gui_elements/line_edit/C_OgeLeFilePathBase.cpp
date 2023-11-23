@@ -90,7 +90,7 @@ void C_OgeLeFilePathBase::SetPath(const QString & orc_New, const QString & orc_R
    }
 
    // make sure last known cursor position is not out of range
-   this->ms32_LastKnownCursorPos = std::min(static_cast<int32_t>(this->ms32_LastKnownCursorPos),
+   this->ms32_LastKnownCursorPos = std::min(static_cast<qsizetype>(this->ms32_LastKnownCursorPos),
                                             this->mc_Path.size());
 }
 

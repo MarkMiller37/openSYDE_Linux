@@ -33,10 +33,9 @@ public:
    ~C_SdNdeDpListTableHeaderView(void) override;
 
 protected:
-   QStyleOptionViewItem viewOptions(void) const override;
    void paintSection(QPainter * const opc_Painter, const QRect & orc_Rect,
                      const int32_t os32_LogicalIndex) const override;
-   void enterEvent(QEvent * const opc_Event) override;
+   void enterEvent(QEnterEvent * const opc_Event) override;
    void leaveEvent(QEvent * const opc_Event) override;
 
 private:
