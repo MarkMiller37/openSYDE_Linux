@@ -730,7 +730,7 @@ void C_NagMainWidget::m_OnOpenProj(void)
    if (C_PopUtil::h_AskUserToContinue(this) == true)
    {
       QString c_Folder = "";
-      const QString c_Suffix = "*.syde;*.syde_sp";
+      const QString c_Suffix = "*.syde *.syde_sp";
       const QString c_Filter = static_cast<QString>(C_GtGetText::h_GetText("openSYDE project")) + " (" + c_Suffix + ")";
 
       C_UsHandler::h_GetInstance()->GetMostRecentFolder(c_Folder);
