@@ -295,6 +295,7 @@ C_SclString stw::tgl::TglExtractFileExtension(const C_SclString & orc_Path)
    Extract a file extension separated from the file name by a ".".
    If there is more than one "." in the file path the last one will be used.
    Then replace it with the new one.
+   If there is no ".", add the new extension to the end of the string.
 
    \param[in]     orc_Path       full file path (or just name with extension)
    \param[in]     orc_Extension  new extension (must be specified with the ".")
@@ -311,10 +312,10 @@ C_SclString stw::tgl::TglChangeFileExtension(const C_SclString & orc_Path, const
    u32_Pos = c_NewPath.LastPos(".");
    if (u32_Pos != 0U)
    {
-      //there is a file extension !
+      //there is a file extension, remove it !
       c_NewPath = c_NewPath.Delete(u32_Pos, INT_MAX); //remove everything from and including the "."
-      c_NewPath += orc_Extension;
    }
+   c_NewPath += orc_Extension;
    return c_NewPath;
 }
 
@@ -335,7 +336,7 @@ C_SclString stw::tgl::TglGetExePath(void)
 
     c_VecPath.resize(1, 0);
 
-    sprintf(acn_Arg, "/proc/%d/exe", getpid());
+    std::sprintf(acn_Arg, "/proc/%d/exe", getpid());
     do
     {
       c_VecPath.resize(c_VecPath.size() + PATH_MAX, 0);

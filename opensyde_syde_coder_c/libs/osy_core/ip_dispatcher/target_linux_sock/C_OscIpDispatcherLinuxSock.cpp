@@ -1211,3 +1211,19 @@ int32_t C_OscIpDispatcherLinuxSock::ReadUdp(std::vector<uint8_t> & orc_Data, uin
 
    return s32_Return;
 }
+
+//-----------------------------------------------------------------------------
+/*!
+      \brief   Load optional configuration file
+
+      Load configuration options from configuration file. Those might be platform specific (or not present at all).
+      Here: no options for Linux targets
+
+      \param[in]  orc_FileLocation   path to file with configuration options
+   */
+//-----------------------------------------------------------------------------
+void C_OscIpDispatcherLinuxSock::LoadConfigFile(const C_SclString &orc_FileLocation)
+{
+   (void)orc_FileLocation;
+   return;
+}
