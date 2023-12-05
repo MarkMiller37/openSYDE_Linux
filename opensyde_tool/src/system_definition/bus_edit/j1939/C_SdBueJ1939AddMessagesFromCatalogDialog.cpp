@@ -693,8 +693,8 @@ void C_SdBueJ1939AddMessagesFromCatalogDialog::m_SetupContextMenu(void)
 
    // select all action
    this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Select all visible"),
-                                    this, &C_SdBueJ1939AddMessagesFromCatalogDialog::m_SelectAllMessages,
-                                    static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A));
+                                    static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A), this,
+                                    &C_SdBueJ1939AddMessagesFromCatalogDialog::m_SelectAllMessages);
    this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Unselect all"),
                                     this->mpc_Ui->pc_TreeView,
                                     &C_SdBueJ1939AddMessagesFromCatalogTreeView::UnSelectAllMessages);

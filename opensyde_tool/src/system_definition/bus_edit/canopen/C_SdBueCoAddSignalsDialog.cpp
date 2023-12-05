@@ -295,9 +295,9 @@ void C_SdBueCoAddSignalsDialog::m_SetupContextMenu(void)
    // select all action
    this->mpc_ContextMenu->addSeparator();
    this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Select all"),
+                                    static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A),
                                     this->mpc_Ui->pc_TreeView,
-                                    &C_SdBueCoAddSignalsView::selectAll,
-                                    static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A));
+                                    &C_SdBueCoAddSignalsView::selectAll);
 
    this->setContextMenuPolicy(Qt::CustomContextMenu);
    connect(this, &C_SdBueCoAddSignalsDialog::customContextMenuRequested, this,

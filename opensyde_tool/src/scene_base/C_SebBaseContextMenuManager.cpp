@@ -44,22 +44,22 @@ C_SebBaseContextMenuManager::C_SebBaseContextMenuManager() :
    mpc_ActiveItem(NULL)
 {
    // add all actions
-   this->mpc_ActionCut = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText(
-                                                           "Cut"), this, &C_SebBaseContextMenuManager::m_Cut,
+   this->mpc_ActionCut = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText("Cut"),
                                                         static_cast<int32_t>(Qt::CTRL) +
-                                                        static_cast<int32_t>(Qt::Key_X));
+                                                            static_cast<int32_t>(Qt::Key_X),
+                                                        this, &C_SebBaseContextMenuManager::m_Cut);
 
-   this->mpc_ActionCopy = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText(
-                                                            "Copy"), this, &C_SebBaseContextMenuManager::m_Copy,
+   this->mpc_ActionCopy = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText("Copy"),
                                                          static_cast<int32_t>(Qt::CTRL) +
-                                                         static_cast<int32_t>(Qt::Key_C));
+                                                             static_cast<int32_t>(Qt::Key_C),
+                                                         this, &C_SebBaseContextMenuManager::m_Copy);
 
    this->mpc_ActionCopySeparator = this->mc_ContextMenu.addSeparator();
 
-   this->mpc_ActionPaste = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText(
-                                                             "Paste"), this, &C_SebBaseContextMenuManager::m_Paste,
+   this->mpc_ActionPaste = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText("Paste"),
                                                           static_cast<int32_t>(Qt::CTRL) +
-                                                          static_cast<int32_t>(Qt::Key_V));
+                                                              static_cast<int32_t>(Qt::Key_V),
+                                                          this, &C_SebBaseContextMenuManager::m_Paste);
 
    this->mpc_ActionSetupStyle = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText(
                                                                   "Setup Style"), this,
@@ -114,9 +114,9 @@ C_SebBaseContextMenuManager::C_SebBaseContextMenuManager() :
 
    this->mpc_ActionDeleteSeparator = this->mc_ContextMenu.addSeparator();
 
-   this->mpc_ActionDelete = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText("Delete"), this,
-                                                           &C_SebBaseContextMenuManager::m_Delete,
-                                                           static_cast<int32_t>(Qt::Key_Delete));
+   this->mpc_ActionDelete = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText("Delete"),
+                                                           static_cast<int32_t>(Qt::Key_Delete), this,
+                                                           &C_SebBaseContextMenuManager::m_Delete);
 
    // connect signal to detect closing the context menu
    connect(&this->mc_ContextMenu, &C_OgeContextMenu::aboutToHide,

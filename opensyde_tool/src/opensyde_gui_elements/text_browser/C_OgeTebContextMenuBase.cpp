@@ -96,9 +96,8 @@ void C_OgeTebContextMenuBase::m_SetupContextMenu(const QPoint & orc_Pos)
    if (this->mq_LinkOnly == false)
    {
       this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Copy"),
-                                       this,
-                                       &C_OgeTebContextMenuBase::copy,
-                                       static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_C));
+                                       static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_C), this,
+                                       &C_OgeTebContextMenuBase::copy);
    }
 
    this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Copy Link Location"),
@@ -110,9 +109,8 @@ void C_OgeTebContextMenuBase::m_SetupContextMenu(const QPoint & orc_Pos)
    if (this->mq_LinkOnly == false)
    {
       this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Select All"),
-                                       this,
-                                       &C_OgeTebContextMenuBase::selectAll,
-                                       static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A));
+                                       static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A), this,
+                                       &C_OgeTebContextMenuBase::selectAll);
    }
 
    // store link text for copying
