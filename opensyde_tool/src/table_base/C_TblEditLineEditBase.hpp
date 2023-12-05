@@ -38,7 +38,7 @@ public:
    int32_t GetValueAsVariant(QVariant & orc_Value, QString & orc_ErrorDescription) const;
 
 private:
-   QVariant::Type me_Type;
+   QMetaType::Type me_Type;
    QString mc_MinValue;
    QString mc_MaxValue;
 

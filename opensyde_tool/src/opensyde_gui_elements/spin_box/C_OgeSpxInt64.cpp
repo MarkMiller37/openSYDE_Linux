@@ -99,11 +99,11 @@ void C_OgeSpxInt64::SetValue(const QVariant & orc_Value, const bool oq_AllowValu
    m_ApplyMinMax(c_Value);
    if (mq_IsUnsigned == true)
    {
-      if (c_Value.type() == QVariant::ULongLong)
+      if (c_Value.typeId() == QMetaType::ULongLong)
       {
          c_ValueStr = QString::number(c_Value.toULongLong());
       }
-      else if (c_Value.type() == QVariant::UInt)
+      else if (c_Value.typeId() == QMetaType::UInt)
       {
          c_ValueStr = QString::number(c_Value.toUInt());
       }
@@ -114,11 +114,11 @@ void C_OgeSpxInt64::SetValue(const QVariant & orc_Value, const bool oq_AllowValu
    }
    else
    {
-      if (c_Value.type() == QVariant::LongLong)
+      if (c_Value.typeId() == QMetaType::LongLong)
       {
          c_ValueStr = QString::number(c_Value.toLongLong());
       }
-      else if (c_Value.type() == QVariant::Int)
+      else if (c_Value.typeId() == QMetaType::Int)
       {
          c_ValueStr = QString::number(c_Value.toInt());
       }
@@ -687,9 +687,9 @@ QVariant C_OgeSpxInt64::m_PrepareValue(const QVariant & orc_Value) const
 {
    QVariant c_Retval;
 
-   switch (orc_Value.type()) //lint !e788 //not all cases handled here explicitly
+   switch (orc_Value.typeId()) //lint !e788 //not all cases handled here explicitly
    {
-   case QVariant::ULongLong:
+   case QMetaType::ULongLong:
       if (this->mq_IsUnsigned == true)
       {
          c_Retval = static_cast<qulonglong>(orc_Value.toULongLong());
@@ -699,7 +699,7 @@ QVariant C_OgeSpxInt64::m_PrepareValue(const QVariant & orc_Value) const
          c_Retval = static_cast<qlonglong>(orc_Value.toULongLong());
       }
       break;
-   case QVariant::UInt:
+   case QMetaType::UInt:
       if (this->mq_IsUnsigned == true)
       {
          c_Retval = static_cast<qulonglong>(orc_Value.toUInt());
@@ -709,7 +709,7 @@ QVariant C_OgeSpxInt64::m_PrepareValue(const QVariant & orc_Value) const
          c_Retval = static_cast<qlonglong>(orc_Value.toUInt());
       }
       break;
-   case QVariant::LongLong:
+   case QMetaType::LongLong:
       if (this->mq_IsUnsigned == true)
       {
          c_Retval = static_cast<qulonglong>(orc_Value.toLongLong());
@@ -719,7 +719,7 @@ QVariant C_OgeSpxInt64::m_PrepareValue(const QVariant & orc_Value) const
          c_Retval = static_cast<qlonglong>(orc_Value.toLongLong());
       }
       break;
-   case QVariant::Int:
+   case QMetaType::Int:
       if (this->mq_IsUnsigned == true)
       {
          c_Retval = static_cast<qulonglong>(orc_Value.toInt());
@@ -729,7 +729,7 @@ QVariant C_OgeSpxInt64::m_PrepareValue(const QVariant & orc_Value) const
          c_Retval = static_cast<qlonglong>(orc_Value.toInt());
       }
       break;
-   case QVariant::Double:
+   case QMetaType::Double:
       if (this->mq_IsUnsigned == true)
       {
          c_Retval = static_cast<qulonglong>(orc_Value.toDouble());

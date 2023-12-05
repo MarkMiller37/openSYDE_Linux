@@ -190,21 +190,21 @@ void C_OgeWiSpinBoxGroup::SetValue(const QVariant & orc_Value) const
    else
    {
       float64_t f64_Value;
-      switch (orc_Value.type()) //lint !e788  //we do not need to handle all types here
+      switch (orc_Value.typeId()) //lint !e788  //we do not need to handle all types here
       {
-      case QVariant::Int:
+      case QMetaType::Int:
          f64_Value = static_cast<float64_t>(orc_Value.toInt());
          break;
-      case QVariant::UInt:
+      case QMetaType::UInt:
          f64_Value = static_cast<float64_t>(orc_Value.toUInt());
          break;
-      case QVariant::LongLong:
+      case QMetaType::LongLong:
          f64_Value = static_cast<float64_t>(orc_Value.toLongLong());
          break;
-      case QVariant::ULongLong:
+      case QMetaType::ULongLong:
          f64_Value = static_cast<float64_t>(orc_Value.toULongLong());
          break;
-      case QVariant::Double:
+      case QMetaType::Double:
          f64_Value = orc_Value.toDouble();
          break;
       default:

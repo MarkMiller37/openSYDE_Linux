@@ -43,7 +43,7 @@ using namespace stw::opensyde_gui_logic;
 //----------------------------------------------------------------------------------------------------------------------
 C_TblEditLineEditBase::C_TblEditLineEditBase(QWidget * const opc_Parent) :
    C_OgeLeToolTipBase(opc_Parent),
-   me_Type(QVariant::Invalid)
+   me_Type(QMetaType::UnknownType)
 {
 }
 
@@ -58,7 +58,7 @@ C_TblEditLineEditBase::C_TblEditLineEditBase(QWidget * const opc_Parent) :
 //----------------------------------------------------------------------------------------------------------------------
 void C_TblEditLineEditBase::SetFromVariant(const QVariant & orc_DisplayValue, const QVariant & orc_EditValue)
 {
-   this->me_Type = orc_EditValue.type();
+   this->me_Type = static_cast<QMetaType::Type>(orc_EditValue.typeId());
    this->setText(orc_DisplayValue.toString());
 }
 

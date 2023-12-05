@@ -108,10 +108,10 @@ QWidget * C_SyvDaPeUpdateModeTableDelegate::createEditor(QWidget * const opc_Par
          {
             const QVariant c_Data = orc_Index.data(static_cast<int32_t>(Qt::EditRole));
             const QVariant c_Max = orc_Index.data(ms32_USER_ROLE_INTERACTION_MAXIMUM_VALUE);
-            if (c_Data.type() == QVariant::Type::Double)
+            if (c_Data.typeId() == QMetaType::Double)
             {
                C_OgeSpxFactorTable * const pc_SpinBox = new C_OgeSpxFactorTable(opc_Parent);
-               if (c_Max.type() == QVariant::Type::Double)
+               if (c_Max.typeId() == QMetaType::Double)
                {
                   //Factor needs to be above 0
                   pc_SpinBox->SetMinimumCustom(C_OgeSpxFactor::mhf64_FACTOR_MIN);
@@ -119,10 +119,10 @@ QWidget * C_SyvDaPeUpdateModeTableDelegate::createEditor(QWidget * const opc_Par
                }
                pc_Retval = pc_SpinBox;
             }
-            else if ((c_Data.type() == QVariant::Type::Int) || (c_Data.type() == QVariant::Type::LongLong))
+            else if ((c_Data.typeId() == QMetaType::Int) || (c_Data.typeId() == QMetaType::LongLong))
             {
                C_OgeSpxInt64FactorTable * const pc_SpinBox = new C_OgeSpxInt64FactorTable(opc_Parent, false);
-               if (c_Max.type() == QVariant::Type::LongLong)
+               if (c_Max.typeId() == QMetaType::LongLong)
                {
                   const QVariant c_Min(1LL);
                   pc_SpinBox->SetMinimum(c_Min);
@@ -130,10 +130,10 @@ QWidget * C_SyvDaPeUpdateModeTableDelegate::createEditor(QWidget * const opc_Par
                }
                pc_Retval = pc_SpinBox;
             }
-            else if ((c_Data.type() == QVariant::Type::UInt) || (c_Data.type() == QVariant::Type::ULongLong))
+            else if ((c_Data.typeId() == QMetaType::UInt) || (c_Data.typeId() == QMetaType::ULongLong))
             {
                C_OgeSpxInt64FactorTable * const pc_SpinBox = new C_OgeSpxInt64FactorTable(opc_Parent, true);
-               if (c_Max.type() == QVariant::Type::ULongLong)
+               if (c_Max.typeId() == QMetaType::ULongLong)
                {
                   const QVariant c_Min(1ULL);
                   pc_SpinBox->SetMinimum(c_Min);
@@ -187,21 +187,21 @@ void C_SyvDaPeUpdateModeTableDelegate::setEditorData(QWidget * const opc_Editor,
          if (pc_DoubleSpinBox != NULL)
          {
             const QVariant c_Data = orc_Index.data(static_cast<int32_t>(Qt::EditRole));
-            switch (c_Data.type()) //lint !e788 //not all types required
+            switch (c_Data.typeId()) //lint !e788 //not all types required
             {
-            case QVariant::Double:
+            case QMetaType::Double:
                pc_DoubleSpinBox->setValue(c_Data.toDouble());
                break;
-            case QVariant::Int:
+            case QMetaType::Int:
                pc_DoubleSpinBox->setValue(static_cast<float64_t>(c_Data.toInt()));
                break;
-            case QVariant::UInt:
+            case QMetaType::UInt:
                pc_DoubleSpinBox->setValue(static_cast<float64_t>(c_Data.toUInt()));
                break;
-            case QVariant::LongLong:
+            case QMetaType::LongLong:
                pc_DoubleSpinBox->setValue(static_cast<float64_t>(c_Data.toLongLong()));
                break;
-            case QVariant::ULongLong:
+            case QMetaType::ULongLong:
                pc_DoubleSpinBox->setValue(static_cast<float64_t>(c_Data.toULongLong()));
                break;
             default:

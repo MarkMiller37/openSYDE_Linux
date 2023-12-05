@@ -967,7 +967,7 @@ bool C_SdNdeDpListTableModel::setData(const QModelIndex & orc_Index, const QVari
          {
             const uint32_t u32_Index = static_cast<uint32_t>(orc_Index.row());
             const C_SdNdeDpListTableModel::E_Columns e_Col = this->ColumnToEnum(orc_Index.column());
-            if (orc_Value.type() == QVariant::Int)
+            if (orc_Value.typeId() == QMetaType::Int)
             {
                const Qt::CheckState e_CheckedState = static_cast<Qt::CheckState>(orc_Value.toInt());
                bool q_Val;

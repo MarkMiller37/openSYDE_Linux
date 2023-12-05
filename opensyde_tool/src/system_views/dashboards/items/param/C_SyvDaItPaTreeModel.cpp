@@ -1811,7 +1811,7 @@ QVariant C_SyvDaItPaTreeModel::data(const QModelIndex & orc_Index, const int32_t
          //Default
          c_Font = mc_STYLE_GUIDE_FONT_REGULAR_11;
          if ((data(orc_Index,
-                   static_cast<int32_t>(Qt::EditRole)).type() == QVariant::Point) &&
+                   static_cast<int32_t>(Qt::EditRole)).typeId() == QMetaType::QPoint) &&
              (flags(orc_Index).testFlag(Qt::ItemIsEditable) == true))
          {
             //Special link handling

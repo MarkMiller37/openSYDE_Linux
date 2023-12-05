@@ -491,7 +491,7 @@ void C_SdNdeDpListTableDelegate::paint(QPainter * const opc_Painter, const QStyl
    if (orc_Index.isValid() == true)
    {
       //Special handling for boolean to draw checked symbol instead
-      if (orc_Index.data(static_cast<int32_t>(Qt::EditRole)).type() == QVariant::Type::Bool)
+      if (orc_Index.data(static_cast<int32_t>(Qt::EditRole)).typeId() == QMetaType::Bool)
       {
          bool q_Edit;
          if (this->ms32_EditCount > 0)

@@ -449,7 +449,7 @@ QWidget * C_SdNdeDpUtil::h_CreateGenericEditor(QWidget * const opc_Parent, const
        (orc_Min.GetArray() == orc_Max.GetArray()))
    {
       const QVariant c_Data = orc_Index.data(static_cast<int32_t>(Qt::EditRole));
-      if (c_Data.type() == QVariant::Type::String)
+      if (c_Data.typeId() == QMetaType::QString)
       {
          QLineEdit * pc_LineEdit;
          if (oq_UseParamVariant == false)
@@ -464,7 +464,7 @@ QWidget * C_SdNdeDpUtil::h_CreateGenericEditor(QWidget * const opc_Parent, const
          pc_LineEdit->setMaxLength(static_cast<int32_t>(orc_Min.GetArraySize()) - 1);
          pc_Retval = pc_LineEdit;
       }
-      else if (c_Data.type() == QVariant::Point)
+      else if (c_Data.typeId() == QMetaType::QPoint)
       {
          //No edit widget allowed
       }

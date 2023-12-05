@@ -1415,33 +1415,33 @@ int32_t C_SdNdeDpContentUtil::h_SimpleConvertFromVariant(const QVariant & orc_Va
    bool q_Ok;
    int32_t s32_Retval = C_NO_ERR;
 
-   switch (orc_Variant.type()) //lint !e788 not all types handled here
+   switch (orc_Variant.typeId()) //lint !e788 not all types handled here
    {
-   case QVariant::Int:
+   case QMetaType::Int:
       orc_Content.SetType(C_OscNodeDataPoolContent::eSINT32);
       orc_Content.SetArray(false);
       orc_Content.SetValueS32(orc_Variant.toInt(&q_Ok));
       tgl_assert(q_Ok == true);
       break;
-   case QVariant::UInt:
+   case QMetaType::UInt:
       orc_Content.SetType(C_OscNodeDataPoolContent::eUINT32);
       orc_Content.SetArray(false);
       orc_Content.SetValueU32(orc_Variant.toUInt(&q_Ok));
       tgl_assert(q_Ok == true);
       break;
-   case QVariant::LongLong:
+   case QMetaType::LongLong:
       orc_Content.SetType(C_OscNodeDataPoolContent::eSINT64);
       orc_Content.SetArray(false);
       orc_Content.SetValueS64(orc_Variant.toLongLong(&q_Ok));
       tgl_assert(q_Ok == true);
       break;
-   case QVariant::ULongLong:
+   case QMetaType::ULongLong:
       orc_Content.SetType(C_OscNodeDataPoolContent::eUINT64);
       orc_Content.SetArray(false);
       orc_Content.SetValueU64(orc_Variant.toULongLong(&q_Ok));
       tgl_assert(q_Ok == true);
       break;
-   case QVariant::Double:
+   case QMetaType::Double:
       orc_Content.SetType(C_OscNodeDataPoolContent::eFLOAT64);
       orc_Content.SetArray(false);
       orc_Content.SetValueF64(orc_Variant.toDouble(&q_Ok));
@@ -2406,9 +2406,9 @@ int32_t C_SdNdeDpContentUtil::h_SetDataVariableFromGeneric(const QVariant & orc_
 {
    int32_t s32_Retval = C_NO_ERR;
 
-   switch (orc_Value.type()) //lint !e788 not all types handled here
+   switch (orc_Value.typeId()) //lint !e788 not all types handled here
    {
-   case QVariant::ULongLong:
+   case QMetaType::ULongLong:
       if (orc_Output.GetArray() == false)
       {
          switch (orc_Output.GetType())
@@ -2486,7 +2486,7 @@ int32_t C_SdNdeDpContentUtil::h_SetDataVariableFromGeneric(const QVariant & orc_
          }
       }
       break;
-   case QVariant::LongLong:
+   case QMetaType::LongLong:
       if (orc_Output.GetArray() == false)
       {
          switch (orc_Output.GetType())
@@ -2564,7 +2564,7 @@ int32_t C_SdNdeDpContentUtil::h_SetDataVariableFromGeneric(const QVariant & orc_
          }
       }
       break;
-   case QVariant::UInt:
+   case QMetaType::UInt:
       if (orc_Output.GetArray() == false)
       {
          switch (orc_Output.GetType())
@@ -2642,7 +2642,7 @@ int32_t C_SdNdeDpContentUtil::h_SetDataVariableFromGeneric(const QVariant & orc_
          }
       }
       break;
-   case QVariant::Int:
+   case QMetaType::Int:
       if (orc_Output.GetArray() == false)
       {
          switch (orc_Output.GetType())
@@ -2721,7 +2721,7 @@ int32_t C_SdNdeDpContentUtil::h_SetDataVariableFromGeneric(const QVariant & orc_
          }
       }
       break;
-   case QVariant::Double:
+   case QMetaType::Double:
       if (orc_Output.GetArray() == false)
       {
          switch (orc_Output.GetType())
@@ -2837,21 +2837,21 @@ int32_t C_SdNdeDpContentUtil::h_SetDataVariableFromGenericWithScaling(const QVar
       float64_t f64_TmpValue = 0.0;
       bool q_Success;
 
-      switch (orc_Value.type()) //lint !e788 not all types handled here
+      switch (orc_Value.typeId()) //lint !e788 not all types handled here
       {
-      case QVariant::Int:
+      case QMetaType::Int:
          f64_TmpValue = static_cast<float64_t>(orc_Value.toInt(&q_Success));
          break;
-      case QVariant::UInt:
+      case QMetaType::UInt:
          f64_TmpValue = static_cast<float64_t>(orc_Value.toUInt(&q_Success));
          break;
-      case QVariant::LongLong:
+      case QMetaType::LongLong:
          f64_TmpValue = static_cast<float64_t>(orc_Value.toLongLong(&q_Success));
          break;
-      case QVariant::ULongLong:
+      case QMetaType::ULongLong:
          f64_TmpValue = static_cast<float64_t>(orc_Value.toULongLong(&q_Success));
          break;
-      case QVariant::Double:
+      case QMetaType::Double:
          f64_TmpValue = orc_Value.toDouble(&q_Success);
          break;
       default:
