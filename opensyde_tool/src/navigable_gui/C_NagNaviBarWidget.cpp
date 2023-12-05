@@ -709,7 +709,11 @@ void C_NagNaviBarWidget::m_AddViewClicked(void)
 //----------------------------------------------------------------------------------------------------------------------
 void C_NagNaviBarWidget::m_OpenCanMonitor(void)
 {
+#ifdef _WIN32
    const QString c_ExecutablePath = C_Uti::h_GetExePath() + "/CAN_Monitor/openSYDE_CAN_Monitor.exe";
+#else
+   const QString c_ExecutablePath = C_Uti::h_GetExePath() + "/CAN_Monitor/openSYDE_CAN_Monitor";
+#endif
    // Adapted working directory is necessary for the stwpeak2.ini
    const bool q_Temp = QProcess::startDetached(c_ExecutablePath, QStringList(),
                                                C_Uti::h_GetExePath() + "/CAN_Monitor");

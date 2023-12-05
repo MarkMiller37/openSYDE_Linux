@@ -62,7 +62,7 @@ C_TblViewInteraction::C_TblViewInteraction(QWidget * const opc_Parent) :
 void C_TblViewInteraction::mouseMoveEvent(QMouseEvent * const opc_Event)
 {
    C_TblViewToolTipBase::mouseMoveEvent(opc_Event);
-   m_HandleGlobalMousePos(opc_Event->globalPos());
+   m_HandleGlobalMousePos(opc_Event->globalPosition().toPoint());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ bool C_TblViewInteraction::event(QEvent * const opc_Event)
       QHoverEvent * const pc_HoverEvent = dynamic_cast<QHoverEvent * const>(opc_Event);
       if (pc_HoverEvent != NULL)
       {
-         m_HandleGlobalMousePos(this->mapToGlobal(pc_HoverEvent->pos()));
+         m_HandleGlobalMousePos(this->mapToGlobal(pc_HoverEvent->position().toPoint()));
       }
    }
    else

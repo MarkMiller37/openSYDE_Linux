@@ -258,7 +258,7 @@ void C_CamMosFilterWidget::dragMoveEvent(QDragMoveEvent * const opc_Event)
    {
       opc_Event->setAccepted(true);
 
-      QPoint c_FilterItemDropPos = opc_Event->pos();
+      QPoint c_FilterItemDropPos = opc_Event->position().toPoint();
       if ((c_FilterItemDropPos.y() >= 62) && (c_FilterItemDropPos.y() <= 195))
       {
          c_FilterItemDropPos += this->mpc_Ui->pc_ScrollArea->viewport()->pos();

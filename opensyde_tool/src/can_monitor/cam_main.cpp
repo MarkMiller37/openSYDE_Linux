@@ -52,8 +52,7 @@ int32_t main(int32_t os32_Argc, char_t * opacn_Argv[])
 {
    int32_t s32_Result;
 
-   // turn on the DPI support**
-   QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+   // Set high DPI support parameters
    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
    QApplication c_Appl(os32_Argc, opacn_Argv);

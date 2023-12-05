@@ -154,7 +154,7 @@ void C_CamMosDatabaseSelectionView::SaveExpandedIndices(void)
 //----------------------------------------------------------------------------------------------------------------------
 void C_CamMosDatabaseSelectionView::mouseDoubleClickEvent(QMouseEvent * const opc_Event)
 {
-   const QModelIndex c_Index = this->indexAt(this->viewport()->mapFromGlobal(opc_Event->globalPos()));
+   const QModelIndex c_Index = this->indexAt(this->viewport()->mapFromGlobal(opc_Event->globalPosition().toPoint()));
 
    QTreeView::mouseDoubleClickEvent(opc_Event);
    if ((c_Index.isValid() == true) && (this->selectedIndexes().size() > 0))

@@ -797,10 +797,9 @@ void C_CamMetTreeView::startDrag(const Qt::DropActions oc_SupportedActions)
 void C_CamMetTreeView::m_SetupContextMenu(void)
 {
    this->mpc_ContextMenu = new C_OgeContextMenu(this);
-   this->mpc_ActionCopy = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                              "Copy as Text"), this, &C_CamMetTreeView::m_CopySelection,
-                                                           static_cast<int32_t>(Qt::CTRL) +
-                                                           static_cast<int32_t>(Qt::Key_C));
+   this->mpc_ActionCopy = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Copy as Text"),
+                                                           static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_C),
+                                                           this, &C_CamMetTreeView::m_CopySelection);
 
    this->mpc_AddFilter = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Add to Receive Filter"),
                                                           this, &C_CamMetTreeView::m_OnAddFilterClicked);
