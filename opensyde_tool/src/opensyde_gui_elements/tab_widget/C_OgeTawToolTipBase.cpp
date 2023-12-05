@@ -86,7 +86,7 @@ void C_OgeTawToolTipBase::SetToolTipInformation(const uint32_t ou32_Index, const
 void C_OgeTawToolTipBase::mouseMoveEvent(QMouseEvent * const opc_Event)
 {
    QTabWidget::mouseMoveEvent(opc_Event);
-   m_HandleMouseMoveToolTip(opc_Event->globalPos());
+   m_HandleMouseMoveToolTip(opc_Event->globalPosition().toPoint());
 }
 
 //----------------------------------------------------------------------------------------------------------------------

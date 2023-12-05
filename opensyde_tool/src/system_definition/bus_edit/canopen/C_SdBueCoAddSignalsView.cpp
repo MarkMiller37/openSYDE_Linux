@@ -169,7 +169,7 @@ void C_SdBueCoAddSignalsView::Search(const QString & orc_Text)
 //----------------------------------------------------------------------------------------------------------------------
 void C_SdBueCoAddSignalsView::mouseDoubleClickEvent(QMouseEvent * const opc_Event)
 {
-   const QModelIndex c_Index = this->indexAt(this->viewport()->mapFromGlobal(opc_Event->globalPos()));
+   const QModelIndex c_Index = this->indexAt(this->viewport()->mapFromGlobal(opc_Event->globalPosition().toPoint()));
 
    QTreeView::mouseDoubleClickEvent(opc_Event);
    if ((c_Index.isValid() == true) && (this->selectedIndexes().size() > 0))

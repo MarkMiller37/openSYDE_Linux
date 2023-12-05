@@ -183,7 +183,7 @@ void C_SdNdeDbListWidget::dropEvent(QDropEvent * const opc_Event)
 
       if (q_AllowedMoveAction == true)
       {
-         int32_t s32_TargetRow = this->indexAt(opc_Event->pos()).row();
+         int32_t s32_TargetRow = this->indexAt(opc_Event->position().toPoint()).row();
          //If drag below inserted adapt target row
          if (this->ms32_DragItemIndex < s32_TargetRow)
          {

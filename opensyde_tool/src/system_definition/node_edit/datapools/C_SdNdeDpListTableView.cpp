@@ -664,7 +664,7 @@ void C_SdNdeDpListTableView::dropEvent(QDropEvent * const opc_Event)
                         uint32_t u32_TargetRow;
                         const QString c_IndicesString = pc_MimeData->data(pc_Model->mimeTypes().at(2));
                         std::vector<uint32_t> c_NewIndices;
-                        const QModelIndex c_Index = this->indexAt(opc_Event->pos());
+                        const QModelIndex c_Index = this->indexAt(opc_Event->position().toPoint());
                         //Target row
                         if (c_Index.isValid())
                         {

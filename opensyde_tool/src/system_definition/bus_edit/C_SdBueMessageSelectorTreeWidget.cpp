@@ -1973,7 +1973,7 @@ void C_SdBueMessageSelectorTreeWidget::dropEvent(QDropEvent * const opc_Event)
                   if (C_SdClipBoardHelper::h_LoadIndicesFromString(c_SourceSignalIndices,
                                                                    c_SignalIndicesString) == C_NO_ERR)
                   {
-                     QTreeWidgetItem * const pc_Child = this->itemAt(opc_Event->pos());
+                     QTreeWidgetItem * const pc_Child = this->itemAt(opc_Event->position().toPoint());
                      if (pc_Child != NULL)
                      {
                         QTreeWidgetItem * const pc_Parent = pc_Child->parent();

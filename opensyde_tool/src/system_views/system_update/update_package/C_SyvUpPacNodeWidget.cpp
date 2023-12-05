@@ -1058,7 +1058,7 @@ void C_SyvUpPacNodeWidget::dragMoveEvent(QDragMoveEvent * const opc_Event)
 
       if (pc_MimeData->hasUrls() == true)
       {
-         const QPoint c_AdaptedPos = this->mpc_Ui->pc_ScrollAreaWidget->mapFrom(this, opc_Event->pos());
+         const QPoint c_AdaptedPos = this->mpc_Ui->pc_ScrollAreaWidget->mapFrom(this, opc_Event->position().toPoint());
 
          // Get Application expects coordinate from the parent of this widget
          if (this->m_CheckMime(pc_MimeData, c_AdaptedPos) == true)
@@ -1127,7 +1127,7 @@ void C_SyvUpPacNodeWidget::dropEvent(QDropEvent * const opc_Event)
       QStringList c_FilePathsFileBased;
       QStringList c_FilePathsPemFiles;
       C_SyvUpPacListNodeItemWidget * pc_App = NULL;
-      const QPoint c_AdaptedPos = this->mpc_Ui->pc_ScrollAreaWidget->mapFrom(this, opc_Event->pos());
+      const QPoint c_AdaptedPos = this->mpc_Ui->pc_ScrollAreaWidget->mapFrom(this, opc_Event->position().toPoint());
 
       if (this->m_CheckMime(pc_MimeData, c_AdaptedPos, &c_FilePathsDatablocks,
                             &c_FilePathsParamsetFiles,

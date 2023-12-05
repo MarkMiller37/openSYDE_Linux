@@ -156,7 +156,7 @@ void C_OgeTableWidgetComIf::SetToolTipHeadingAt(const uint32_t ou32_Section, con
 void C_OgeTableWidgetComIf::mouseMoveEvent(QMouseEvent * const opc_Event)
 {
    QTableWidget::mouseMoveEvent(opc_Event);
-   m_HandleMouseMoveToolTip(opc_Event->globalPos());
+   m_HandleMouseMoveToolTip(opc_Event->globalPosition().toPoint());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -298,11 +298,11 @@ bool C_OgeTableWidgetComIf::event(QEvent * const opc_Event)
       bool q_BusBitrateHovered = false; // for pointing-hand-cursor on link to bus property screen
       if (pc_HoverEvent != NULL)
       {
-         m_HandleMouseMoveToolTip(this->mapToGlobal(pc_HoverEvent->pos()));
+         m_HandleMouseMoveToolTip(this->mapToGlobal(pc_HoverEvent->position().toPoint()));
 
          // check if an IP address cell was hovered
          const QModelIndex c_Index =
-            this->indexAt(this->viewport()->mapFromGlobal(this->mapToGlobal(pc_HoverEvent->pos())));
+            this->indexAt(this->viewport()->mapFromGlobal(this->mapToGlobal(pc_HoverEvent->position().toPoint())));
          if (c_Index.isValid())
          {
             QLabel * const pc_Label = dynamic_cast<QLabel * const>(this->cellWidget(c_Index.row(), c_Index.column()));

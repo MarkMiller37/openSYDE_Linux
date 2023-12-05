@@ -316,7 +316,7 @@ void C_NagViewList::dropEvent(QDropEvent * const opc_Event)
          if (q_Ok == true)
          {
             const QListView::DropIndicatorPosition e_DropIndicator = this->dropIndicatorPosition();
-            int32_t s32_TargetRow = this->indexAt(opc_Event->pos()).row();
+            int32_t s32_TargetRow = this->indexAt(opc_Event->position().toPoint()).row();
             //If drag below inserted adapt target row
             if (s32_Source < s32_TargetRow)
             {

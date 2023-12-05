@@ -76,7 +76,7 @@ C_TblViewToolTipBase::~C_TblViewToolTipBase(void)
 void C_TblViewToolTipBase::mouseMoveEvent(QMouseEvent * const opc_Event)
 {
    QTableView::mouseMoveEvent(opc_Event);
-   m_HandleMouseMoveToolTip(opc_Event->globalPos());
+   m_HandleMouseMoveToolTip(opc_Event->globalPosition().toPoint());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -283,7 +283,7 @@ bool C_TblViewToolTipBase::event(QEvent * const opc_Event)
 
       if (pc_HoverEvent != NULL)
       {
-         m_HandleMouseMoveToolTip(this->mapToGlobal(pc_HoverEvent->pos()));
+         m_HandleMouseMoveToolTip(this->mapToGlobal(pc_HoverEvent->position().toPoint()));
       }
       q_Return = QTableView::event(opc_Event);
    }

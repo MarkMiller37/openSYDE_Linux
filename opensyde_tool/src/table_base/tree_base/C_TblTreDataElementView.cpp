@@ -277,7 +277,7 @@ void C_TblTreDataElementView::CleanUpLastView(void)
 //----------------------------------------------------------------------------------------------------------------------
 void C_TblTreDataElementView::mouseDoubleClickEvent(QMouseEvent * const opc_Event)
 {
-   const QModelIndex c_Index = this->indexAt(this->viewport()->mapFromGlobal(opc_Event->globalPos()));
+   const QModelIndex c_Index = this->indexAt(this->viewport()->mapFromGlobal(opc_Event->globalPosition().toPoint()));
 
    QTreeView::mouseDoubleClickEvent(opc_Event);
    if ((c_Index.isValid() == true) && (this->selectedIndexes().size() > 0))

@@ -60,7 +60,7 @@ C_OgeListWidgetToolTipBase::C_OgeListWidgetToolTipBase(QWidget * const opc_Paren
 void C_OgeListWidgetToolTipBase::mouseMoveEvent(QMouseEvent * const opc_Event)
 {
    QListWidget::mouseMoveEvent(opc_Event);
-   m_HandleMouseMoveToolTip(opc_Event->globalPos());
+   m_HandleMouseMoveToolTip(opc_Event->globalPosition().toPoint());
 }
 
 //----------------------------------------------------------------------------------------------------------------------

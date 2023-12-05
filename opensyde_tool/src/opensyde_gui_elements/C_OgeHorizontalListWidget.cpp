@@ -203,7 +203,7 @@ void C_OgeHorizontalListWidget::dropEvent(QDropEvent * const opc_Event)
 
       if (q_AllowedMoveAction == true)
       {
-         int32_t s32_TargetRow = this->indexAt(opc_Event->pos()).row();
+         int32_t s32_TargetRow = this->indexAt(opc_Event->position().toPoint()).row();
          //If drag below inserted adapt target row
          if (this->ms32_DragItemIndex < s32_TargetRow)
          {
@@ -279,7 +279,7 @@ void C_OgeHorizontalListWidget::dragMoveEvent(QDragMoveEvent * const opc_Event)
    c_Rect.setTopLeft(QPoint(0, mhs32_SCROLL_AREA));
    c_Rect.setBottomRight(QPoint(this->width() - mhs32_SCROLL_AREA, this->height()));
 
-   if ((opc_Event->pos().x() < mhs32_SCROLL_AREA) &&
+   if ((opc_Event->position().toPoint().x() < mhs32_SCROLL_AREA) &&
        (this->GetActualLine() > 0))
    {
       // start the timer if it is not already started
@@ -291,7 +291,7 @@ void C_OgeHorizontalListWidget::dragMoveEvent(QDragMoveEvent * const opc_Event)
          this->mq_DragTimeoutActiveLeft = true;
       }
    }
-   else if ((opc_Event->pos().x() > (this->width() - mhs32_SCROLL_AREA)) &&
+   else if ((opc_Event->position().toPoint().x() > (this->width() - mhs32_SCROLL_AREA)) &&
             (this->GetActualLine() < (this->GetCountLines() - 1)))
    {
       // start the timer if it is not already started

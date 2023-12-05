@@ -720,7 +720,7 @@ void C_SdNdeDpListsTreeWidget::dropEvent(QDropEvent * const opc_Event)
       {
          const std::vector<uint32_t> c_SelectedIndices = this->m_GetSelectedIndices();
          std::vector<uint32_t> c_TargetIndices;
-         int32_t s32_TargetRow = static_cast<int32_t>(this->indexAt(opc_Event->pos()).row());
+         int32_t s32_TargetRow = static_cast<int32_t>(this->indexAt(opc_Event->position().toPoint()).row());
          mh_AdaptDropTargetIndex(c_SelectedIndices, e_DropIndicator, s32_TargetRow);
          c_TargetIndices.resize(c_SelectedIndices.size());
          for (uint32_t u32_ItItem = 0; u32_ItItem < c_TargetIndices.size(); ++u32_ItItem)

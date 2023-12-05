@@ -158,7 +158,7 @@ bool C_GiSyColorSelectWidget::HandleColorPickingMouseMove(const QMouseEvent * co
    //If the cross is visible the grabbed color will be black most of the times
    //lint -e{730}  Allow the circle is visible (Use clean Qt interface)
    this->mpc_ColorPicker->SetCircleVisible(!mpc_ColorPicker->geometry().contains(opc_MouseEvent->pos()));
-   this->m_UpdateColorPicking(opc_MouseEvent->globalPos());
+   this->m_UpdateColorPicking(opc_MouseEvent->globalPosition().toPoint());
    return true;
 }
 
@@ -173,7 +173,7 @@ bool C_GiSyColorSelectWidget::HandleColorPickingMouseMove(const QMouseEvent * co
 //----------------------------------------------------------------------------------------------------------------------
 bool C_GiSyColorSelectWidget::HandleColorPickingMouseButtonRelease(const QMouseEvent * const opc_MouseEvent)
 {
-   this->m_SetCurrentRgbColor(m_GrabScreenColor(opc_MouseEvent->globalPos()).rgba());
+   this->m_SetCurrentRgbColor(m_GrabScreenColor(opc_MouseEvent->globalPosition().toPoint()).rgba());
    this->m_LeaveColorPicking();
    return true;
 }

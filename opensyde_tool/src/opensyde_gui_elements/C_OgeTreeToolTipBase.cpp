@@ -54,7 +54,7 @@ C_OgeTreeToolTipBase::C_OgeTreeToolTipBase(void) :
 //----------------------------------------------------------------------------------------------------------------------
 void C_OgeTreeToolTipBase::m_CallAfterMouseMove(const QMouseEvent * const opc_Event)
 {
-   this->m_HandleMouseMoveToolTip(opc_Event->globalPos());
+   this->m_HandleMouseMoveToolTip(opc_Event->globalPosition().toPoint());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ bool C_OgeTreeToolTipBase::m_CallForEvent(QEvent * const opc_Event)
 
       if (pc_HoverEvent != NULL)
       {
-         m_HandleMouseMoveToolTip(this->m_MapToGlobal(pc_HoverEvent->pos()));
+         m_HandleMouseMoveToolTip(this->m_MapToGlobal(pc_HoverEvent->position().toPoint()));
       }
       q_Return = m_BaseEvent(opc_Event);
    }
@@ -194,7 +194,7 @@ void C_OgeTreeToolTipBase::m_CallBeforeEventFilter(const QEvent * const opc_Even
 
       if (pc_HoverEvent != NULL)
       {
-         m_HandleMouseMoveToolTip(this->m_MapToGlobal(pc_HoverEvent->pos()));
+         m_HandleMouseMoveToolTip(this->m_MapToGlobal(pc_HoverEvent->position().toPoint()));
       }
    }
 }
