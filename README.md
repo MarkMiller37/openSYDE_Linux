@@ -45,7 +45,6 @@ Known issues:
 * positions of some widgets are off in the UI
 * calling external tools:
   * .chm user manual cannot directly be invoked from UI; needs work in C_HeHandler
-  * IDE cannot directly be invoked from UI; needs work in C_ImpUtil::h_OpenIde
 * no alternative approach for QWinTaskbarProgress implemented; rescinded in Qt6 anyway
   * needs cleanup in C_SyvUpInformationWidget, C_SyvUpSummaryWidget, C_SyvUpInformationWidget
   * see https://forum.qt.io/topic/131934/is-there-an-alternative-to-qwintaskbarbutton-in-qt-6

@@ -23,11 +23,9 @@
 
 #include "C_ImpUtil.hpp"
 #include "TglUtils.hpp"
-#include "TglFile.hpp"
 #include "stwerrors.hpp"
 #include "constants.hpp"
 #include "C_GtGetText.hpp"
-#include "C_UsHandler.hpp"
 #include "C_PuiProject.hpp"
 #include "C_PuiSdHandler.hpp"
 #include "C_OscLoggingHandler.hpp"
@@ -37,7 +35,6 @@
 #include "C_PopUtil.hpp"
 #include "C_OscUtils.hpp"
 #include "C_PuiUtil.hpp"
-#include "C_SdCodeGenerationDialog.hpp"
 
 /* -- Used Namespaces ----------------------------------------------------------------------------------------------- */
 using namespace stw::scl;
@@ -501,10 +498,11 @@ int32_t C_ImpUtil::h_OpenIde(const QString & orc_IdeExeCall)
 {
    int32_t s32_Retval = C_NO_ERR;
 
-#ifdef _WIN32
    if (orc_IdeExeCall.compare("") != 0)
    {
+#ifdef _WIN32
       std::vector<HWND> c_Windows;
+#endif
       QString c_ExeOnly;
       QStringList c_HelpList;
       bool q_ContinueWithExeOpening = false;
@@ -539,6 +537,7 @@ int32_t C_ImpUtil::h_OpenIde(const QString & orc_IdeExeCall)
       {
          c_ExeOnly = c_ExeFile.fileName();
 
+#ifdef _WIN32 //is an application with this name already running ?
          C_ImpUtil::mh_GetExistingApplicationHandle(c_ExeOnly.toStdWString().c_str(), c_Windows);
          if (c_Windows.size() > 0)
          {
@@ -553,6 +552,25 @@ int32_t C_ImpUtil::h_OpenIde(const QString & orc_IdeExeCall)
                }
             }
          }
+#else
+         QProcess c_Process;
+         QString c_Call("pgrep");
+         QStringList c_Arguments;
+         c_Arguments << "--exact";
+         c_Arguments << c_ExeOnly;
+         c_Process.start(c_Call, c_Arguments);
+         c_Process.waitForReadyRead();
+         if (c_Process.readAllStandardOutput().isEmpty() == false)
+         {
+            //We know an application with the name is running.
+            //Bringing the window to front portably is tricky, though.
+            //Let user know we will not do anything ...
+            C_OgeWiCustomMessage c_Message(NULL, C_OgeWiCustomMessage::E_Type::eINFORMATION);
+            c_Message.SetHeading(C_GtGetText::h_GetText("Already running"));
+            c_Message.SetDescription(C_GtGetText::h_GetText("IDE with configured name is already running."));
+            c_Message.Execute();
+         }
+#endif
          else // we know that there is no open application with this executable name
          {
             q_ContinueWithExeOpening = true;
@@ -584,9 +602,6 @@ int32_t C_ImpUtil::h_OpenIde(const QString & orc_IdeExeCall)
       s32_Retval = C_CONFIG;
       osc_write_log_error("Open IDE", "No path to IDE executable given.");
    }
-#else
-   s32_Retval = C_NOACT;
-#endif
 
    return s32_Retval;
 }

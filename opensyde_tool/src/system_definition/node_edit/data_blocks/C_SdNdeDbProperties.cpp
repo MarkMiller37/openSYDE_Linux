@@ -1505,7 +1505,12 @@ void C_SdNdeDbProperties::m_OnClickIde(void)
 {
    const QString c_ProjectPath =
       C_PuiUtil::h_GetResolvedAbsPathFromProject(this->mpc_Ui->pc_LineEditProject->GetPath());
+#ifdef _WIN32
    const QString c_FilterName = static_cast<QString>(C_GtGetText::h_GetText("Executable (*.exe);;Others (*.*)"));
+#else
+   const QString c_FilterName = static_cast<QString>(C_GtGetText::h_GetText("All files (*)"));
+#endif
+
    QString c_IdeCall =
       static_cast<QString>(C_PuiUtil::h_ResolvePlaceholderVariables(this->mpc_Ui->pc_LineEditIDE->text(),
                                                                     c_ProjectPath));
