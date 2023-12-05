@@ -23,7 +23,7 @@
 #include "C_OscSystemDefinitionFiler.hpp"
 #include "C_OscExportNode.hpp"
 #include "C_OscLoggingHandler.hpp"
-#include "TGLFile.hpp"
+#include "TglFile.hpp"
 #include "C_OsyCodeExportBase.hpp"
 
 #include "C_OscBinaryHash.hpp"
@@ -120,7 +120,6 @@ void C_CodeExport::m_PrintBanner(void)
 int32_t main(const int32_t os32_Argc, char_t * const opacn_Argv[])
 {
    C_CodeExport c_TheCodeExport;
-
    C_CodeExport::E_ResultCode e_Result;
 
    e_Result = c_TheCodeExport.Init();

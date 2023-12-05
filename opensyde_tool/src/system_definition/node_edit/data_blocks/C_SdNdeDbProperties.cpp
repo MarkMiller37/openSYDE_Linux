@@ -1401,7 +1401,11 @@ void C_SdNdeDbProperties::m_OnClickGenerator(void)
       C_PuiUtil::h_GetResolvedAbsPathFromExe(this->mpc_Ui->pc_LineEditCodeGenerator->GetPath(), c_ProjectPath);
    // if generator line edit is empty this results in executable path - we use this as feature
 
+#ifdef _WIN32
    const QString c_FilterName = static_cast<QString>(C_GtGetText::h_GetText("Executable (*.exe *.bat);;Others (*.*)"));
+#else
+   const QString c_FilterName = static_cast<QString>(C_GtGetText::h_GetText("All files (*)"));
+#endif
 
    // File path check is done by h_AskUserToSaveRelativePath(), so no need to use C_OgeWiUtil::h_GetOpenFileName()
    const QString c_FilePath = QFileDialog::getOpenFileName(this, C_GtGetText::h_GetText("Select Generator"),

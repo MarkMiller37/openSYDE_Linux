@@ -23,10 +23,11 @@
 #include "C_OscSystemDefinition.hpp"
 #include "C_OscSystemDefinitionFiler.hpp"
 #include "C_OscLoggingHandler.hpp"
-#include "TGLFile.hpp"
+#include "TglFile.hpp"
 #include "C_OsyCodeExportBase.hpp"
 #include "C_OscUtils.hpp"
 #include "C_OscBinaryHash.hpp"
+#include "version_config.hpp"
 
 /* -- Used Namespaces ----------------------------------------------------------------------------------------------- */
 
@@ -80,45 +81,17 @@ void C_OsyCodeExportBase::m_PrintCommandLineParameters(void) const
 //----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Get resource version number of a file as an C_SCLString
 
-   Extracts the windows version number of the specified file and returns it
+   Gets the application version number and returns it
     in the commonly used STW format: "Vx.yyrz".
-   This function is Windows specific and needs to be replaced by another solution
-    when porting to a non-Windows system
-
-   \param[in]   orc_FileName    file name to get version from
 
    \return
    string with version information ("V?.??r?" on error)
 */
 //----------------------------------------------------------------------------------------------------------------------
-C_SclString C_OsyCodeExportBase::h_GetApplicationVersion(const C_SclString & orc_FileName)
+C_SclString C_OsyCodeExportBase::h_GetApplicationVersion(void)
 {
-   VS_FIXEDFILEINFO * pc_Info;
-   uint32_t u32_ValSize;
-   int32_t s32_InfoSize;
-   uint8_t * pu8_Buffer;
    C_SclString c_Version;
-
-   c_Version = "V?.\?\?r?";
-
-   s32_InfoSize = GetFileVersionInfoSizeA(orc_FileName.c_str(), NULL);
-   if (s32_InfoSize != 0)
-   {
-      pu8_Buffer = new uint8_t[static_cast<uint32_t>(s32_InfoSize)];
-      if (GetFileVersionInfoA(orc_FileName.c_str(), 0, s32_InfoSize, pu8_Buffer) != FALSE)
-      {
-         //reinterpret_cast required due to function interface
-         if (VerQueryValueA(pu8_Buffer, "\\",
-                            reinterpret_cast<PVOID *>(&pc_Info), //lint !e9176
-                            &u32_ValSize) != FALSE)
-         {
-            c_Version.PrintFormatted("V%d.%02dr%d", (pc_Info->dwFileVersionMS >> 16U),
-                                     pc_Info->dwFileVersionMS & 0x0000FFFFUL,
-                                     (pc_Info->dwFileVersionLS >> 16U));
-         }
-      }
-      delete[] pu8_Buffer;
-   }
+   c_Version.PrintFormatted("V%d.%02dr%d", PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_RELEASE);
    return c_Version;
 }
 
@@ -142,15 +115,12 @@ C_OsyCodeExportBase::~C_OsyCodeExportBase(void)
 C_OsyCodeExportBase::E_ResultCode C_OsyCodeExportBase::Init(void)
 {
    E_ResultCode e_Return = eRESULT_OK;
-   char_t acn_ApplicationName[MAX_PATH + 1];
-   uint32_t u32_Return = GetModuleFileNameA(NULL, &acn_ApplicationName[0], MAX_PATH + 1);
+   uint32_t u32_Return;
 
-   tgl_assert(u32_Return != 0);
-
+   mc_ExeName = TglGetExePath();
    mq_EraseTargetFolder = false;
 
-   mc_ExeName = acn_ApplicationName;
-   mc_ExeVersion = h_GetApplicationVersion(mc_ExeName);
+   mc_ExeVersion = h_GetApplicationVersion();
    mc_BinaryHash = stw::opensyde_core::C_OscBinaryHash::h_CreateBinaryHash();
 
    mc_LogFileName = TglChangeFileExtension(mc_ExeName, ".log");

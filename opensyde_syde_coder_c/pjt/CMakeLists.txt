@@ -3,6 +3,11 @@ cmake_minimum_required(VERSION 3.16)
 
 project("osy_syde_coder_c")
 
+if (NOT WIN32)
+   #workaround for linux build type conflicts caused by stwtypes.hpp
+   set(CMAKE_CXX_STANDARD 11)
+endif()
+
 # include script to generate PC-lint configuration files
 include(lint_config.cmake)
 
@@ -16,15 +21,16 @@ include_directories(
 
 # Drag in openSYDE core base (files, include paths)
 # we don't need all packages
-set(OPENSYDE_CORE_SKIP_ZIPPING          1)
-set(OPENSYDE_CORE_SKIP_IMPORTS          1)
-set(OPENSYDE_CORE_SKIP_CODE_GENERATION  0)
-set(OPENSYDE_CORE_SKIP_PROJECT_HANDLING 0)
-set(OPENSYDE_CORE_SKIP_PARAM_SET        0)
-set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS 1)
-set(OPENSYDE_CORE_SKIP_WINDOWS_DRIVERS  1)
-set(OPENSYDE_CORE_SKIP_WINDOWS_TARGET   0)
-set(OPENSYDE_CORE_SKIP_PROTOCOL_LOGGING 1)
+set(OPENSYDE_CORE_SKIP_ZIPPING                 1)
+set(OPENSYDE_CORE_SKIP_IMPORTS                 1)
+set(OPENSYDE_CORE_SKIP_CODE_GENERATION         0)
+set(OPENSYDE_CORE_SKIP_PROJECT_HANDLING        0)
+set(OPENSYDE_CORE_SKIP_PARAM_SET               0)
+set(OPENSYDE_CORE_SKIP_COM_DISPATCHERS         1)
+set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_BASIC  1)
+set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_SYSTEM 1)
+set(OPENSYDE_CORE_SKIP_PROTOCOL_DRIVERS_COMMON 1)
+set(OPENSYDE_CORE_SKIP_PROTOCOL_LOGGING        1)
 add_subdirectory(../libs/osy_core ${CMAKE_BINARY_DIR}/osy_core)
 
 # --- Project source file ----------------------------------------------------------------------------------------------
@@ -42,10 +48,17 @@ set(OPENSYDE_SYDE_CODER_C_SOURCES
 add_executable(osy_syde_coder_c ${OPENSYDE_SYDE_CODER_C_SOURCES})
 
 # add required libraries
-target_link_libraries(osy_syde_coder_c
-   opensyde_core
-   version
-)
+if (WIN32)
+   target_link_libraries(osy_syde_coder_c
+      opensyde_core
+      version
+   )
+else()
+   target_link_libraries(osy_syde_coder_c
+      opensyde_core
+   )
+endif()
+
 
 # define precompiled headers for core and application
 target_precompile_headers(opensyde_core PRIVATE ../src/precomp_headers.hpp)
@@ -67,8 +80,10 @@ set(CMAKE_C_FLAGS "-Wall -Wextra -Wc99-c11-compat -Wunused -Wuninitialized -Wmay
 set(CMAKE_CXX_FLAGS "-std=c++98 -Wall -Wextra -Wunused -Wuninitialized -Wmaybe-uninitialized -Wsign-compare  \
    -Wmissing-include-dirs -Wshadow -Wlogical-op -Wno-multichar -Wredundant-decls")
 
-# link standard libraries statically
-set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+if(WIN32)
+   # link standard libraries statically
+   set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+endif()
 
 # Install results
 install(TARGETS osy_syde_coder_c DESTINATION ${CMAKE_BINARY_DIR}/../result)

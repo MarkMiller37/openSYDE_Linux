@@ -25,7 +25,6 @@
 #if defined __cplusplus
 /* Add C++ includes here */
 
-#include <windows.h>
 #include <cstdio>
 #include <cstring>
 #include <vector>

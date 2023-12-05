@@ -48,7 +48,7 @@ public:
                                                     // script not found)
    };
 
-   static stw::scl::C_SclString h_GetApplicationVersion(const stw::scl::C_SclString & orc_FileName);
+   static stw::scl::C_SclString h_GetApplicationVersion();
 
    virtual ~C_OsyCodeExportBase(void);
 

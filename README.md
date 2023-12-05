@@ -8,17 +8,17 @@ Purpose of this fork:
 * Upgrade to Qt 6.6
 
 Status:
-* GUI builds and basic workflows look useable
-* GUI projects can be loaded and saved
+* GUI, CAN Monitor, SYDE Coder C build
+* GUI basic workflows look useable
 * Dashboard connect via CAN results in messages being seen on virtual socket CAN
   * no full communication cycle done
-* CAN Monitor builds
+* CAN Monitor
   * UI looks good
   * GUI Dashboard connect services can be seen in trace Window on virtual socket CAN
   * Sending between multiple instances of CAN Monitor looks good
 * GUI has not been verified to still build and behave as expected on Windows
 * GUI and CAN Monitor projects were converted to cmake
-* SYDE Coder C not touched yet
+* Communication via Ethernet not checked
 
 Used tool versions:
 * Ubuntu: 23.10
@@ -50,7 +50,7 @@ Known issues:
   * needs cleanup in C_SyvUpInformationWidget, C_SyvUpSummaryWidget, C_SyvUpInformationWidget
   * see https://forum.qt.io/topic/131934/is-there-an-alternative-to-qwintaskbarbutton-in-qt-6
 * CAN "DLLs":
-  * C_SyvSeDllConfigurationDialog needs cleanup; no interactive configuration or "TestConnection" for Linux
+  * C_SyvSeDllConfigurationDialog needs cleanup; no interactive configuration for Linux
   * "DLL_Open" and "DLL_Close" not available for Linux; calls have been #ifdefed and need cleanup
   * "DLL_Status" used by CAN Monitor not available for Linux; #ifdefed to return a bitrate of 125kBit/s; needs cleanup
   * Setting bitrate not implemented; needs to be added in C_CAN.cpp via socket CAN
