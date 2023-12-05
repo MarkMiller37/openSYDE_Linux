@@ -40,6 +40,8 @@ Known issues:
 * A few changes needed to be made due to Qt API incompatibilities between V5 and V6
   * Inspection and regression test needed
 * tooltips behave oddly
+  * Something seems to be wrong with the "leave" detection. It triggers even when not leaving.
+  * "if (rect().contains(mapFromGlobal(QCursor::pos())) == false)" before calling "m_HideToolTip" seems to help
 * positions of some widgets are off in the UI
 * calling external tools:
   * .chm user manual cannot directly be invoked from UI; needs work in C_HeHandler
