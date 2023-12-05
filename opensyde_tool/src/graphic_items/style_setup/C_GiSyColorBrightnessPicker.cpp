@@ -147,9 +147,9 @@ void C_GiSyColorBrightnessPicker::paintEvent(QPaintEvent * const opc_Event)
 //----------------------------------------------------------------------------------------------------------------------
 void C_GiSyColorBrightnessPicker::mouseMoveEvent(QMouseEvent * const opc_Event)
 {
-   if (this->ms32_Value != (255 - ((opc_Event->y() * 255) / (height() - 1))))
+   if (this->ms32_Value != (255 - ((opc_Event->position().toPoint().y() * 255) / (height() - 1))))
    {
-      this->ms32_Value = qMax(0, qMin((255 - ((opc_Event->y() * 255) / (height() - 1))), 255));
+      this->ms32_Value = qMax(0, qMin((255 - ((opc_Event->position().toPoint().y() * 255) / (height() - 1))), 255));
       delete this->mpc_Pixmap;
       this->mpc_Pixmap = NULL;
       repaint();
@@ -165,9 +165,9 @@ void C_GiSyColorBrightnessPicker::mouseMoveEvent(QMouseEvent * const opc_Event)
 //----------------------------------------------------------------------------------------------------------------------
 void C_GiSyColorBrightnessPicker::mousePressEvent(QMouseEvent * const opc_Event)
 {
-   if (this->ms32_Value != (255 - ((opc_Event->y() * 255) / (height() - 1))))
+   if (this->ms32_Value != (255 - ((opc_Event->position().toPoint().y() * 255) / (height() - 1))))
    {
-      this->ms32_Value = qMax(0, qMin((255 - ((opc_Event->y() * 255) / (height() - 1))), 255));
+      this->ms32_Value = qMax(0, qMin((255 - ((opc_Event->position().toPoint().y() * 255) / (height() - 1))), 255));
       delete this->mpc_Pixmap;
       this->mpc_Pixmap = NULL;
       repaint();

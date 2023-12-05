@@ -113,26 +113,26 @@ C_SdNdeNodePropertiesWidget::C_SdNdeNodePropertiesWidget(QWidget * const opc_Par
 
    //table setups
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeaderItem(static_cast<int32_t> (
-                                                                      C_SdNdeComIfSettingsTableDelegate::eINTERFACE))->
-   setTextAlignment(static_cast<int32_t> (Qt::AlignLeft));
+                                                                       C_SdNdeComIfSettingsTableDelegate::eINTERFACE))->
+      setTextAlignment(Qt::AlignLeft);
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeaderItem(static_cast<int32_t> (
                                                                       C_SdNdeComIfSettingsTableDelegate::eCONNECTION))->
-   setTextAlignment(static_cast<int32_t> (Qt::AlignLeft));
+      setTextAlignment(Qt::AlignLeft);
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeaderItem(static_cast<int32_t> (
                                                                       C_SdNdeComIfSettingsTableDelegate::eNODEID))->
-   setTextAlignment(static_cast<int32_t> (Qt::AlignHCenter));
+      setTextAlignment(Qt::AlignHCenter);
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeaderItem(static_cast<int32_t> (
                                                                       C_SdNdeComIfSettingsTableDelegate::eIPADDRESS))->
-   setTextAlignment(static_cast<int32_t> (Qt::AlignHCenter));
+      setTextAlignment(Qt::AlignHCenter);
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeaderItem(static_cast<int32_t> (
                                                                       C_SdNdeComIfSettingsTableDelegate::eUPDATE))->
-   setTextAlignment(static_cast<int32_t> (Qt::AlignHCenter));
+      setTextAlignment(Qt::AlignHCenter);
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeaderItem(static_cast<int32_t> (
                                                                       C_SdNdeComIfSettingsTableDelegate::eROUTING))->
-   setTextAlignment(static_cast<int32_t> (Qt::AlignHCenter));
+      setTextAlignment(Qt::AlignHCenter);
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeaderItem(static_cast<int32_t> (
                                                                       C_SdNdeComIfSettingsTableDelegate::eDIAGNOSTIC))->
-   setTextAlignment(static_cast<int32_t> (Qt::AlignHCenter));
+      setTextAlignment(Qt::AlignHCenter);
 
    //set min column width (necessary for "Linked to..." strech column
    this->mpc_Ui->pc_TableWidgetComIfSettings->horizontalHeader()->setMinimumSectionSize(150);
@@ -687,8 +687,8 @@ void C_SdNdeNodePropertiesWidget::m_LoadFromData(void)
                this->mpc_Ui->pc_TableWidgetComIfSettings->setItem(u8_ComIfCnt, s32_COL_NODE_ID,
                                                                   new QTableWidgetItem(""));
                //align center
-               this->mpc_Ui->pc_TableWidgetComIfSettings->item(u8_ComIfCnt, s32_COL_NODE_ID)
-               ->setTextAlignment(static_cast<int32_t> (Qt::AlignCenter));
+               this->mpc_Ui->pc_TableWidgetComIfSettings->item(u8_ComIfCnt, s32_COL_NODE_ID)->
+               setTextAlignment(Qt::AlignCenter);
                //set node value
                this->mpc_Ui->pc_TableWidgetComIfSettings->item(u8_ComIfCnt, s32_COL_NODE_ID)->
                setText(QString::number(pc_Node->c_Properties.c_ComInterfaces[u8_ComIfCnt].u8_NodeId));
