@@ -2,14 +2,8 @@ cmake_minimum_required(VERSION 3.14)
 
 project(vector_blf_library LANGUAGES CXX)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-#find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
-#find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 add_library(vector_blf_library STATIC
    ../../../libraries/vector_blf-1.0.0/src/Vector/BLF/AbstractFile.cpp
@@ -229,7 +223,5 @@ add_library(vector_blf_library STATIC
    ../../../libraries/vector_blf-1.0.0/src/Vector/BLF/WlanFrame.h
    ../../../libraries/vector_blf-1.0.0/src/Vector/BLF/WlanStatistic.h
 )
-
-#target_link_libraries(vector_blf_library PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
 target_compile_definitions(vector_blf_library PRIVATE VECTOR_BLF_LIBRARY_LIBRARY)

@@ -51,6 +51,7 @@ include_directories(
    ../../src/help_engine
    ../../src/implementation
    ../../src/navigable_gui
+   ../../src/navigable_gui/unused_project_files
    ../../src/opensyde_gui_elements
    ../../src/opensyde_gui_elements/check_box
    ../../src/opensyde_gui_elements/combo_box
@@ -93,6 +94,7 @@ include_directories(
    ../../src/system_definition/node_edit
    ../../src/system_definition/node_edit/canopen_manager
    ../../src/system_definition/node_edit/data_blocks
+   ../../src/system_definition/node_edit/data_logger
    ../../src/system_definition/node_edit/datapools
    ../../src/system_definition/node_edit/halc
    ../../src/system_definition/node_edit/halc/overview
@@ -221,6 +223,8 @@ set(PROJECT_SOURCES
     ../../src/graphic_items/C_GiNodeBoundary.hpp
     ../../src/graphic_items/C_GiPointInteraction.cpp
     ../../src/graphic_items/C_GiPointInteraction.hpp
+    ../../src/graphic_items/C_GiProgressBarUtil.cpp
+    ../../src/graphic_items/C_GiProgressBarUtil.hpp
     ../../src/graphic_items/C_GiPort.cpp
     ../../src/graphic_items/C_GiPort.hpp
     ../../src/graphic_items/C_GiRect.cpp
@@ -413,6 +417,16 @@ set(PROJECT_SOURCES
     ../../src/navigable_gui/C_NagViewListDelegate.hpp
     ../../src/navigable_gui/C_NagViewListModel.cpp
     ../../src/navigable_gui/C_NagViewListModel.hpp
+    ../../src/navigable_gui/C_NagCharLengthSettingPopupDialog.cpp
+    ../../src/navigable_gui/C_NagCharLengthSettingPopupDialog.hpp
+    ../../src/navigable_gui/C_NagCharLengthSettingPopupDialog.ui
+    ../../src/navigable_gui/unused_project_files/C_NagUnUsedProjectFilesPopUpDialog.cpp
+    ../../src/navigable_gui/unused_project_files/C_NagUnUsedProjectFilesTableModel.cpp
+    ../../src/navigable_gui/unused_project_files/C_NagUnUsedProjectFilesTableView.cpp
+    ../../src/navigable_gui/unused_project_files/C_NagUnUsedProjectFilesPopUpDialog.hpp
+    ../../src/navigable_gui/unused_project_files/C_NagUnUsedProjectFilesTableModel.hpp
+    ../../src/navigable_gui/unused_project_files/C_NagUnUsedProjectFilesTableView.hpp
+    ../../src/navigable_gui/unused_project_files/C_NagUnUsedProjectFilesPopUpDialog.ui
     ../../src/opensyde_gui_elements/C_OgeContextMenu.cpp
     ../../src/opensyde_gui_elements/C_OgeContextMenu.hpp
     ../../src/opensyde_gui_elements/C_OgeDarkScrollArea.cpp
@@ -973,6 +987,8 @@ set(PROJECT_SOURCES
     ../../src/project_gui/C_PuiProject.hpp
     ../../src/project_gui/C_PuiUtil.cpp
     ../../src/project_gui/C_PuiUtil.hpp
+    ../../src/project_gui/C_PuiTargetSupportPackageFiler.cpp
+    ../../src/project_gui/C_PuiTargetSupportPackageFiler.hpp
     ../../src/project_gui/base/C_PuiBsBoundary.cpp
     ../../src/project_gui/base/C_PuiBsBoundary.hpp
     ../../src/project_gui/base/C_PuiBsBox.cpp
@@ -1013,6 +1029,8 @@ set(PROJECT_SOURCES
     ../../src/project_gui/system_definition/C_PuiSdHandlerFilerV2.hpp
     ../../src/project_gui/system_definition/C_PuiSdHandlerHalc.cpp
     ../../src/project_gui/system_definition/C_PuiSdHandlerHalc.hpp
+    ../../src/project_gui/system_definition/C_PuiSdHandlerDataLoggerLogic.cpp
+    ../../src/project_gui/system_definition/C_PuiSdHandlerDataLoggerLogic.hpp
     ../../src/project_gui/system_definition/C_PuiSdHandlerNodeLogic.cpp
     ../../src/project_gui/system_definition/C_PuiSdHandlerNodeLogic.hpp
     ../../src/project_gui/system_definition/C_PuiSdNode.cpp
@@ -1043,6 +1061,12 @@ set(PROJECT_SOURCES
     ../../src/project_gui/system_definition/node/can/C_PuiSdNodeCanProtocol.hpp
     ../../src/project_gui/system_definition/node/can/C_PuiSdNodeCanSignal.cpp
     ../../src/project_gui/system_definition/node/can/C_PuiSdNodeCanSignal.hpp
+    ../../src/project_gui/system_definition/node/can/C_PuiSdNodeCanUtil.cpp
+    ../../src/project_gui/system_definition/node/can/C_PuiSdNodeCanUtil.hpp
+    ../../src/project_gui/system_definition/node/C_PuiSdNodeDataPoolListElementIdSyncUtil.cpp
+    ../../src/project_gui/system_definition/node/C_PuiSdNodeDataPoolListElementIdSyncUtil.hpp
+    ../../src/project_gui/system_definition/C_PuiSdLastKnownHalElementId.cpp
+    ../../src/project_gui/system_definition/C_PuiSdLastKnownHalElementId.hpp
     ../../src/project_gui/system_views/C_PuiSvDashboard.cpp
     ../../src/project_gui/system_views/C_PuiSvDashboard.hpp
     ../../src/project_gui/system_views/C_PuiSvDashboardFiler.cpp
@@ -1055,8 +1079,6 @@ set(PROJECT_SOURCES
     ../../src/project_gui/system_views/C_PuiSvHandlerFiler.hpp
     ../../src/project_gui/system_views/C_PuiSvHandlerFilerV1.cpp
     ../../src/project_gui/system_views/C_PuiSvHandlerFilerV1.hpp
-    ../../src/project_gui/system_views/C_PuiSvLastKnownHalElementId.cpp
-    ../../src/project_gui/system_views/C_PuiSvLastKnownHalElementId.hpp
     ../../src/project_gui/system_views/C_PuiSvPc.cpp
     ../../src/project_gui/system_views/C_PuiSvPc.hpp
     ../../src/project_gui/system_views/C_PuiSvReadDataConfiguration.cpp
@@ -1223,6 +1245,9 @@ set(PROJECT_SOURCES
     ../../src/system_definition/bus_edit/C_SdBueComIfDescriptionWidget.cpp
     ../../src/system_definition/bus_edit/C_SdBueComIfDescriptionWidget.hpp
     ../../src/system_definition/bus_edit/C_SdBueComIfDescriptionWidget.ui
+    ../../src/system_definition/bus_edit/C_SdBueImportCommMessagesWidget.cpp
+    ../../src/system_definition/bus_edit/C_SdBueImportCommMessagesWidget.hpp
+    ../../src/system_definition/bus_edit/C_SdBueImportCommMessagesWidget.ui
     ../../src/system_definition/bus_edit/C_SdBueMessagePropertiesWidget.cpp
     ../../src/system_definition/bus_edit/C_SdBueMessagePropertiesWidget.hpp
     ../../src/system_definition/bus_edit/C_SdBueMessagePropertiesWidget.ui
@@ -1242,9 +1267,11 @@ set(PROJECT_SOURCES
     ../../src/system_definition/bus_edit/C_SdBueMessageSelectorTreeDelegate.hpp
     ../../src/system_definition/bus_edit/C_SdBueMessageSelectorTreeWidget.cpp
     ../../src/system_definition/bus_edit/C_SdBueMessageSelectorTreeWidget.hpp
+    ../../src/system_definition/bus_edit/C_SdBueMessageSelectorTreeWidgetItem.cpp
+    ../../src/system_definition/bus_edit/C_SdBueMessageSelectorTreeWidgetItem.hpp
     ../../src/system_definition/bus_edit/C_SdBueMessageSelectorWidget.cpp
     ../../src/system_definition/bus_edit/C_SdBueMessageSelectorWidget.hpp
-    ../../src/system_definition/bus_edit/C_SdBueMessageSelectorWidget.ui
+    ../../src/system_definition/bus_edit/C_SdBueMessageSelectorWidget.ui    
     ../../src/system_definition/bus_edit/C_SdBueMessageSignalEditWidget.cpp
     ../../src/system_definition/bus_edit/C_SdBueMessageSignalEditWidget.hpp
     ../../src/system_definition/bus_edit/C_SdBueMessageSignalEditWidget.ui
@@ -1275,8 +1302,6 @@ set(PROJECT_SOURCES
     ../../src/system_definition/bus_edit/C_SdBueSignalTableView.hpp
     ../../src/system_definition/bus_edit/C_SdBueSortHelper.cpp
     ../../src/system_definition/bus_edit/C_SdBueSortHelper.hpp
-    ../../src/system_definition/bus_edit/C_SdBusMessageSelectorTreeWidgetItem.cpp
-    ../../src/system_definition/bus_edit/C_SdBusMessageSelectorTreeWidgetItem.hpp
     ../../src/system_definition/bus_edit/canopen/C_SdBueCoAddSignalsDialog.cpp
     ../../src/system_definition/bus_edit/canopen/C_SdBueCoAddSignalsDialog.hpp
     ../../src/system_definition/bus_edit/canopen/C_SdBueCoAddSignalsDialog.ui
@@ -1454,6 +1479,22 @@ set(PROJECT_SOURCES
     ../../src/system_definition/node_edit/data_blocks/C_SdNdeDbWidget.cpp
     ../../src/system_definition/node_edit/data_blocks/C_SdNdeDbWidget.hpp
     ../../src/system_definition/node_edit/data_blocks/C_SdNdeDbWidget.ui
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobDataSelectionTableModel.cpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobDataSelectionTableView.cpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobDataSelectionWidget.cpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobPropertiesWidget.cpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobsWidget.cpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalTabContentWidget.cpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobDataSelectionTableModel.hpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobDataSelectionTableView.hpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobDataSelectionWidget.hpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobPropertiesWidget.hpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobsWidget.hpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalTabContentWidget.hpp
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobDataSelectionWidget.ui
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobPropertiesWidget.ui
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalLogJobsWidget.ui
+    ../../src/system_definition/node_edit/data_logger/C_SdNdeDalTabContentWidget.ui
     ../../src/system_definition/node_edit/datapools/C_SdNdeDpContentUtil.cpp
     ../../src/system_definition/node_edit/datapools/C_SdNdeDpContentUtil.hpp
     ../../src/system_definition/node_edit/datapools/C_SdNdeDpEditWidget.cpp
@@ -1939,6 +1980,9 @@ set(PROJECT_SOURCES
     ../../src/system_views/system_update/update_package/C_SyvUpPacPemFileOptionsPopUp.cpp
     ../../src/system_views/system_update/update_package/C_SyvUpPacPemFileOptionsPopUp.hpp
     ../../src/system_views/system_update/update_package/C_SyvUpPacPemFileOptionsPopUp.ui
+    ../../src/system_views/system_update/update_package/C_SyvUpPacSecureArchiveDialog.cpp
+    ../../src/system_views/system_update/update_package/C_SyvUpPacSecureArchiveDialog.hpp
+    ../../src/system_views/system_update/update_package/C_SyvUpPacSecureArchiveDialog.ui
     ../../src/system_views/system_update/update_package/C_SyvUpPacSectionNodeDatablockWidget.cpp
     ../../src/system_views/system_update/update_package/C_SyvUpPacSectionNodeDatablockWidget.hpp
     ../../src/system_views/system_update/update_package/C_SyvUpPacSectionNodeFilesWidget.cpp
@@ -1946,9 +1990,11 @@ set(PROJECT_SOURCES
     ../../src/system_views/system_update/update_package/C_SyvUpPacSectionNodeWidget.cpp
     ../../src/system_views/system_update/update_package/C_SyvUpPacSectionNodeWidget.hpp
     ../../src/system_views/system_update/update_package/C_SyvUpPacSectionNodeWidget.ui
+    ../../src/system_views/system_update/update_package/C_SyvUpPacServiceUpdatePackageDialog.cpp
+    ../../src/system_views/system_update/update_package/C_SyvUpPacServiceUpdatePackageDialog.hpp
+    ../../src/system_views/system_update/update_package/C_SyvUpPacServiceUpdatePackageDialog.ui    
     ../../src/system_views/system_update/update_package/C_SyvUpPacWidget.cpp
     ../../src/system_views/system_update/update_package/C_SyvUpPacWidget.hpp
-    ../../src/system_views/system_update/update_package/C_SyvUpPacWidget.ui
     ../../src/table_base/C_TblDelegate.cpp
     ../../src/table_base/C_TblDelegate.hpp
     ../../src/table_base/C_TblEditLineEditBase.cpp
@@ -2036,7 +2082,8 @@ set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/stack.hh PROPER
 # add QCustomPlot as static library
 add_library(qcustomplot STATIC IMPORTED)
 
-set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_linux.a)
+#set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_linux.a)
+set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_pios.a)
 target_link_libraries(openSYDE PRIVATE opensyde_core qcustomplot OpenSSL::SSL Qt::Core Qt::Widgets Qt::SvgWidgets Qt::PrintSupport)
 
 # define precompiled headers for application

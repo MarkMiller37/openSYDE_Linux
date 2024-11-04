@@ -578,11 +578,6 @@ QString C_Uti::h_GetPemDbPath()
 //----------------------------------------------------------------------------------------------------------------------
 QString C_Uti::h_GetApplicationVersion(const bool oq_UseStwFormat)
 {
-   const QFileInfo c_FileInfo(QApplication::applicationFilePath());
-   const QString c_FileName = c_FileInfo.fileName();
-   VS_FIXEDFILEINFO * pc_Info;
-   uint32_t u32_ValSize;
-   int32_t s32_InfoSize;
    C_SclString c_Version;
 
    if (oq_UseStwFormat)
