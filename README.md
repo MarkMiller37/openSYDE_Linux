@@ -8,6 +8,12 @@ Purpose of this fork:
 * Upgrade to Qt 6.6
 
 Status:
+* GUI builds on with
+** PIOS 64bit on Raspberry Pi
+** GCC 12.2
+* No further retests done
+
+Status before upgrading to R24-0D:
 * GUI, CAN Monitor, SYDE Coder C build
 * GUI basic workflows look useable
 * Dashboard connect via CAN results in messages being seen on virtual socket CAN
