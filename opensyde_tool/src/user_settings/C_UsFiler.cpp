@@ -872,6 +872,9 @@ void C_UsFiler::mh_SaveCommon(const C_UsHandler & orc_UserSettings, C_SclIniFile
 
    // Performance measurement
    orc_Ini.WriteBool("Common", "PerformanceMeasurementActive", orc_UserSettings.GetPerformanceActive());
+
+   // TSP shortcut
+   orc_Ini.WriteBool("Common", "TSPShortcutActive", orc_UserSettings.GetTspShortcutActive());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -979,9 +982,12 @@ void C_UsFiler::mh_SaveProjectIndependentSection(const C_UsHandler & orc_UserSet
 
    // Sys def node edit HALC splitter
    orc_Ini.WriteInteger("SdNodeEdit", "HalcSplitterX", orc_UserSettings.GetSdNodeEditHalcSplitterHorizontal());
-   // Sys def node edit HALC splitter
+   // Sys def node edit CANopen Manager splitter
    orc_Ini.WriteInteger("SdNodeEdit", "CoManagerSplitterX",
                         orc_UserSettings.GetSdNodeEditCoManagerSplitterHorizontal());
+   // Sys def node edit data logger splitter
+   orc_Ini.WriteInteger("SdNodeEdit", "DataLoggerSplitterX",
+                        orc_UserSettings.GetSdNodeEditDataLoggerSplitterHorizontal());
 
    // Sys def bus edit splitters
    orc_Ini.WriteInteger("SdBusEdit", "TreeSplitterX", orc_UserSettings.GetSdBusEditTreeSplitterHorizontal());
@@ -1102,6 +1108,10 @@ void C_UsFiler::mh_SaveProjectDependentSection(const C_UsHandler & orc_UserSetti
       // J1939 Catalog Path
       orc_Ini.WriteString(orc_ActiveProject.toStdString().c_str(), "ProjSd_last_known_j1939_catalog_path",
                           orc_UserSettings.GetLastKnownJ1939CatalogPath().toStdString().c_str());
+
+      // CSV Export Path
+      orc_Ini.WriteString(orc_ActiveProject.toStdString().c_str(), "ProjSd_last_known_csv_export_path",
+                          orc_UserSettings.GetLastKnownCsvExportPath().toStdString().c_str());
 
       // Last tab index in system definition
       orc_Ini.WriteInteger(orc_ActiveProject.toStdString().c_str(), "ProjSdNodeEditTabIndex_value",
@@ -1934,6 +1944,9 @@ void C_UsFiler::mh_LoadCommon(C_UsHandler & orc_UserSettings, C_SclIniFile & orc
 
    // Performance measurement
    orc_UserSettings.SetPerformanceActive(orc_Ini.ReadBool("Common", "PerformanceMeasurementActive", false));
+
+   // Enable|Disable TSP shortcut
+   orc_UserSettings.SetTspShortcutActive(orc_Ini.ReadBool("Common", "TSPShortcutActive", true));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -2075,6 +2088,10 @@ void C_UsFiler::mh_LoadProjectIndependentSection(C_UsHandler & orc_UserSettings,
    s32_Value = orc_Ini.ReadInteger("SdNodeEdit", "CoManagerSplitterX", 400);
    orc_UserSettings.SetSdNodeEditCoManagerSplitterHorizontal(s32_Value);
 
+   // Sys def node edit data logger splitter
+   s32_Value = orc_Ini.ReadInteger("SdNodeEdit", "DataLoggerSplitterX", 400);
+   orc_UserSettings.SetSdNodeEditDataLoggerSplitterHorizontal(s32_Value);
+
    // Sys def bus edit splitters
    s32_Value = orc_Ini.ReadInteger("SdBusEdit", "TreeSplitterX", 0);
    orc_UserSettings.SetSdBusEditTreeSplitterHorizontal(s32_Value);
@@ -2211,6 +2228,11 @@ void C_UsFiler::mh_LoadProjectDependentSection(C_UsHandler & orc_UserSettings, C
       orc_UserSettings.SetLastKnownJ1939CatalogPath(orc_Ini.ReadString(
                                                        orc_ActiveProject.toStdString().c_str(),
                                                        "ProjSd_last_known_j1939_catalog_path", "").c_str());
+
+      // Chart data as CSV Export
+      orc_UserSettings.SetLastKnownCsvExportPath(orc_Ini.ReadString(
+                                                    orc_ActiveProject.toStdString().c_str(),
+                                                    "ProjSd_last_known_csv_export_path", "").c_str());
 
       // Last tab index in system definition
       s32_Value = orc_Ini.ReadInteger(orc_ActiveProject.toStdString().c_str(), "ProjSdNodeEditTabIndex_value", 0);

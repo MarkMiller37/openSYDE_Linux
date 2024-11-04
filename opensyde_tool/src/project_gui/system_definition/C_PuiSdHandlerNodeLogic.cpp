@@ -41,6 +41,53 @@ using namespace stw::opensyde_gui_logic;
 /* -- Implementation ------------------------------------------------------------------------------------------------ */
 
 //----------------------------------------------------------------------------------------------------------------------
+/*! \brief   Set name max char limit
+
+   \param[in]  ou32_NewValue  New value
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_PuiSdHandlerNodeLogic::SetNameMaxCharLimit(const uint32_t ou32_NewValue)
+{
+   this->mc_CoreDefinition.u32_NameMaxCharLimit = ou32_NewValue;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Get name max char limit
+
+   \return
+   Name max char limit
+*/
+//----------------------------------------------------------------------------------------------------------------------
+uint32_t C_PuiSdHandlerNodeLogic::GetNameMaxCharLimit() const
+{
+   return this->mc_CoreDefinition.u32_NameMaxCharLimit;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Get name max char limit affected items
+
+   \param[in]      ou32_NameMaxCharLimit  Name max char limit
+   \param[in,out]  orc_ChangedItems       Changed items
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_PuiSdHandlerNodeLogic::GetNameMaxCharLimitAffectedItems(const uint32_t ou32_NameMaxCharLimit,
+                                                               std::list<C_OscSystemNameMaxCharLimitChangeReportItem> & orc_ChangedItems)
+{
+   this->mc_CoreDefinition.GetNameMaxCharLimitAffectedItems(ou32_NameMaxCharLimit, orc_ChangedItems);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Apply name max char limit
+
+   \param[in]  ou32_NameMaxCharLimit   Name max char limit
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_PuiSdHandlerNodeLogic::ApplyNameMaxCharLimit(const uint32_t ou32_NameMaxCharLimit)
+{
+   this->mc_CoreDefinition.ApplyNameMaxCharLimit(ou32_NameMaxCharLimit);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Check if any node uses the provided name
 
    \param[in]      orc_Name               Node name to check for
@@ -518,7 +565,8 @@ uint32_t C_PuiSdHandlerNodeLogic::AddNodeAndSort(C_OscNode & orc_OscNode, const 
       C_PuiSdHandlerNodeLogic::h_AutomaticCeStringAdaptation(c_DeviceName.c_str()).toStdString().c_str();
 
    orc_OscNode.c_Properties.c_Name = C_Uti::h_GetUniqueName(
-      this->m_GetExistingNodeNames(), orc_OscNode.c_Properties.c_Name, c_DefaultDeviceName);
+      this->m_GetExistingNodeNames(), orc_OscNode.c_Properties.c_Name, this->GetNameMaxCharLimit(),
+      c_DefaultDeviceName);
 
    mc_CoreDefinition.AddNode(orc_OscNode, orc_SubDeviceName.toStdString().c_str(),
                              orc_MainDevice.toStdString().c_str()); //add node and set device definition
@@ -585,7 +633,7 @@ uint32_t C_PuiSdHandlerNodeLogic::AddNodeSquadAndSort(std::vector<C_OscNode> & o
       // The proposed name would be identical for all sub nodes too. The sub node specific part of the name
       // will be added with SetBaseName
       c_Name = C_Uti::h_GetUniqueName(
-         this->m_GetExistingNodeNames(), c_Name, c_DefaultDeviceName);
+         this->m_GetExistingNodeNames(), c_Name, this->GetNameMaxCharLimit(), c_DefaultDeviceName);
    }
 
    this->mc_CoreDefinition.AddNodeSquad(orc_OscNodes, c_NodeNames, orc_MainDevice.toStdString().c_str()); //add node and
@@ -831,6 +879,134 @@ void C_PuiSdHandlerNodeLogic::GetSupportedCanBitrates(const std::vector<uint32_t
          break;
       }
    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief   Returns all supported CAN FD bitrates of specific nodes
+
+   If no nodes are available, all CAN FD bitrates will be supported.
+
+   \param[in]   orc_Nodes     Vector with all relevant node indexes
+   \param[out]  orc_Bitrates  Result vector with all supported CAN FD bitrates
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_PuiSdHandlerNodeLogic::GetSupportedCanFdBitrates(const std::vector<uint32_t> & orc_Nodes,
+                                                        std::vector<uint32_t> & orc_Bitrates) const
+{
+   uint32_t u32_NodeCounter;
+
+   orc_Bitrates.clear();
+
+   // If there are no nodes, we support all CAN bitrates.
+   orc_Bitrates.push_back(1000);
+   orc_Bitrates.push_back(2000);
+   orc_Bitrates.push_back(3000);
+   orc_Bitrates.push_back(4000);
+   orc_Bitrates.push_back(5000);
+
+   for (u32_NodeCounter = 0U; u32_NodeCounter < orc_Nodes.size(); ++u32_NodeCounter)
+   {
+      const C_OscNode * const pc_Node = this->GetOscNodeConst(orc_Nodes[u32_NodeCounter]);
+
+      if (pc_Node != NULL)
+      {
+         uint32_t u32_SupportedBitrateCounter;
+         std::vector<uint32_t> c_TempBitrates;
+
+         tgl_assert(pc_Node->pc_DeviceDefinition != NULL);
+
+         // Search common bitrates by comparing previously found bitrates with the bitrates of the current device
+         for (u32_SupportedBitrateCounter = 0U; u32_SupportedBitrateCounter < orc_Bitrates.size();
+              ++u32_SupportedBitrateCounter)
+         {
+            uint32_t u32_DeviceBitrateCounter;
+
+            for (u32_DeviceBitrateCounter = 0U;
+                 u32_DeviceBitrateCounter < pc_Node->pc_DeviceDefinition->c_SupportedCanFdDataBitrates.size();
+                 ++u32_DeviceBitrateCounter)
+            {
+               if (orc_Bitrates[u32_SupportedBitrateCounter] ==
+                   pc_Node->pc_DeviceDefinition->c_SupportedCanFdDataBitrates[u32_DeviceBitrateCounter])
+               {
+                  c_TempBitrates.push_back(orc_Bitrates[u32_SupportedBitrateCounter]);
+                  break;
+               }
+            }
+         }
+
+         // Save the found common bitrates with this device
+         orc_Bitrates.clear();
+         orc_Bitrates = c_TempBitrates;
+      }
+      else
+      {
+         // Error
+         orc_Bitrates.clear();
+      }
+
+      // If no bitrates are available, it will not change by other devices
+      if (orc_Bitrates.size() == 0)
+      {
+         break;
+      }
+   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Does all nodes supports CANFD
+
+   \param[in]  orc_Nodes               Vector with all relevant node indexes
+   \param[in]  orc_InterfaceIndexes    Vector with all node interface ids which are connected to the bus
+
+   \return
+   True  If all nodes supports CANFD
+   False If any of nodes doesn't supports CANFD
+*/
+//----------------------------------------------------------------------------------------------------------------------
+bool C_PuiSdHandlerNodeLogic::NodeSupportsCanFd(const std::vector<uint32_t> & orc_Nodes,
+                                                const std::vector<uint32_t> & orc_InterfaceIndexes) const
+{
+   bool q_IsNodeSupportsCanFd = true;
+
+   for (uint32_t u32_NodeCounter = 0U; (u32_NodeCounter < orc_Nodes.size()) && (q_IsNodeSupportsCanFd == true);
+        ++u32_NodeCounter)
+   {
+      const C_OscNode * const pc_Node = this->GetOscNodeConst(orc_Nodes[u32_NodeCounter]);
+
+      if (pc_Node != NULL)
+      {
+         if (pc_Node->pc_DeviceDefinition->c_SupportedCanFeatures.empty())
+         {
+            q_IsNodeSupportsCanFd = false;
+         }
+         else
+         {
+            if (orc_InterfaceIndexes[u32_NodeCounter] < pc_Node->c_Properties.c_ComInterfaces.size())
+            {
+               const C_OscNodeComInterfaceSettings & rc_CurInterface =
+                  pc_Node->c_Properties.c_ComInterfaces[orc_InterfaceIndexes[u32_NodeCounter]];
+               const stw::scl::C_SclString c_InterfaceNameLower = C_OscSubDeviceDefinition::h_GetInterfaceNameLower(
+                  rc_CurInterface.e_InterfaceType, rc_CurInterface.u8_InterfaceNumber);
+               for (uint32_t u32_ItFeature = 0UL;
+                    u32_ItFeature < pc_Node->pc_DeviceDefinition->c_SupportedCanFeatures.size();
+                    ++u32_ItFeature)
+               {
+                  const C_OscSupportedCanInterfaceFeatures & rc_Feature =
+                     pc_Node->pc_DeviceDefinition->c_SupportedCanFeatures[u32_ItFeature];
+                  if (rc_Feature.c_Interface == c_InterfaceNameLower)
+                  {
+                     if (rc_Feature.q_SupportsCanFd == false)
+                     {
+                        q_IsNodeSupportsCanFd = false;
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+      }
+   }
+   return q_IsNodeSupportsCanFd;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1188,6 +1364,35 @@ bool C_PuiSdHandlerNodeLogic::CheckNodeIndexAssociatedWithAnotherNodeIndex(const
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Replace node
+
+   \param[in]  ou32_NodeIndex    Node index
+   \param[in]  orc_OscNode       Osc node
+   \param[in]  orc_UiNode        Ui node
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_PuiSdHandlerNodeLogic::ReplaceNode(const uint32_t ou32_NodeIndex,
+                                          const stw::opensyde_core::C_OscNode & orc_OscNode,
+                                          const C_PuiSdNode & orc_UiNode)
+{
+   //Save device definition
+   const stw::opensyde_core::C_OscDeviceDefinition * const pc_DevDef =
+      this->mc_CoreDefinition.c_Nodes[ou32_NodeIndex].pc_DeviceDefinition;
+
+   Q_EMIT (this->SigSyncNodeAboutToBeDeleted(ou32_NodeIndex, true));
+   this->mc_CoreDefinition.c_Nodes[ou32_NodeIndex] = orc_OscNode;
+   //Restore device definition
+   this->mc_CoreDefinition.c_Nodes[ou32_NodeIndex].pc_DeviceDefinition = pc_DevDef;
+
+   //insert UI part at same position as OSC part:
+   this->mc_UiNodes[ou32_NodeIndex] = orc_UiNode;
+
+   m_HandleSyncNodeReplace(ou32_NodeIndex);
+
+   //do not signal "node change" (unselects node in node bar and should not be necessary)
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Add data pool
 
    \param[in]  oru32_NodeIndex            Node index
@@ -1369,7 +1574,7 @@ int32_t C_PuiSdHandlerNodeLogic::InsertDataPool(const uint32_t & oru32_NodeIndex
          this->mc_SharedDatapools.OnDatapoolInserted(C_OscNodeDataPoolId(oru32_NodeIndex, oru32_DataPoolIndex));
 
          //Synchronization engine
-         Q_EMIT (this->SigSyncNodeDataPoolAdded(oru32_NodeIndex, oru32_DataPoolIndex));
+         m_HandleSyncNodeDataPoolAdded(oru32_NodeIndex, oru32_DataPoolIndex);
       }
       else
       {
@@ -1413,7 +1618,7 @@ int32_t C_PuiSdHandlerNodeLogic::RemoveDataPool(const uint32_t & oru32_NodeIndex
          if (oq_SuppressSyncSignal == false)
          {
             //Synchronization engine (First!)
-            Q_EMIT (this->SigSyncNodeDataPoolAboutToBeDeleted(oru32_NodeIndex, oru32_DataPoolIndex));
+            m_HandleSyncNodeDataPoolAboutToBeDeleted(oru32_NodeIndex, oru32_DataPoolIndex);
          }
          //Handle COMM
          m_CleanUpComDataPool(oru32_NodeIndex, oru32_DataPoolIndex);
@@ -1692,7 +1897,8 @@ int32_t C_PuiSdHandlerNodeLogic::GetDataPool(const uint32_t & oru32_NodeIndex, c
 C_SclString C_PuiSdHandlerNodeLogic::GetUniqueDataPoolName(const uint32_t & oru32_NodeIndex,
                                                            const C_SclString & orc_Proposal) const
 {
-   return C_Uti::h_GetUniqueName(this->m_GetExistingNodeDataPoolNames(oru32_NodeIndex), orc_Proposal);
+   return C_Uti::h_GetUniqueName(this->m_GetExistingNodeDataPoolNames(
+                                    oru32_NodeIndex), orc_Proposal, this->GetNameMaxCharLimit());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1838,7 +2044,7 @@ int32_t C_PuiSdHandlerNodeLogic::MoveDataPool(const uint32_t ou32_NodeIndex, con
                                                      C_OscNodeDataPoolId(ou32_NodeIndex, ou32_TargetIndex));
 
             //Synchronization engine
-            Q_EMIT (this->SigSyncNodeDataPoolMoved(ou32_NodeIndex, ou32_SourceIndex, ou32_TargetIndex));
+            m_HandleSyncNodeDataPoolMoved(ou32_NodeIndex, ou32_SourceIndex, ou32_TargetIndex);
          }
       }
    }
@@ -1992,6 +2198,7 @@ const
 //----------------------------------------------------------------------------------------------------------------------
 C_PuiSdSharedDatapools & C_PuiSdHandlerNodeLogic::GetSharedDatapools(void)
 {
+   //lint -e{1536} it is intended to expose a private member to avoid copies of rather big data structures
    return this->mc_SharedDatapools;
 }
 
@@ -2061,8 +2268,8 @@ bool C_PuiSdHandlerNodeLogic::C_PuiSdHandlerNodeLogicNvmArea::operator <(
    reference to new instance
 */
 //----------------------------------------------------------------------------------------------------------------------
-C_PuiSdHandlerNodeLogic::C_PuiSdHandlerNodeLogicNvmArea &  C_PuiSdHandlerNodeLogic::C_PuiSdHandlerNodeLogicNvmArea::
-operator =(const C_PuiSdHandlerNodeLogic::C_PuiSdHandlerNodeLogicNvmArea & orc_Source) &
+C_PuiSdHandlerNodeLogic::C_PuiSdHandlerNodeLogicNvmArea & C_PuiSdHandlerNodeLogic::C_PuiSdHandlerNodeLogicNvmArea
+::operator =(const C_PuiSdHandlerNodeLogic::C_PuiSdHandlerNodeLogicNvmArea & orc_Source) &
 {
    if (this != &orc_Source)
    {
@@ -2454,7 +2661,8 @@ int32_t C_PuiSdHandlerNodeLogic::MoveApplication(const uint32_t ou32_NodeIndex, 
 C_SclString C_PuiSdHandlerNodeLogic::GetUniqueApplicationName(const uint32_t & oru32_NodeIndex,
                                                               const C_SclString & orc_Proposal) const
 {
-   return C_Uti::h_GetUniqueName(this->m_GetExistingNodeApplicationNames(oru32_NodeIndex), orc_Proposal);
+   return C_Uti::h_GetUniqueName(this->m_GetExistingNodeApplicationNames(
+                                    oru32_NodeIndex), orc_Proposal, this->GetNameMaxCharLimit());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -2738,7 +2946,7 @@ int32_t C_PuiSdHandlerNodeLogic::InsertDataPoolList(const uint32_t & oru32_NodeI
             c_NodeDataPoolList.c_Name =
                C_Uti::h_GetUniqueName(this->m_GetExistingNodeDataPoolListNames(oru32_NodeIndex,
                                                                                oru32_DataPoolIndex),
-                                      c_NodeDataPoolList.c_Name);
+                                      c_NodeDataPoolList.c_Name, this->GetNameMaxCharLimit());
             //Adapt required fields
             if (rc_OscDataPool.q_IsSafety == true)
             {
@@ -2757,7 +2965,7 @@ int32_t C_PuiSdHandlerNodeLogic::InsertDataPoolList(const uint32_t & oru32_NodeI
             rc_OscNode.RecalculateAddress();
 
             //Synchronization engine
-            Q_EMIT (this->SigSyncNodeDataPoolListAdded(oru32_NodeIndex, oru32_DataPoolIndex, oru32_DataPoolListIndex));
+            m_HandleSyncNodeDataPoolListAdded(oru32_NodeIndex, oru32_DataPoolIndex, oru32_DataPoolListIndex);
 
             // Handle shared Datapools
             if (oq_HandleSharedDatapools == true)
@@ -2838,8 +3046,8 @@ int32_t C_PuiSdHandlerNodeLogic::RemoveDataPoolList(const uint32_t & oru32_NodeI
          if (oru32_DataPoolListIndex < rc_OscDataPool.c_Lists.size())
          {
             //Synchronization engine (First!)
-            Q_EMIT (this->SigSyncNodeDataPoolListAboutToBeDeleted(oru32_NodeIndex, oru32_DataPoolIndex,
-                                                                  oru32_DataPoolListIndex));
+            m_HandleSyncNodeDataPoolListAboutToBeDeleted(oru32_NodeIndex, oru32_DataPoolIndex,
+                                                         oru32_DataPoolListIndex);
             rc_UiDataPool.c_DataPoolLists.erase(rc_UiDataPool.c_DataPoolLists.begin() + oru32_DataPoolListIndex);
             rc_OscDataPool.c_Lists.erase(rc_OscDataPool.c_Lists.begin() + oru32_DataPoolListIndex);
 
@@ -3578,7 +3786,7 @@ int32_t C_PuiSdHandlerNodeLogic::InsertDataPoolListDataSet(const uint32_t & oru3
                   C_Uti::h_GetUniqueName(this->m_GetExistingNodeDataPoolListDataSetNames(oru32_NodeIndex,
                                                                                          oru32_DataPoolIndex,
                                                                                          oru32_DataPoolListIndex),
-                                         c_NodeDataPoolDataSet.c_Name);
+                                         c_NodeDataPoolDataSet.c_Name, this->GetNameMaxCharLimit());
                //Insert
                rc_OscList.c_DataSets.insert(
                   rc_OscList.c_DataSets.begin() + oru32_DataPoolListDataSetIndex, c_NodeDataPoolDataSet);
@@ -3987,8 +4195,8 @@ int32_t C_PuiSdHandlerNodeLogic::MoveDataPoolList(const uint32_t & oru32_NodeInd
             rc_UiDataPool.c_DataPoolLists.insert(rc_UiDataPool.c_DataPoolLists.begin() + oru32_TargetIndex, c_Data);
 
             //Synchronization engine
-            Q_EMIT (this->SigSyncNodeDataPoolListMoved(oru32_NodeIndex, oru32_DataPoolIndex, oru32_SourceIndex,
-                                                       oru32_TargetIndex));
+            m_HandleSyncNodeDataPoolListMoved(oru32_NodeIndex, oru32_DataPoolIndex, oru32_SourceIndex,
+                                              oru32_TargetIndex);
 
             // Handle shared Datapools
             if (oq_HandleSharedDatapools == true)
@@ -4279,7 +4487,7 @@ int32_t C_PuiSdHandlerNodeLogic::InsertDataPoolListElement(const uint32_t & oru3
                   C_Uti::h_GetUniqueName(this->m_GetExistingNodeDataPoolListVariableNames(oru32_NodeIndex,
                                                                                           oru32_DataPoolIndex,
                                                                                           oru32_DataPoolListIndex),
-                                         c_NodeDataPoolListElement.c_Name);
+                                         c_NodeDataPoolListElement.c_Name, this->GetNameMaxCharLimit());
                //Adapt required fields
                if (rc_OscDataPool.q_IsSafety == true)
                {
@@ -4295,9 +4503,9 @@ int32_t C_PuiSdHandlerNodeLogic::InsertDataPoolListElement(const uint32_t & oru3
                rc_OscNode.RecalculateAddress();
 
                //Synchronization engine
-               Q_EMIT (this->SigSyncNodeDataPoolListElementAdded(oru32_NodeIndex, oru32_DataPoolIndex,
-                                                                 oru32_DataPoolListIndex,
-                                                                 oru32_DataPoolListElementIndex));
+               m_HandleSyncNodeDataPoolListElementAdded(oru32_NodeIndex, oru32_DataPoolIndex,
+                                                        oru32_DataPoolListIndex,
+                                                        oru32_DataPoolListElementIndex);
 
                // Handle shared Datapools
                if (oq_HandleSharedDatapools == true)
@@ -4394,9 +4602,9 @@ int32_t C_PuiSdHandlerNodeLogic::RemoveDataPoolListElement(const uint32_t & oru3
             if (oru32_DataPoolListElementIndex < rc_UiList.c_DataPoolListElements.size())
             {
                //Synchronization engine (First!)
-               Q_EMIT (this->SigSyncNodeDataPoolListElementAboutToBeDeleted(oru32_NodeIndex, oru32_DataPoolIndex,
-                                                                            oru32_DataPoolListIndex,
-                                                                            oru32_DataPoolListElementIndex));
+               m_HandleSyncNodeDataPoolListElementAboutToBeDeleted(oru32_NodeIndex, oru32_DataPoolIndex,
+                                                                   oru32_DataPoolListIndex,
+                                                                   oru32_DataPoolListElementIndex);
                rc_UiList.c_DataPoolListElements.erase(rc_UiList.c_DataPoolListElements.begin() +
                                                       oru32_DataPoolListElementIndex);
                rc_OscList.c_Elements.erase(rc_OscList.c_Elements.begin() + oru32_DataPoolListElementIndex);
@@ -5402,9 +5610,9 @@ int32_t C_PuiSdHandlerNodeLogic::MoveDataPoolListElement(const uint32_t & oru32_
                   rc_UiList.c_DataPoolListElements.begin() + oru32_TargetIndex, c_Data);
 
                //Synchronization engine
-               Q_EMIT this->SigSyncNodeDataPoolListElementMoved(oru32_NodeIndex, oru32_DataPoolIndex,
-                                                                oru32_DataPoolListIndex,
-                                                                oru32_SourceIndex, oru32_TargetIndex);
+               m_HandleSyncNodeDataPoolListElementMoved(oru32_NodeIndex, oru32_DataPoolIndex,
+                                                        oru32_DataPoolListIndex,
+                                                        oru32_SourceIndex, oru32_TargetIndex);
 
                // Handle shared Datapools
                if (oq_HandleSharedDatapools == true)

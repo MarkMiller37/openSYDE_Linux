@@ -95,7 +95,12 @@ int32_t C_OscBuSequences::Init(const C_SclString & orc_CanDllPath, const int32_t
    int32_t s32_Return = C_NO_ERR;
    const C_SclString c_LogActivity = "Initialization";
 
-   m_ReportProgress(s32_Return, "Starting the initialization of CAN driver and protocol ... ");
+   m_ReportProgress(s32_Return, "Starting the initialization of CAN driver and protocol ...");
+
+   const uint8_t u8_MINIMUM_PERCENTAGE = 0;
+   m_ReportProgressPercentage(u8_MINIMUM_PERCENTAGE);
+
+   osc_write_log_info(c_LogActivity, "CAN DLL path used: " + orc_CanDllPath);
 
    ms32_CanBitrate = os32_CanBitrate;
 
@@ -179,7 +184,7 @@ int32_t C_OscBuSequences::ActivateFlashLoader(const uint32_t ou32_FlashloaderRes
    const uint32_t u32_SCAN_TIME_MS = 5000U;
    uint32_t u32_WaitTime = ou32_FlashloaderResetWaitTime;
 
-   m_ReportProgress(s32_Return, "Starting the flashloader activation ... ");
+   m_ReportProgress(s32_Return, "Starting the flashloader activation ...");
 
    if (u32_WaitTime < u32_SCAN_TIME_MS)
    {
@@ -209,7 +214,7 @@ int32_t C_OscBuSequences::ActivateFlashLoader(const uint32_t ou32_FlashloaderRes
       C_SclString c_Text;
       osc_write_log_warning(c_LogActivity, "Could not request an ECU reset.");
 
-      c_Text.PrintFormatted("You now have %d seconds time to turn on your target device ...",
+      c_Text.PrintFormatted("You now have %u seconds time to turn on your target device ...",
                             u32_SCAN_TIME_MS / 1000);
       m_ReportProgress(C_WARN, c_Text);
    }
@@ -259,7 +264,7 @@ int32_t C_OscBuSequences::ActivateFlashLoader(const uint32_t ou32_FlashloaderRes
       osc_write_log_info(c_LogActivity, "Connection to target device established. Flashloader activated.");
    }
 
-   m_ReportProgress(s32_Return, "Flashloader activation finished. ");
+   m_ReportProgress(s32_Return, "Flashloader activation finished.");
 
    return s32_Return;
 }
@@ -279,7 +284,7 @@ int32_t C_OscBuSequences::ReadDeviceInformation(void)
    C_SclString c_DeviceName;
    C_OscComFlashloaderInformation c_Info;
 
-   m_ReportProgress(s32_Return, "Starting to read the device information... ");
+   m_ReportProgress(s32_Return, "Starting to read the device information...");
 
    s32_Return = mc_OsyProtocol.OsyReadHardwareNumber(c_Info.u32_EcuArticleNumber, &u8_NumberCode);
 
@@ -411,7 +416,9 @@ int32_t C_OscBuSequences::ReadDeviceInformation(void)
       }
    }
 
-   m_ReportProgress(s32_Return, "Read device information finished. ");
+   m_ReportProgress(s32_Return, "Read device information finished.");
+   const uint8_t u8_PROGRESS_PERCENTAGE = 2;
+   m_ReportProgressPercentage(u8_PROGRESS_PERCENTAGE);
 
    if (s32_Return == C_NO_ERR)
    {
@@ -445,9 +452,9 @@ int32_t C_OscBuSequences::UpdateNode(const C_SclString & orc_HexFilePath, const 
    uint32_t u32_SignatureBlockAddress = 0;
    const stw::hex_file::C_HexDataDump * pc_HexDump = NULL;
 
-   m_ReportProgress(s32_Return, "Starting node update... ");
+   m_ReportProgress(s32_Return, "Starting node update...");
 
-   s32_Return = mh_ReadHexFile(orc_HexFilePath, c_HexFile, u32_SignatureBlockAddress);
+   s32_Return = h_ReadHexFile(orc_HexFilePath, c_HexFile, u32_SignatureBlockAddress);
 
    if (s32_Return == C_NO_ERR)
    {
@@ -522,9 +529,9 @@ int32_t C_OscBuSequences::UpdateNode(const C_SclString & orc_HexFilePath, const 
 
          if (u64_Seed != 42U)
          {
-            C_SclString c_Tmp;
-            c_Tmp.PrintFormatted("Received seed in non secure mode does not match the "
-                                 "expected value, expected: 42, got %i", u64_Seed);
+            const C_SclString c_Tmp =
+               "Received seed in non secure mode does not match the expected value, expected: 42, got " +
+               C_SclString::IntToStr(u64_Seed);
             osc_write_log_warning(c_LogActivity, c_Tmp.c_str());
          }
 
@@ -554,7 +561,7 @@ int32_t C_OscBuSequences::UpdateNode(const C_SclString & orc_HexFilePath, const 
          {
             C_SclString c_Error;
             c_Error.PrintFormatted("(Offset: 0x%08x Size: 0x%08x)", pc_HexDump->at_Blocks[u16_Area].u32_AddressOffset,
-                                   pc_HexDump->at_Blocks[u16_Area].au8_Data.GetLength());
+                                   static_cast<uint32_t>(pc_HexDump->at_Blocks[u16_Area].au8_Data.GetLength()));
             osc_write_log_error(c_LogActivity,  "Could not get confirmation about flash memory availability " +
                                 c_Error + "! Details: " +
                                 C_OscProtocolDriverOsy::h_GetOpenSydeServiceErrorDetails(s32_Return, u8_NumberCode));
@@ -620,7 +627,7 @@ int32_t C_OscBuSequences::UpdateNode(const C_SclString & orc_HexFilePath, const 
          {
             C_SclString c_Error;
             c_Error.PrintFormatted("(Offset: 0x%08X Size: 0x%08X)", pc_HexDump->at_Blocks[u16_Area].u32_AddressOffset,
-                                   pc_HexDump->at_Blocks[u16_Area].au8_Data.GetLength());
+                                   static_cast<uint32_t>(pc_HexDump->at_Blocks[u16_Area].au8_Data.GetLength()));
             osc_write_log_error(c_LogActivity, "Could not request download " + c_Error + "! Details: " +
                                 C_OscProtocolDriverOsy::h_GetOpenSydeServiceErrorDetails(s32_Return, u8_NumberCode));
             q_ErrorOccurred = true;
@@ -663,6 +670,11 @@ int32_t C_OscBuSequences::UpdateNode(const C_SclString & orc_HexFilePath, const 
                                         s32_Size - s32_RemainingBytes, s32_Size);
                   m_ReportProgress(s32_Return, c_Text);
 
+                  const uint8_t u8_MAX_PERCENTAGE = 100;
+                  const uint8_t u8_Percentage =
+                     static_cast<uint8_t>((u8_MAX_PERCENTAGE * (s32_Size - s32_RemainingBytes)) / s32_Size);
+                  m_ReportProgressPercentage(u8_Percentage);
+
                   s32_RemainingBytes -= static_cast<int32_t>(c_Data.size());
                   u8_BlockSequenceCounter = (u8_BlockSequenceCounter < 0xFFU) ? (u8_BlockSequenceCounter + 1U) : 0x00U;
                }
@@ -684,6 +696,10 @@ int32_t C_OscBuSequences::UpdateNode(const C_SclString & orc_HexFilePath, const 
             C_SclString c_Text;
             c_Text.PrintFormatted("Transferring area %02d/%02d  byte %08d/%08d",
                                   u16_Area + 1, pc_HexDump->at_Blocks.GetLength(), s32_Size, s32_Size);
+
+            const uint8_t u8_MAX_PERCENTAGE = 100;
+            m_ReportProgressPercentage(u8_MAX_PERCENTAGE);
+
             m_ReportProgress(s32_Return, c_Text);
             m_ReportProgress(s32_Return, "Finished writing area, finalizing ...");
 
@@ -720,7 +736,7 @@ int32_t C_OscBuSequences::UpdateNode(const C_SclString & orc_HexFilePath, const 
       osc_write_log_info(c_LogActivity, "Finished writing all data.");
    }
 
-   m_ReportProgress(s32_Return, "Node update finished. ");
+   m_ReportProgress(s32_Return, "Node update finished.");
 
    return s32_Return;
 }
@@ -753,9 +769,89 @@ int32_t C_OscBuSequences::ResetSystem(void)
       osc_write_log_error(c_LogActivity, "Successfully sent reset to target device!");
    }
 
-   m_ReportProgress(s32_Return, "System reset finished. ");
+   m_ReportProgress(s32_Return, "System reset finished.");
 
    return s32_Return;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Read HEX file
+
+   \param[in]   orc_HexFilePath              Path to HEX file
+   \param[out]  orc_HexFile                  HEX file data structure
+   \param[out]  oru32_SignatureBlockAddress  Signature block address
+
+   \return
+   C_NO_ERR    HEX file read
+   C_RD_WR     Could not load file
+   C_NOACT     No signature block found in HEX file
+*/
+//----------------------------------------------------------------------------------------------------------------------
+int32_t C_OscBuSequences::h_ReadHexFile(const C_SclString & orc_HexFilePath, C_OscHexFile & orc_HexFile,
+                                        uint32_t & oru32_SignatureBlockAddress)
+{
+   int32_t s32_Return = C_NO_ERR;
+   uint32_t u32_Return;
+   const C_SclString c_LogActivity = "Read HEX File";
+
+   u32_Return = orc_HexFile.LoadFromFile(orc_HexFilePath.c_str());
+   if (u32_Return != stw::hex_file::NO_ERR)
+   {
+      s32_Return = C_RD_WR;
+      osc_write_log_error(c_LogActivity, "Could not open the HEX file \"" + orc_HexFilePath + "\"! Details: " +
+                          orc_HexFile.ErrorCodeToErrorText(u32_Return));
+   }
+   else
+   {
+      C_SclDynamicArray<stw::diag_lib::C_XFLECUInformation> c_InfoBlocks;
+      //no return value that can cause trouble for us
+      (void)orc_HexFile.GetECUInformationBlocks(c_InfoBlocks, 0, false, false, false);
+
+      osc_write_log_info(c_LogActivity, "Number of application information blocks in HEX file: " +
+                         C_SclString::IntToStr(c_InfoBlocks.GetLength()));
+
+      for (int32_t s32_Index = 0; s32_Index < c_InfoBlocks.GetLength(); s32_Index++)
+      {
+         C_SclStringList c_Lines;
+         C_SclString c_Help;
+         c_Help.PrintFormatted("%02d", s32_Index + 1);
+         osc_write_log_info(c_LogActivity, "Application information block " + c_Help);
+
+         c_InfoBlocks[s32_Index].AddInfoToList(c_Lines);
+         for (uint32_t u32_Line = 0; u32_Line < c_Lines.GetCount(); u32_Line++)
+         {
+            osc_write_log_info(c_LogActivity, c_Lines.Strings[u32_Line]);
+         }
+      }
+
+      s32_Return = orc_HexFile.GetSignatureBlockAddress(oru32_SignatureBlockAddress);
+      if (s32_Return != C_NO_ERR)
+      {
+         osc_write_log_error(c_LogActivity, "Could not find a signature block in the HEX file data!");
+      }
+      else
+      {
+         C_SclString c_Text;
+
+         c_Text.PrintFormatted("Signature block found at address 0x%08X.", oru32_SignatureBlockAddress);
+         osc_write_log_info(c_LogActivity, c_Text);
+      }
+   }
+
+   return s32_Return;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Report progress in percentage
+
+   Has only to be overridden if needed.
+
+   \param[in]       ou8_ProgressInPercentage     Progress in percentage
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_OscBuSequences::m_ReportProgressPercentage(const uint8_t ou8_ProgressInPercentage)
+{
+   std::cout << "Progress in Percentage: " << static_cast<int32_t>(ou8_ProgressInPercentage) << std::endl;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -812,71 +908,4 @@ void C_OscBuSequences::m_ReportFlashloaderInformationRead(const C_SclString & or
       std::cout << c_Text.Strings[u32_Line].c_str() << "\n";
       osc_write_log_info("Flashloader Info", c_Text.Strings[u32_Line]);
    }
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-/*! \brief  Read HEX file
-
-   \param[in]   orc_HexFilePath              Path to HEX file
-   \param[out]  orc_HexFile                  HEX file data structure
-   \param[out]  oru32_SignatureBlockAddress  Signature block address
-
-   \return
-   C_NO_ERR    HEX file read
-   C_RD_WR     Could not load file
-   C_NOACT     No signature block found in HEX file
-*/
-//----------------------------------------------------------------------------------------------------------------------
-int32_t C_OscBuSequences::mh_ReadHexFile(const C_SclString & orc_HexFilePath, C_OscHexFile & orc_HexFile,
-                                         uint32_t & oru32_SignatureBlockAddress)
-{
-   int32_t s32_Return = C_NO_ERR;
-   uint32_t u32_Return;
-   const C_SclString c_LogActivity = "Read HEX File";
-
-   u32_Return = orc_HexFile.LoadFromFile(orc_HexFilePath.c_str());
-   if (u32_Return != stw::hex_file::NO_ERR)
-   {
-      s32_Return = C_RD_WR;
-      osc_write_log_error(c_LogActivity, "Could not open the HEX file \"" + orc_HexFilePath + "\"! Details: " +
-                          orc_HexFile.ErrorCodeToErrorText(u32_Return));
-   }
-   else
-   {
-      C_SclDynamicArray<stw::diag_lib::C_XFLECUInformation> c_InfoBlocks;
-      //no return value that can cause trouble for us
-      (void)orc_HexFile.GetECUInformationBlocks(c_InfoBlocks, 0, false, false, false);
-
-      osc_write_log_info(c_LogActivity, "Number of application information blocks in HEX file: " +
-                         C_SclString::IntToStr(c_InfoBlocks.GetLength()));
-
-      for (int32_t s32_Index = 0; s32_Index < c_InfoBlocks.GetLength(); s32_Index++)
-      {
-         C_SclStringList c_Lines;
-         C_SclString c_Help;
-         c_Help.PrintFormatted("%02d", s32_Index + 1);
-         osc_write_log_info(c_LogActivity, "Application information block " + c_Help);
-
-         c_InfoBlocks[s32_Index].AddInfoToList(c_Lines);
-         for (uint32_t u32_Line = 0; u32_Line < c_Lines.GetCount(); u32_Line++)
-         {
-            osc_write_log_info(c_LogActivity, c_Lines.Strings[u32_Line]);
-         }
-      }
-
-      s32_Return = orc_HexFile.GetSignatureBlockAddress(oru32_SignatureBlockAddress);
-      if (s32_Return != C_NO_ERR)
-      {
-         osc_write_log_error(c_LogActivity, "Could not find a signature block in the HEX file data!");
-      }
-      else
-      {
-         C_SclString c_Text;
-
-         c_Text.PrintFormatted("Signature block found at address 0x%08X.", oru32_SignatureBlockAddress);
-         osc_write_log_info(c_LogActivity, c_Text);
-      }
-   }
-
-   return s32_Return;
 }

@@ -103,9 +103,9 @@ public:
 
    //Sync to system definition
    void OnSyncNodeAdded(const uint32_t ou32_Index);
-   void OnSyncNodeHalc(const uint32_t ou32_Index, const std::map<C_PuiSvDbNodeDataPoolListElementId,
-                                                                 C_PuiSvDbNodeDataPoolListElementId> & orc_MapCurToNew);
-   void OnSyncNodeAboutToBeDeleted(const uint32_t ou32_Index);
+   void OnSyncNodeHalc(const uint32_t ou32_Index, const std::map<opensyde_core::C_OscNodeDataPoolListElementOptArrayId,
+                                                                 opensyde_core::C_OscNodeDataPoolListElementOptArrayId> & orc_MapCurToNew);
+   void OnSyncNodeAboutToBeDeleted(const uint32_t ou32_Index, const bool oq_OnlyMarkInvalid);
    void OnSyncNodeDataPoolAdded(const uint32_t ou32_NodeIndex, const uint32_t ou32_DataPoolIndex);
    void OnSyncNodeDataPoolMoved(const uint32_t ou32_NodeIndex, const uint32_t ou32_DataPoolSourceIndex,
                                 const uint32_t ou32_DataPoolTargetIndex);
@@ -143,10 +143,10 @@ public:
                                                       const uint32_t ou32_ListIndex, const uint32_t ou32_ElementIndex);
    static void h_OnSyncNodeAdded(C_PuiSvDbNodeDataPoolListElementId & orc_DataElementId, const uint32_t ou32_Index);
    static void h_OnSyncNodeHalc(C_PuiSvDbNodeDataPoolListElementId & orc_DataElementId, const uint32_t ou32_Index,
-                                const std::map<C_PuiSvDbNodeDataPoolListElementId,
-                                               C_PuiSvDbNodeDataPoolListElementId> & orc_MapCurToNew);
+                                const std::map<opensyde_core::C_OscNodeDataPoolListElementOptArrayId,
+                                               opensyde_core::C_OscNodeDataPoolListElementOptArrayId> & orc_MapCurToNew);
    static void h_OnSyncNodeAboutToBeDeleted(C_PuiSvDbNodeDataPoolListElementId & orc_DataElementId,
-                                            const uint32_t ou32_Index);
+                                            const uint32_t ou32_Index, const bool oq_OnlyMarkInvalid = false);
    static void h_OnSyncNodeDataPoolAdded(C_PuiSvDbNodeDataPoolListElementId & orc_DataElementId,
                                          const uint32_t ou32_NodeIndex, const uint32_t ou32_DataPoolIndex);
    static void h_OnSyncNodeDataPoolMoved(C_PuiSvDbNodeDataPoolListElementId & orc_DataElementId,
@@ -245,6 +245,12 @@ private:
                                             const stw::opensyde_core::C_OscNodeDataPoolContent & orc_MinElement,
                                             const stw::opensyde_core::C_OscNodeDataPoolContent & orc_MaxElement,
                                             C_PuiSvDbWriteWidgetBase & orc_Element);
+   static void mh_SyncSlidersToElementTypeOrArrayChanged(const uint32_t ou32_NodeIndex,
+                                                         const uint32_t ou32_DataPoolIndex,
+                                                         const uint32_t ou32_ListIndex,
+                                                         const uint32_t ou32_ElementIndex,
+                                                         const opensyde_core::C_OscNodeDataPoolContent::E_Type oe_Type,
+                                                         const bool oq_IsArray, C_PuiSvDbWidgetBase * const opc_Widget);
 };
 
 /* -- Extern Global Variables --------------------------------------------------------------------------------------- */

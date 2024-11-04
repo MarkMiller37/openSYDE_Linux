@@ -80,7 +80,7 @@ private:
    QString mc_WidgetClassName;
    bool mq_NotifyAndBlockClose;
 
-   void m_SetWindowTitle();
+   void m_SetWindowTitle(const QString & orc_EmptySubtitle);
 
    //Avoid call
    C_OgePopUpDialog(const C_OgePopUpDialog &);

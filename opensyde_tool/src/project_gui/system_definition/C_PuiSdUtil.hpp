@@ -26,6 +26,7 @@
 #include "C_PuiSvDbNodeDataPoolListElementId.hpp"
 #include "C_OscCanMessageIdentificationIndices.hpp"
 #include "C_PuiSdNodeInterfaceAutomaticProperties.hpp"
+#include "C_OscNodeDataPoolListElementOptArrayId.hpp"
 
 /* -- Namespace ----------------------------------------------------------------------------------------------------- */
 namespace stw
@@ -42,6 +43,7 @@ public:
    static bool h_CheckNameAvailable(const std::vector<const QString *> & orc_ExistingStrings,
                                     const QString & orc_Proposal, const uint32_t * const opu32_SkipIndex);
    static QString h_ConvertBusTypeToStringUppercase(const stw::opensyde_core::C_OscSystemBus::E_Type & ore_Type);
+
    static QString h_ConvertProtocolTypeToString(const stw::opensyde_core::C_OscCanProtocol::E_Type & ore_Type);
    static QString h_ConvertProtocolTypeToDatapoolNameString(const stw::opensyde_core::C_OscCanProtocol::E_Type oe_Type);
    static QString h_ConvertDataPoolTypeToString(const stw::opensyde_core::C_OscNodeDataPool::E_Type & ore_Type);
@@ -58,6 +60,8 @@ public:
    static uint32_t h_GetDefaultMessageCycleTime(void);
    static uint32_t h_GetMessageAutoTimeoutTime(const uint32_t ou32_CycleTime);
    static QString h_GetNamespace(const stw::opensyde_core::C_OscNodeDataPoolListElementId & orc_Id);
+   static QString h_GetNamespaceDatapoolElement(
+      const stw::opensyde_core::C_OscNodeDataPoolListElementOptArrayId & orc_Id);
    static QString h_GetSignalNamespace(const stw::opensyde_core::C_OscNodeDataPoolListElementId & orc_Id);
    static QString h_GetHalcNamespace(const stw::opensyde_gui_logic::C_PuiSvDbNodeDataPoolListElementId & orc_Id);
    static QString h_GetSubNodeDeviceName(const uint32_t ou32_NodeIndex);

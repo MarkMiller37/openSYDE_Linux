@@ -67,7 +67,7 @@ void C_HeHandler::CallSpecificHelpPage(const QString & orc_ClassName)
    const QString c_PageName = orc_ClassName;
 
    //Debug helper: Which class calls this function?
-   // std::cout << c_PageName.toStdString().c_str() << &std::endl;
+   //std::cout << c_PageName.toStdString().c_str() << &std::endl;
    const QMap<QString, QString>::const_iterator c_Page = this->mc_LookUpHelpPageName.find(c_PageName);
 
    if (c_Page != this->mc_LookUpHelpPageName.end())
@@ -196,6 +196,10 @@ C_HeHandler::~C_HeHandler()
 //----------------------------------------------------------------------------------------------------------------------
 void C_HeHandler::m_InitSpecialHelpPages(void)
 {
+   //Main Page
+   this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_NagCharLengthSettingPopupDialog",
+                                      "Global Project Settings");
+
    //System Definition
 
    //Network Topology
@@ -233,6 +237,13 @@ void C_HeHandler::m_InitSpecialHelpPages(void)
    this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_CamMainWindow", "openSYDE CAN Monitor");
    this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_CamMosFilterPopup", "openSYDE CAN Monitor");
    this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_CamTitleBarWidget", "openSYDE CAN Monitor");
+
+   //SYDEflash
+   this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_FlaMainWindow", "SYDEflash");
+   this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_FlaConNodeConfigPopup", "SYDEflash");
+   this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_FlaSenSearchNodePopup", "SYDEflash");
+   this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_NagAboutDialog", "SYDEflash");
+   this->mc_LookUpHelpPageName.insert("stw::opensyde_gui::C_FlaTitleBarWidget", "SYDEflash");
 }
 
 //----------------------------------------------------------------------------------------------------------------------

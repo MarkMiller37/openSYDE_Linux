@@ -1277,7 +1277,7 @@ int32_t C_CamMetTreeModel::h_EnumToColumn(const C_CamMetTreeModel::E_Columns oe_
 //----------------------------------------------------------------------------------------------------------------------
 const C_CamMetTreeLoggerData * C_CamMetTreeModel::GetMessageData(const int32_t os32_Row) const
 {
-   const C_CamMetTreeLoggerData * pc_Retval;
+   const C_CamMetTreeLoggerData * pc_Retval = NULL;
 
    if (this->mq_UniqueMessageMode == false)
    {
@@ -1293,7 +1293,10 @@ const C_CamMetTreeLoggerData * C_CamMetTreeModel::GetMessageData(const int32_t o
          this->mc_UniqueMessagesOrdering.begin() + os32_Row;
       const QMap<C_SclString, C_CamMetTreeLoggerData>::const_iterator c_It =
          this->mc_UniqueMessages.find(c_ItOrder.value());
-      pc_Retval = &c_It.value();
+      if (c_It != this->mc_UniqueMessages.end())
+      {
+         pc_Retval = &c_It.value();
+      }
    }
    return pc_Retval;
 }
@@ -2288,7 +2291,7 @@ void C_CamMetTreeModel::m_UpdateTreeItemBasedOnMessage(C_TblTreSimpleItem * cons
             {
                this->endInsertRows();
             }
-         }
+         } //lint !e429  no memory leak because of the parent and the Qt memory management
          else
          {
             if ((oq_SignalInsert) && (os32_MessageRow >= 0))
@@ -2306,7 +2309,7 @@ void C_CamMetTreeModel::m_UpdateTreeItemBasedOnMessage(C_TblTreSimpleItem * cons
                   pc_Parent->AddChild(new C_TblTreSimpleItem());
                }
                opc_Item->AddChild(pc_Parent);
-            }
+            } //lint !e429  no memory leak because of the parent and the Qt memory management
             if ((oq_SignalInsert) && (os32_MessageRow >= 0))
             {
                this->endResetModel();
@@ -2314,7 +2317,7 @@ void C_CamMetTreeModel::m_UpdateTreeItemBasedOnMessage(C_TblTreSimpleItem * cons
          }
       }
    }
-} //lint !e429  no memory leak because of the parent pc_Dialog and the Qt memory management
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Compares one data entry with the search string

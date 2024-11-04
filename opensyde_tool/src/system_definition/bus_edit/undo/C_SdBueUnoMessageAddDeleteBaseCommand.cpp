@@ -81,9 +81,11 @@ void C_SdBueUnoMessageAddDeleteBaseCommand::m_Add(void)
          //Adapt default values for protocol
          C_SdUtil::h_AdaptMessageToProtocolType(this->mc_Message[u32_ItStep], &c_UiMessage,
                                                 this->mc_OscSignalCommons[u32_ItStep],
+                                                this->mc_UiSignalCommons[u32_ItStep],
                                                 this->mc_LastMessageId[u32_ItStep].e_ComProtocol, NULL, false);
          C_SdBueUnoMessageAddDeleteBaseCommand::mh_UpdateSignalsToProtocol(this->mc_Message[u32_ItStep],
                                                                            this->mc_OscSignalCommons[u32_ItStep],
+                                                                           this->mc_UiSignalCommons[u32_ItStep],
                                                                            this->mc_LastMessageId[u32_ItStep].e_ComProtocol);
          //Cycle time
          if (this->mc_Message[u32_ItStep].u32_CycleTimeMs == 0U)
@@ -230,6 +232,11 @@ void C_SdBueUnoMessageAddDeleteBaseCommand::m_Remove(void)
    if (this->mpc_MessageSyncManager != NULL)
    {
       uint32_t u32_InternalMessageIndex = 0UL;
+      //Avoid selection change triggers during uncertain tree state
+      if (this->mpc_MessageTreeWidget != NULL)
+      {
+         this->mpc_MessageTreeWidget->DisconnectSelectionHandling();
+      }
       for (uint32_t u32_ItStep = this->mc_UniqueId.size(); u32_ItStep > 0; --u32_ItStep)
       {
          tgl_assert(this->mpc_MessageSyncManager->DeleteCanMessage(this->mpc_MessageSyncManager->GetMessageIdForUniqueId(
@@ -250,6 +257,8 @@ void C_SdBueUnoMessageAddDeleteBaseCommand::m_Remove(void)
       }
       if (this->mpc_MessageTreeWidget != NULL)
       {
+         //Reactivate selection handling
+         this->mpc_MessageTreeWidget->ReconnectSelectionHandling();
          //At this point we can't get the message ID by unique ID because it was already deleted
          // but this should be no problem as we do always remember the message ID anyways
          this->mpc_MessageTreeWidget->InternalDeleteMessageCommit(u32_InternalMessageIndex);
@@ -261,20 +270,24 @@ void C_SdBueUnoMessageAddDeleteBaseCommand::m_Remove(void)
 /*! \brief  Update signals to protocol
 
    \param[in,out]  orc_Message      Message
-   \param[in,out]  orc_Signals      Signals
+   \param[in,out]  orc_OscSignals   Core signals
+   \param[in,out]  orc_UiSignals    UI signals
    \param[in]      oe_ProtocolType  Protocol type
 */
 //----------------------------------------------------------------------------------------------------------------------
 void C_SdBueUnoMessageAddDeleteBaseCommand::mh_UpdateSignalsToProtocol(
-   stw::opensyde_core::C_OscCanMessage & orc_Message, std::vector<C_OscNodeDataPoolListElement> & orc_Signals,
+   stw::opensyde_core::C_OscCanMessage & orc_Message, std::vector<C_OscNodeDataPoolListElement> & orc_OscSignals,
+   const std::vector<C_PuiSdNodeDataPoolListElement> & orc_UiSignals,
    const stw::opensyde_core::C_OscCanProtocol::E_Type oe_ProtocolType)
 {
-   tgl_assert(orc_Message.c_Signals.size() == orc_Signals.size());
-   if (orc_Message.c_Signals.size() == orc_Signals.size())
+   tgl_assert(orc_Message.c_Signals.size() == orc_OscSignals.size());
+   tgl_assert(orc_UiSignals.size() == orc_OscSignals.size());
+   if ((orc_Message.c_Signals.size() == orc_OscSignals.size()) && (orc_UiSignals.size() == orc_OscSignals.size()))
    {
-      for (uint32_t u32_ItSig = 0UL; u32_ItSig < orc_Signals.size(); ++u32_ItSig)
+      for (uint32_t u32_ItSig = 0UL; u32_ItSig < orc_OscSignals.size(); ++u32_ItSig)
       {
-         C_SdUtil::h_AdaptSignalToProtocolType(orc_Message.c_Signals[u32_ItSig], orc_Signals[u32_ItSig],
+         C_SdUtil::h_AdaptSignalToProtocolType(orc_Message.c_Signals[u32_ItSig], orc_OscSignals[u32_ItSig],
+                                               orc_UiSignals[u32_ItSig],
                                                oe_ProtocolType, NULL);
       }
    }

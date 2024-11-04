@@ -67,6 +67,8 @@ C_SdNdeNodePropertiesTabContentWidget::C_SdNdeNodePropertiesTabContentWidget(QWi
            &C_SdNdeNodePropertiesTabContentWidget::SigOwnedDataPoolsChanged);
    connect(this->mpc_Ui->pc_WidgetApplications, &C_SdNdeDbViewWidget::SigHalcLoadedFromTsp, this,
            &C_SdNdeNodePropertiesTabContentWidget::SigHalcLoadedFromTsp);
+   connect(this->mpc_Ui->pc_WidgetApplications, &C_SdNdeDbViewWidget::SigUpdateTrigger, this,
+           &C_SdNdeNodePropertiesTabContentWidget::m_UpdateTrigger);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -134,11 +136,13 @@ void C_SdNdeNodePropertiesTabContentWidget::ShowApplication(const uint32_t ou32_
 
 //----------------------------------------------------------------------------------------------------------------------
 /*! \brief  Wrapper to call C_SdNdeDbViewWidget::AddFromTsp()
+
+   \param[in]  oq_IsNewNode   Is Node new or not
 */
 //----------------------------------------------------------------------------------------------------------------------
-void C_SdNdeNodePropertiesTabContentWidget::AddFromTsp()
+void C_SdNdeNodePropertiesTabContentWidget::AddFromTsp(const bool oq_IsNewNode)
 {
-   this->mpc_Ui->pc_WidgetApplications->AddFromTsp();
+   this->mpc_Ui->pc_WidgetApplications->AddFromTsp(oq_IsNewNode);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -164,4 +168,16 @@ void C_SdNdeNodePropertiesTabContentWidget::LoadUserSettings()
    const int32_t s32_FirstSegmentWidth = C_UsHandler::h_GetInstance()->GetSdNodeEditSplitterHorizontal();
 
    this->mpc_Ui->pc_Splitter->SetFirstSegment(s32_FirstSegmentWidth);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  GUI Update trigger on TSP V3 Import
+
+   \param[in]  ou32_NodeIndex    Node index
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SdNdeNodePropertiesTabContentWidget::m_UpdateTrigger(const uint32_t ou32_NodeIndex)
+{
+   this->SetNodeIndex(ou32_NodeIndex);
+   Q_EMIT (this->SigUpdateTrigger());
 }

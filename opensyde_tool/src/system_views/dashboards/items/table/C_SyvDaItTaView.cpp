@@ -101,7 +101,7 @@ C_SyvDaItTaView::C_SyvDaItTaView(C_PuiSvDbDataElementHandler * const opc_Data, Q
 //----------------------------------------------------------------------------------------------------------------------
 //lint -e{1540}  no memory leak because of the parent of mpc_TableHeaderView assigned by setHorizontalHeader and the Qt
 // memory management
-C_SyvDaItTaView::~C_SyvDaItTaView(void)
+C_SyvDaItTaView::~C_SyvDaItTaView(void) noexcept
 {
 }
 
@@ -157,6 +157,17 @@ void C_SyvDaItTaView::AddItem(const C_PuiSvDbNodeDataPoolListElementId & orc_Dat
 
    // select new item
    this->selectRow(u32_NewItem);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Reserve items
+
+   \param[in]  ou32_Number    Number
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SyvDaItTaView::ReserveItems(const uint32_t ou32_Number)
+{
+   this->mc_Model.ReserveItems(ou32_Number);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

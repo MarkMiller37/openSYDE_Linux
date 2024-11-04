@@ -36,7 +36,7 @@ class C_SyvDaItTaView :
 public:
    C_SyvDaItTaView(stw::opensyde_gui_logic::C_PuiSvDbDataElementHandler * const opc_Data = NULL,
                    QWidget * const opc_Parent = NULL);
-   ~C_SyvDaItTaView(void) override;
+   ~C_SyvDaItTaView(void) noexcept override;
 
    void UpdateStaticValues(void);
    void UpdateValue(void);
@@ -44,6 +44,7 @@ public:
    void UpdateTransparency(const uint32_t ou32_DataElementIndex, const int32_t os32_Value);
 
    void AddItem(const stw::opensyde_gui_logic::C_PuiSvDbNodeDataPoolListElementId & orc_DataPoolElementId);
+   void ReserveItems(const uint32_t ou32_Number);
    void MoveSelected(const bool oq_Up);
    void RemoveSelectedItems(
       std::vector<stw::opensyde_gui_logic::C_PuiSvDbNodeDataPoolListElementId> & orc_RemovedDataElements);

@@ -65,7 +65,7 @@ uint32_t C_PuiSdHandlerBusLogic::AddBusAndSort(C_OscSystemBus & orc_OscBus, cons
    else
    {
       orc_OscBus.c_Name = C_Uti::h_GetUniqueName(
-         this->GetExistingBusNames(), orc_OscBus.c_Name);
+         this->GetExistingBusNames(), orc_OscBus.c_Name, this->GetNameMaxCharLimit());
    }
    if (oq_AllowBusIdAdaption == true)
    {
@@ -1963,65 +1963,6 @@ int32_t C_PuiSdHandlerBusLogic::SetCanSignalMuxValue(const C_OscCanMessageIdenti
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-/*! \brief   Set can signal position part
-
-   \param[in]  orc_MessageId        Message identification indices
-   \param[in]  oru32_SignalIndex    Signal index
-   \param[in]  orc_OscSignal        Signal data (osc)
-   \param[in]  orc_UiSignal         Signal data (ui)
-
-   \return
-   C_NO_ERR Operation success
-   C_RANGE  Operation failure: parameter invalid
-*/
-//----------------------------------------------------------------------------------------------------------------------
-int32_t C_PuiSdHandlerBusLogic::SetCanSignalPosition(const C_OscCanMessageIdentificationIndices & orc_MessageId,
-                                                     const uint32_t & oru32_SignalIndex,
-                                                     const C_OscCanSignal & orc_OscSignal,
-                                                     const C_PuiSdNodeCanSignal & orc_UiSignal)
-{
-   int32_t s32_Retval = C_NO_ERR;
-
-   //Position
-   tgl_assert(this->mc_CoreDefinition.c_Nodes.size() == this->mc_UiNodes.size());
-   if (orc_MessageId.u32_NodeIndex < this->mc_CoreDefinition.c_Nodes.size())
-   {
-      C_OscNode & rc_OscNode = this->mc_CoreDefinition.c_Nodes[orc_MessageId.u32_NodeIndex];
-      C_PuiSdNodeCanProtocol * const pc_UiProtocol = this->m_GetUiCanProtocol(orc_MessageId.u32_NodeIndex,
-                                                                              orc_MessageId.e_ComProtocol,
-                                                                              orc_MessageId.u32_DatapoolIndex);
-      s32_Retval = rc_OscNode.SetSignalPosition(orc_MessageId.e_ComProtocol, orc_MessageId.u32_InterfaceIndex,
-                                                orc_MessageId.u32_DatapoolIndex,
-                                                orc_MessageId.q_MessageIsTx, orc_MessageId.u32_MessageIndex,
-                                                oru32_SignalIndex, orc_OscSignal);
-      //Ui part
-      if (pc_UiProtocol != NULL)
-      {
-         if (orc_MessageId.u32_InterfaceIndex < pc_UiProtocol->c_ComMessages.size())
-         {
-            C_PuiSdNodeCanMessageContainer & rc_MessageContainer =
-               pc_UiProtocol->c_ComMessages[orc_MessageId.u32_InterfaceIndex];
-            std::vector<C_PuiSdNodeCanMessage> & rc_Messages = rc_MessageContainer.GetMessages(
-               orc_MessageId.q_MessageIsTx);
-            if (orc_MessageId.u32_MessageIndex < rc_Messages.size())
-            {
-               C_PuiSdNodeCanMessage & rc_Message = rc_Messages[orc_MessageId.u32_MessageIndex];
-               if (oru32_SignalIndex < rc_Message.c_Signals.size())
-               {
-                  rc_Message.c_Signals[oru32_SignalIndex] = orc_UiSignal;
-               }
-            }
-         }
-      }
-   }
-   else
-   {
-      s32_Retval = C_RANGE;
-   }
-   return s32_Retval;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Add can message
 
    \param[in]  oru32_NodeIndex                  Node index
@@ -2106,7 +2047,7 @@ int32_t C_PuiSdHandlerBusLogic::InsertCanMessage(const C_OscCanMessageIdentifica
          //Get unique name
          c_AdaptedMessage.c_Name = C_Uti::h_GetUniqueName(
             this->m_GetExistingMessageNames(orc_MessageId.u32_NodeIndex, orc_MessageId.u32_InterfaceIndex),
-            orc_Message.c_Name);
+            orc_Message.c_Name, this->GetNameMaxCharLimit());
       }
       s32_Retval = rc_OscNode.InsertMessage(orc_MessageId.e_ComProtocol, orc_MessageId.u32_InterfaceIndex,
                                             orc_MessageId.u32_DatapoolIndex,
@@ -2119,8 +2060,8 @@ int32_t C_PuiSdHandlerBusLogic::InsertCanMessage(const C_OscCanMessageIdentifica
          C_OscNodeDataPoolListElementId c_Id;
          if (C_PuiSdUtil::h_ConvertFromSignalIndex(orc_MessageId, u32_ItSig, c_Id) == C_NO_ERR)
          {
-            Q_EMIT (this->SigSyncNodeDataPoolListElementAdded(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
-                                                              c_Id.u32_ListIndex, c_Id.u32_ElementIndex));
+            m_HandleSyncNodeDataPoolListElementAdded(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
+                                                     c_Id.u32_ListIndex, c_Id.u32_ElementIndex);
          }
       }
       if (s32_Retval == C_NO_ERR)
@@ -2160,8 +2101,8 @@ int32_t C_PuiSdHandlerBusLogic::DeleteCanMessage(const C_OscCanMessageIdentifica
             C_OscNodeDataPoolListElementId c_Id;
             if (C_PuiSdUtil::h_ConvertFromSignalIndex(orc_MessageId, u32_ItSig - 1UL, c_Id) == C_NO_ERR)
             {
-               Q_EMIT (this->SigSyncNodeDataPoolListElementAboutToBeDeleted(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
-                                                                            c_Id.u32_ListIndex, c_Id.u32_ElementIndex));
+               m_HandleSyncNodeDataPoolListElementAboutToBeDeleted(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
+                                                                   c_Id.u32_ListIndex, c_Id.u32_ElementIndex);
             }
          }
       }
@@ -2244,7 +2185,7 @@ int32_t C_PuiSdHandlerBusLogic::InsertCanSignal(const C_OscCanMessageIdentificat
 
       //Get unique name
       c_OscAdaptedSignalCommon.c_Name = C_Uti::h_GetUniqueName(
-         this->m_GetExistingSignalNames(orc_MessageId), orc_OscSignalCommon.c_Name);
+         this->m_GetExistingSignalNames(orc_MessageId), orc_OscSignalCommon.c_Name, this->GetNameMaxCharLimit());
       s32_Retval = rc_OscNode.InsertSignal(orc_MessageId.e_ComProtocol, orc_MessageId.u32_InterfaceIndex,
                                            orc_MessageId.u32_DatapoolIndex,
                                            orc_MessageId.q_MessageIsTx, orc_MessageId.u32_MessageIndex,
@@ -2255,8 +2196,8 @@ int32_t C_PuiSdHandlerBusLogic::InsertCanSignal(const C_OscCanMessageIdentificat
       //Signal new signal to the sync engine
       if (C_PuiSdUtil::h_ConvertFromSignalIndex(orc_MessageId, oru32_SignalIndex, c_Id) == C_NO_ERR)
       {
-         Q_EMIT (this->SigSyncNodeDataPoolListElementAdded(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
-                                                           c_Id.u32_ListIndex, c_Id.u32_ElementIndex));
+         m_HandleSyncNodeDataPoolListElementAdded(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
+                                                  c_Id.u32_ListIndex, c_Id.u32_ElementIndex);
       }
       if (s32_Retval == C_NO_ERR)
       {
@@ -2402,8 +2343,8 @@ int32_t C_PuiSdHandlerBusLogic::DeleteCanSignal(const C_OscCanMessageIdentificat
       //Signal deleted signal to the sync engine
       if (C_PuiSdUtil::h_ConvertFromSignalIndex(orc_MessageId, oru32_SignalIndex, c_Id) == C_NO_ERR)
       {
-         Q_EMIT this->SigSyncNodeDataPoolListElementAboutToBeDeleted(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
-                                                                     c_Id.u32_ListIndex, c_Id.u32_ElementIndex);
+         m_HandleSyncNodeDataPoolListElementAboutToBeDeleted(c_Id.u32_NodeIndex, c_Id.u32_DataPoolIndex,
+                                                             c_Id.u32_ListIndex, c_Id.u32_ElementIndex);
       }
 
       s32_Retval = rc_OscNode.DeleteSignal(orc_MessageId.e_ComProtocol, orc_MessageId.u32_InterfaceIndex,
@@ -2871,6 +2812,44 @@ QString C_PuiSdHandlerBusLogic::GetCanMessageDisplayName(const C_OscCanMessageId
    }
 
    return c_Retval;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Count local messages
+
+   \param[in]   oru32_NodeIndex     Node index
+   \param[out]  oru32_MessageCount  Message count
+
+   \return
+   C_NO_ERR Operation success
+   C_RANGE  Operation failure: parameter invalid
+*/
+//----------------------------------------------------------------------------------------------------------------------
+int32_t C_PuiSdHandlerBusLogic::CountLocalMessages(const uint32_t & oru32_NodeIndex,
+                                                   uint32_t & oru32_MessageCount) const
+{
+   int32_t s32_Retval = C_NO_ERR;
+   const C_OscNode * const pc_Node = this->GetOscNodeConst(oru32_NodeIndex);
+
+   oru32_MessageCount = 0;
+   if (pc_Node != NULL)
+   {
+      for (uint32_t u32_ItProt = 0UL; u32_ItProt < pc_Node->c_ComProtocols.size(); ++u32_ItProt)
+      {
+         const C_OscCanProtocol & rc_Prot = pc_Node->c_ComProtocols[u32_ItProt];
+         for (uint32_t u32_ItCont = 0UL; u32_ItCont < rc_Prot.c_ComMessages.size(); ++u32_ItCont)
+         {
+            const C_OscCanMessageContainer & rc_Cont = rc_Prot.c_ComMessages[u32_ItCont];
+            oru32_MessageCount += rc_Cont.c_RxMessages.size();
+            oru32_MessageCount += rc_Cont.c_TxMessages.size();
+         }
+      }
+   }
+   else
+   {
+      s32_Retval = C_RANGE;
+   }
+   return s32_Retval;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

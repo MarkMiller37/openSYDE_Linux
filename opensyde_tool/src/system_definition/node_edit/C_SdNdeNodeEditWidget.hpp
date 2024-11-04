@@ -17,10 +17,10 @@
 
 #include "C_SdNdeHalcWidget.hpp"
 #include "C_SdNdeDpEditWidget.hpp"
+#include "C_SdNdeDalTabContentWidget.hpp"
 #include "C_SdBueComIfDescriptionWidget.hpp"
 #include "C_SdNdeNodePropertiesTabContentWidget.hpp"
 #include "C_SdNdeCoWidget.hpp"
-
 /* -- Namespace ----------------------------------------------------------------------------------------------------- */
 
 namespace Ui
@@ -52,7 +52,8 @@ public:
    void SetFlag(const uint32_t ou32_Flag) const;
    void OpenDetail(const int32_t os32_MainIndex, const int32_t os32_ListIndex, const int32_t os32_ElementIndex,
                    const int32_t os32_Flag);
-   void AddFromTsp(void);
+   void AddFromTsp(const bool oq_IsNewNode);
+
    int32_t GetTabIndex(void) const;
 
    static const int32_t hs32_TAB_INDEX_PROPERTIES;
@@ -60,6 +61,7 @@ public:
    static const int32_t hs32_TAB_INDEX_COMM;
    static const int32_t hs32_TAB_INDEX_CO_MANAGER;
    static const int32_t hs32_TAB_INDEX_HALC;
+   static const int32_t hs32_TAB_INDEX_DATA_LOGGER;
 
    //The signals keyword is necessary for Qt signal slot functionality
    //lint -save -e1736
@@ -115,8 +117,13 @@ private:
    void m_CreateCommTab(const bool oq_AdaptCursor);
    void m_CreateHalTab(const bool oq_AdaptCursor);
    void m_CreateCoManagerTab(const bool oq_AdaptCursor);
+   void m_CreateDataLoggerTab(const bool oq_AdaptCursor);
    static void mh_StartWaitingCursor(void);
    static void mh_EndWaitingCursor(void);
+   void m_UpdateTrigger(void);
+   void m_PropAndCoTabUpdateTrigger(const uint32_t ou32_NodeIndex);
+   void m_HandleVisibleTabs(void);
+   void m_FixInitialTabIndex(int32_t & ors32_TabIndex) const;
 
    Ui::C_SdNdeNodeEditWidget * mpc_Ui;
    const uint32_t mu32_NodeIndex;
@@ -127,6 +134,7 @@ private:
    C_SdBueComIfDescriptionWidget * mpc_ComIfDescriptionWidget;
    C_SdNdeHalcWidget * mpc_HalWidget;
    C_SdNdeCoWidget * mpc_CoManagerWidget;
+   C_SdNdeDalTabContentWidget * mpc_DataLoggerWidget;
 };
 
 /* -- Extern Global Variables --------------------------------------------------------------------------------------- */

@@ -77,6 +77,12 @@ void C_OscNode::Initialize(void)
    c_ComProtocols.resize(0);
    c_HalcConfig.Clear();
    c_CanOpenManagers.clear();
+   //Add one default item
+   c_DataLoggerJobs.clear();
+   if (C_OscDataLoggerJob::hq_AllowDataloggerFeature)
+   {
+      c_DataLoggerJobs.resize(1);
+   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -854,6 +860,11 @@ void C_OscNode::CalcHash(uint32_t & oru32_HashValue) const
       const uint8_t u8_Value = c_It->first;
       stw::scl::C_SclChecksums::CalcCRC32(&u8_Value, sizeof(u8_Value), oru32_HashValue);
       c_It->second.CalcHash(oru32_HashValue);
+   }
+
+   for (u32_Counter = 0U; u32_Counter < this->c_DataLoggerJobs.size(); ++u32_Counter)
+   {
+      this->c_DataLoggerJobs[u32_Counter].CalcHash(oru32_HashValue);
    }
 }
 
@@ -2225,6 +2236,61 @@ void C_OscNode::RecalculateAddress(void)
          rc_DataPool.RecalculateAddress();
          u32_Offset += rc_DataPool.u32_NvmSize;
       }
+   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Count all local messages
+
+   \return
+   Total number of local messages
+*/
+//----------------------------------------------------------------------------------------------------------------------
+uint32_t C_OscNode::CountAllLocalMessages(void) const
+{
+   uint32_t u32_MessageCount = 0UL;
+
+   for (uint32_t u32_ItProt = 0UL; u32_ItProt < this->c_ComProtocols.size(); ++u32_ItProt)
+   {
+      const C_OscCanProtocol & rc_Prot = this->c_ComProtocols[u32_ItProt];
+      for (uint32_t u32_ItCont = 0UL; u32_ItCont < rc_Prot.c_ComMessages.size(); ++u32_ItCont)
+      {
+         const C_OscCanMessageContainer & rc_Cont = rc_Prot.c_ComMessages[u32_ItCont];
+         u32_MessageCount += static_cast<uint32_t>(rc_Cont.c_RxMessages.size());
+         u32_MessageCount += static_cast<uint32_t>(rc_Cont.c_TxMessages.size());
+      }
+   }
+   return u32_MessageCount;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Handle name max char limit
+
+   \param[in]      ou32_NameMaxCharLimit  Name max char limit
+   \param[in,out]  opc_ChangedItems       Changed items
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_OscNode::HandleNameMaxCharLimit(const uint32_t ou32_NameMaxCharLimit,
+                                       std::list<C_OscSystemNameMaxCharLimitChangeReportItem> * const opc_ChangedItems)
+{
+   for (uint32_t u32_ItDp = 0UL; u32_ItDp < this->c_DataPools.size(); ++u32_ItDp)
+   {
+      C_OscNodeDataPool & rc_Dp = this->c_DataPools[u32_ItDp];
+      rc_Dp.HandleNameMaxCharLimit(ou32_NameMaxCharLimit, opc_ChangedItems);
+   }
+   for (uint32_t u32_ItProt = 0UL; u32_ItProt < this->c_ComProtocols.size(); ++u32_ItProt)
+   {
+      C_OscCanProtocol & rc_Prot = this->c_ComProtocols[u32_ItProt];
+      rc_Prot.HandleNameMaxCharLimit(ou32_NameMaxCharLimit, opc_ChangedItems);
+   }
+   this->c_HalcConfig.HandleNameMaxCharLimit(ou32_NameMaxCharLimit, opc_ChangedItems);
+   for (uint32_t u32_ItDatablock = 0UL; u32_ItDatablock < this->c_Applications.size(); ++u32_ItDatablock)
+   {
+      C_OscNodeApplication & rc_Datablock = this->c_Applications[u32_ItDatablock];
+      C_OscSystemNameMaxCharLimitChangeReportItem::h_HandleNameMaxCharLimitItem(ou32_NameMaxCharLimit,
+                                                                                "node-datablock-name",
+                                                                                rc_Datablock.c_Name,
+                                                                                opc_ChangedItems);
    }
 }
 

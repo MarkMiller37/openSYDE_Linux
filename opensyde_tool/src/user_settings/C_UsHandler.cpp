@@ -138,6 +138,7 @@ void C_UsHandler::SetDefault(void)
    this->mc_RecentColors.fill(QColor(255, 255, 255, 255), 6);
 
    ms32_ScreenshotGifSucessTimeout = 3000;
+   mq_ActiveTspShortcut = false;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -309,6 +310,18 @@ int32_t C_UsHandler::GetSdNodeEditCoManagerSplitterHorizontal(void) const
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Get data logger screen splitter x position value
+
+   \return
+   Current data logger screen splitter x position value
+*/
+//----------------------------------------------------------------------------------------------------------------------
+int32_t C_UsHandler::GetSdNodeEditDataLoggerSplitterHorizontal() const
+{
+   return this->ms32_SdNodeEditDataLoggerSplitterHorizontal;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Get bus edit tree splitter x position value
 
    \return
@@ -402,6 +415,21 @@ int32_t C_UsHandler::GetNextRecentColorButtonNumber(void) const
 int32_t C_UsHandler::GetScreenshotGifSucessTimeout() const
 {
    return this->ms32_ScreenshotGifSucessTimeout;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Get TSP shortcut activation
+
+   \return
+   bool
+
+   \retval   true   TSP shortcut dialog will be opened after adding a new node
+   \retval   false   TSP shortcut dialog will not appear after adding a new node
+*/
+//----------------------------------------------------------------------------------------------------------------------
+bool C_UsHandler::GetTspShortcutActive() const
+{
+   return this->mq_ActiveTspShortcut;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -682,6 +710,31 @@ QString C_UsHandler::GetLastKnownRamViewProjectPath() const
 QString C_UsHandler::GetLastKnownJ1939CatalogPath() const
 {
    return this->mc_LastKnownJ1939CatalogPath;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Get last known CSV Export file path
+
+   \return
+   Last known CSV Export file path
+*/
+//----------------------------------------------------------------------------------------------------------------------
+QString C_UsHandler::GetLastKnownCsvExportPath() const
+{
+   return this->mc_LastKnownServiceProjectPath;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Get last known private key path (PEM file for secure update)
+
+   \return
+   Last known private key path
+
+*/
+//----------------------------------------------------------------------------------------------------------------------
+QString C_UsHandler::GetLastKnownPrivateKeyPath() const
+{
+   return this->mc_LastKnownPrivateKeyPath;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1022,6 +1075,17 @@ void C_UsHandler::SetSdNodeEditCoManagerSplitterHorizontal(const int32_t os32_Va
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Set node edit data logger screen splitter x position value
+
+   \param[in]  os32_Value  New splitter position x value
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_UsHandler::SetSdNodeEditDataLoggerSplitterHorizontal(const int32_t os32_Value)
+{
+   this->ms32_SdNodeEditDataLoggerSplitterHorizontal = os32_Value;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 /*! \brief   Set bus edit tree splitter x position value
 
    \param[in]  os32_Value  New bus edit tree splitter x position value
@@ -1096,6 +1160,17 @@ void C_UsHandler::SetRecentColors(const QVector<QColor> & orc_RecentColorsVector
 void C_UsHandler::SetNextRecentColorButtonNumber(const int32_t os32_NextRecentColorButtonNumber)
 {
    this->ms32_NextRecentColorButtonNumber = os32_NextRecentColorButtonNumber;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief   Set TSP shortcut activation
+
+   \param[in]       oq_Active     activate tsp shortcut dialog
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_UsHandler::SetTspShortcutActive(const bool oq_Active)
+{
+   mq_ActiveTspShortcut = oq_Active;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1320,6 +1395,28 @@ void C_UsHandler::SetLastKnownRamViewProjectPath(const QString & orc_NewPath)
 void C_UsHandler::SetLastKnownJ1939CatalogPath(const QString & orc_NewPath)
 {
    this->mc_LastKnownJ1939CatalogPath = orc_NewPath;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Set last known CSV Export file path
+
+   \param[in]  orc_NewPath    CSV Export file path
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_UsHandler::SetLastKnownCsvExportPath(const QString & orc_NewPath)
+{
+   this->mc_LastKnownServiceProjectPath = orc_NewPath;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Set last known private key file path (PEM file for secure update)
+
+   \param[in]  orc_NewPath    PEM file path
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_UsHandler::SetLastKnownPrivateKeyPath(const QString & orc_NewPath)
+{
+   this->mc_LastKnownPrivateKeyPath = orc_NewPath;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -2650,6 +2747,7 @@ C_UsHandler::C_UsHandler(void) :
    ms32_SdNodeEditSplitterHorizontal(1000),
    ms32_SdNodEditHalcSplitterHorizontal(400),
    ms32_SdNodEditCoManagerSplitterHorizontal(400),
+   ms32_SdNodeEditDataLoggerSplitterHorizontal(400),
    ms32_SdBusEditTreeSplitterHorizontal(0),
    ms32_SdBusEditLayoutSplitterHorizontal(0)
 {

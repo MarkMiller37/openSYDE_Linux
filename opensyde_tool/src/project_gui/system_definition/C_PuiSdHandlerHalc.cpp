@@ -1823,7 +1823,7 @@ int32_t C_PuiSdHandlerHalc::HalcGenerateDatapools(const uint32_t ou32_NodeIndex)
          }
 
          //Trigger sync
-         Q_EMIT (this->SigSyncNodeHalc(ou32_NodeIndex));
+         m_HandleSyncNodeHalc(ou32_NodeIndex);
       }
       else
       {
@@ -1875,7 +1875,7 @@ int32_t C_PuiSdHandlerHalc::HalcRemoveDatapools(const uint32_t ou32_NodeIndex, c
 
       if (oq_SuppressSyncSignal == false)
       {
-         Q_EMIT (this->SigSyncNodeHalc(ou32_NodeIndex));
+         m_HandleSyncNodeHalc(ou32_NodeIndex);
       }
    }
    else
@@ -1979,6 +1979,18 @@ bool C_PuiSdHandlerHalc::CheckHalcChannelNameAvailable(const uint32_t ou32_NodeI
       }
    }
    return q_Retval;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Clear system definition
+
+   \param[in]  oq_TriggerSyncSignals   Trigger sync signals
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_PuiSdHandlerHalc::Clear(const bool oq_TriggerSyncSignals)
+{
+   this->mc_PreviousHashes.clear();
+   C_PuiSdHandlerNodeLogic::Clear(oq_TriggerSyncSignals);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -327,6 +327,9 @@ void C_SyvDaDashboardSelectorTabWidget::Save(void)
       if (pc_WidgetRef != NULL)
       {
          pc_WidgetRef->Save();
+         //Tab index
+         C_PuiSvHandler::h_GetInstance()->SetDashboardTabIndex(this->mu32_ViewIndex,
+                                                               pc_WidgetRef->GetDashboardIndex(), s32_ItTab);
       }
    }
    //Tear off
@@ -1014,7 +1017,7 @@ void C_SyvDaDashboardSelectorTabWidget::m_AddSpecificTab(const uint32_t ou32_Dat
          m_InitTabStyle(static_cast<uint32_t>(s32_Index), pc_Dashboard->GetName(), pc_Dashboard->GetComment(),
                         pc_Dashboard->GetActive(), pc_View->GetDarkModeActive());
          m_Connect(pc_Widget);
-      } //lint !e429  //no memory leak because of the parent of pc_Widget and the Qt memory management
+      } //lint !e429 !e593 //no memory leak because of the parent of pc_Widget and the Qt memory management
    }
 
    osc_write_log_performance_stop(u16_TimerId, "Load dashboard");
@@ -1571,9 +1574,6 @@ void C_SyvDaDashboardSelectorTabWidget::m_StoreUserSettings(void)
                //User settings
                C_UsHandler::h_GetInstance()->SetProjSvDashboardMainTab(pc_View->GetName().c_str(),
                                                                        pc_Dashboard->GetName());
-               //Data
-               C_PuiSvHandler::h_GetInstance()->SetDashboardTabIndex(this->mu32_ViewIndex,
-                                                                     pc_Widget->GetDashboardIndex(), s32_Counter);
             }
          }
       }
@@ -1603,6 +1603,8 @@ void C_SyvDaDashboardSelectorTabWidget::m_Connect(const C_SyvDaDashboardWidget *
               &C_SyvDaDashboardSelectorTabWidget::SigDataPoolRead);
       connect(opc_Widget, &C_SyvDaDashboardWidget::SigNvmReadList, this,
               &C_SyvDaDashboardSelectorTabWidget::SigNvmReadList);
+      connect(opc_Widget, &C_SyvDaDashboardWidget::SigGetCurrentDashboardTabName, this,
+              &C_SyvDaDashboardSelectorTabWidget::m_GetCurrentDashboardTabName);
    }
 }
 
@@ -1626,6 +1628,8 @@ void C_SyvDaDashboardSelectorTabWidget::m_Disconnect(const C_SyvDaDashboardWidge
                  &C_SyvDaDashboardSelectorTabWidget::SigDataPoolRead);
       disconnect(opc_Widget, &C_SyvDaDashboardWidget::SigNvmReadList, this,
                  &C_SyvDaDashboardSelectorTabWidget::SigNvmReadList);
+      disconnect(opc_Widget, &C_SyvDaDashboardWidget::SigGetCurrentDashboardTabName, this,
+                 &C_SyvDaDashboardSelectorTabWidget::m_GetCurrentDashboardTabName);
    }
 }
 
@@ -1690,6 +1694,31 @@ void C_SyvDaDashboardSelectorTabWidget::m_SetCurrentTabNameForScreenshotFile()
                C_OscUtils::h_NiceifyStringForFileName(pc_Dashboard->GetName().toStdString()).c_str();
             mpc_ScreenshotDashboardTab->setParent(this->currentWidget());
             mpc_ScreenshotDashboardTab->setAccessibleName(c_DashboardName.c_str());
+         }
+      }
+   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Set current chart tab name for saving .csv file
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SyvDaDashboardSelectorTabWidget::m_GetCurrentDashboardTabName(void) const
+{
+   const C_PuiSvData * const pc_View = C_PuiSvHandler::h_GetInstance()->GetView(this->mu32_ViewIndex);
+
+   if (pc_View != NULL)
+   {
+      C_SyvDaDashboardWidget * const pc_Widget =
+         dynamic_cast<C_SyvDaDashboardWidget * const>(this->widget(this->currentIndex()));
+      if (pc_Widget != NULL)
+      {
+         const C_PuiSvDashboard * const pc_Dashboard = pc_View->GetDashboard(pc_Widget->GetDashboardIndex());
+         if (pc_Dashboard != NULL)
+         {
+            const C_SclString c_DashboardName =
+               C_OscUtils::h_NiceifyStringForFileName(pc_Dashboard->GetName().toStdString()).c_str();
+            pc_Widget->SetCurrentDashboardTabName(c_DashboardName.c_str());
          }
       }
    }

@@ -25,6 +25,13 @@ class C_PuiSdHandlerNodeLogic :
    public C_PuiSdHandlerData
 {
 public:
+   //SD general
+   void SetNameMaxCharLimit(const uint32_t ou32_NewValue);
+   uint32_t GetNameMaxCharLimit(void) const;
+   void GetNameMaxCharLimitAffectedItems(const uint32_t ou32_NameMaxCharLimit,
+                                         std::list<stw::opensyde_core::C_OscSystemNameMaxCharLimitChangeReportItem> & orc_ChangedItems);
+   void ApplyNameMaxCharLimit(const uint32_t ou32_NameMaxCharLimit);
+
    //Node general
    bool CheckNodeNameAvailable(const stw::scl::C_SclString & orc_Name,
                                const uint32_t * const opu32_NodeIndexToSkip = NULL,
@@ -60,6 +67,9 @@ public:
    void RemoveNode(const uint32_t ou32_NodeIndex);
    bool CheckNodeConflict(const uint32_t & oru32_NodeIndex) const;
    void GetSupportedCanBitrates(const std::vector<uint32_t> & orc_Nodes, std::vector<uint32_t> & orc_Bitrates) const;
+   void GetSupportedCanFdBitrates(const std::vector<uint32_t> & orc_Nodes, std::vector<uint32_t> & orc_Bitrates) const;
+   bool NodeSupportsCanFd(const std::vector<uint32_t> & orc_Nodes,
+                          const std::vector<uint32_t> & orc_InterfaceIndexes) const;
    uint32_t GetOscNodesSize(void) const;
    uint32_t GetOscNodeSquadsSize(void) const;
    std::vector<uint32_t> GetAllNodeGroupIndicesUsingNodeIndex(const uint32_t ou32_NodeIndex) const;
@@ -73,6 +83,8 @@ public:
    bool HasNodeAnAvailableFlashloader(const uint32_t ou32_NodeIndex) const;
    bool CheckNodeIndexAssociatedWithAnotherNodeIndex(const uint32_t ou32_FirstNodeIndex,
                                                      const uint32_t ou32_SecondNodeIndex) const;
+   void ReplaceNode(const uint32_t ou32_NodeIndex, const opensyde_core::C_OscNode & orc_OscNode,
+                    const C_PuiSdNode & orc_UiNode);
 
    //Datapool
    int32_t AddDataPool(const uint32_t & oru32_NodeIndex, const stw::opensyde_core::C_OscNodeDataPool & orc_OscContent,

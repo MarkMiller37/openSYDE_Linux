@@ -198,6 +198,9 @@ C_NagMainWindow::C_NagMainWindow(const uint16_t ou16_Timer) :
 
    //Time measurement log
    osc_write_log_performance_stop(u16_TimerId, "Main");
+
+   connect(this->mpc_MainWidget, &C_NagMainWidget::SigMaxCharLimitAccepted, this,
+           &C_NagMainWindow::m_CloseActiveWidget);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1386,6 +1389,19 @@ void C_NagMainWindow::m_HandleServiceMode(void) const
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Close Active widget on user accepts for change in name string
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_NagMainWindow::m_CloseActiveWidget()
+{
+   if (this->mpc_ActiveWidget != NULL)
+   {
+      this->m_RemoveUseCaseWidget();
+      this->mpc_Ui->pc_NaviBar->UpdateNodesAndBusesNames();
+   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 bool C_NagMainWindow::m_ChangeMode(const int32_t os32_Mode, const int32_t os32_SubMode, const uint32_t ou32_Index,
                                    const QString & orc_Name, const QString & orc_SubSubName, const uint32_t ou32_Flag,
                                    const bool oq_ChangeUseCase)
@@ -1418,6 +1434,11 @@ bool C_NagMainWindow::m_ChangeMode(const int32_t os32_Mode, const int32_t os32_S
          //New mode
          q_Continue = true;
       }
+   }
+   else if ((this->mpc_ActiveWidget != NULL) && ((os32_Mode == ms32_MODE_SYSVIEW) && (ou32_Flag == 1UL)))
+   {
+      //Special case, force reload "same" view (new content)
+      q_Continue = true;
    }
    else
    {

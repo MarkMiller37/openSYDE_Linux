@@ -37,6 +37,8 @@
 #include "C_OgePopUpDialog.hpp"
 #include "C_OscLoggingHandler.hpp"
 #include "C_SdCodeGenerationDialog.hpp"
+#include "C_SdBueImportCommMessagesWidget.hpp"
+#include "C_PuiSdUtil.hpp"
 
 /* -- Used Namespaces ----------------------------------------------------------------------------------------------- */
 using namespace stw::tgl;
@@ -115,6 +117,8 @@ C_SdHandlerWidget::C_SdHandlerWidget(QWidget * const opc_Parent) :
    connect(this->mpc_Topology, &C_SdTopologyWidget::SigChanged, this, &C_SdHandlerWidget::m_DataChanged);
    // forwarding of this signal
    connect(this->mpc_Topology, &C_SdTopologyWidget::SigChangeMode, this, &C_SdHandlerWidget::SigChangeMode);
+   connect(this->mpc_Topology, &C_SdTopologyWidget::SigOpenTsp, this, &C_SdHandlerWidget::m_TspImportForNewNode);
+
    connect(this->mpc_Topology, &C_SdTopologyWidget::SigNodeChanged, this, &C_SdHandlerWidget::m_NodeChanged);
    connect(this->mpc_Topology, &C_SdTopologyWidget::SigBusChanged, this, &C_SdHandlerWidget::m_BusChanged);
    connect(this->mpc_Topology, &C_SdTopologyWidget::SigErrorChange, this,
@@ -225,7 +229,7 @@ void C_SdHandlerWidget::UserInputFunc(const uint32_t ou32_FuncNumber)
       this->m_GenerateCode();
       break;
    case mhu32_USER_INPUT_FUNC_IMPORT:
-      this->m_Import();
+      this->m_TriggerImport();
       break;
    case mhu32_USER_INPUT_FUNC_EXPORT:
       this->m_Export();
@@ -239,7 +243,7 @@ void C_SdHandlerWidget::UserInputFunc(const uint32_t ou32_FuncNumber)
       this->m_RtfExport();
       break;
    case mhu32_USER_INPUT_FUNC_TSP_IMPORT:
-      this->m_TspImport();
+      this->m_TspImport(false);
       break;
    default:
       break;
@@ -507,6 +511,7 @@ void C_SdHandlerWidget::SetSubMode(const int32_t os32_SubMode, const uint32_t ou
          }
 
          this->mpc_ActNodeEdit = new C_SdNdeNodeEditWidget(ou32_Index, this->ms32_NodeEditTabIndex, this);
+
          connect(this->mpc_ActNodeEdit, &C_SdNdeNodeEditWidget::SigChanged, this, &C_SdHandlerWidget::m_DataChanged);
          connect(this->mpc_ActNodeEdit, &C_SdNdeNodeEditWidget::SigErrorChange, this,
                  &C_SdHandlerWidget::m_ErrorChange);
@@ -526,7 +531,6 @@ void C_SdHandlerWidget::SetSubMode(const int32_t os32_SubMode, const uint32_t ou
                  &C_SdHandlerWidget::SaveAs);
          connect(this->mpc_ActNodeEdit, &C_SdNdeNodeEditWidget::SigSwitchToBusProperties, this,
                  &C_SdHandlerWidget::m_SwitchToBusProperties);
-
          //Buttons
          Q_EMIT (this->SigShowUserInputFunc(mhu32_USER_INPUT_FUNC_GENERATE_CODE, true));
          Q_EMIT (this->SigSetToolTipForUserInputFunc(mhu32_USER_INPUT_FUNC_GENERATE_CODE,
@@ -553,6 +557,7 @@ void C_SdHandlerWidget::SetSubMode(const int32_t os32_SubMode, const uint32_t ou
          }
 
          this->mpc_ActBusEdit = new C_SdBueBusEditWidget(ou32_Index, this->ms32_BusEditTabIndex, this);
+
          connect(this->mpc_ActBusEdit, &C_SdBueBusEditWidget::SigChanged, this, &C_SdHandlerWidget::m_DataChanged);
          connect(this->mpc_ActBusEdit, &C_SdBueBusEditWidget::SigErrorChange, this, &C_SdHandlerWidget::m_ErrorChange);
          connect(this->mpc_ActBusEdit, &C_SdBueBusEditWidget::SigNameChanged, this, &C_SdHandlerWidget::SigNameChanged);
@@ -583,7 +588,6 @@ void C_SdHandlerWidget::SetSubMode(const int32_t os32_SubMode, const uint32_t ou
          // not good at all...
       }
    }
-
    this->m_SetFlag(ou32_Flag);
 }
 
@@ -949,36 +953,44 @@ void C_SdHandlerWidget::m_Export(void)
                   std::vector<C_OscCanMessage>::const_iterator c_TxIter;
                   for (c_TxIter = c_TxMsgs.begin(); c_TxIter != c_TxMsgs.end(); ++c_TxIter)
                   {
-                     C_CieConverter::C_CieNodeMessage c_CurrentMessage;
-                     s32_Error += C_CieDataPoolListAdapter::h_ConvertToDbcImportMessage(this->mu32_Index, e_ComType,
-                                                                                        *c_TxIter, c_CurrentMessage,
-                                                                                        c_Warnings);
-                     c_CurrentCieNode.c_TxMessages.push_back(c_CurrentMessage);
-                     // for counting messages and signals
-                     const std::set<uint32_t>::const_iterator c_Iter = c_CanMessageIds.find(c_TxIter->u32_CanId);
-                     if (c_Iter == c_CanMessageIds.end())
+                     if ((e_ComType == C_OscCanProtocol::eCAN_OPEN) && (!c_TxIter->q_CanOpenManagerMessageActive))
                      {
-                        c_CanMessageIdsWithExtended.emplace(C_OscCanMessageUniqueId(c_TxIter->u32_CanId,
-                                                                                    c_TxIter->q_IsExtended));
-                        c_CanMessageIds.insert(c_TxIter->u32_CanId);
-                        // count signals
-                        u32_NumOfInputSignals += c_TxIter->c_Signals.size();
+                        //Skip inactive message
                      }
                      else
                      {
-                        const std::set<C_OscCanMessageUniqueId>::const_iterator c_IterWithExtended =
-                           c_CanMessageIdsWithExtended.find(C_OscCanMessageUniqueId(c_TxIter->u32_CanId,
-                                                                                    c_TxIter
-                                                                                    ->q_IsExtended));
-                        if (c_IterWithExtended == c_CanMessageIdsWithExtended.end())
+                        C_CieConverter::C_CieNodeMessage c_CurrentMessage;
+                        s32_Error += C_CieDataPoolListAdapter::h_ConvertToDbcImportMessage(this->mu32_Index, e_ComType,
+                                                                                           *c_TxIter, c_CurrentMessage,
+                                                                                           c_Warnings);
+                        c_CurrentCieNode.c_TxMessages.push_back(c_CurrentMessage);
+                        // for counting messages and signals
+                        const std::set<uint32_t>::const_iterator c_Iter = c_CanMessageIds.find(c_TxIter->u32_CanId);
+                        if (c_Iter == c_CanMessageIds.end())
                         {
-                           const stw::scl::C_SclString c_Message = "Can't export message \"" +
-                                                                   c_TxIter->c_Name + "\" in bus \"" +
-                                                                   stw::scl::C_SclString::IntToStr(this->mu32_Index) +
-                                                                   "\" because message ID is not unique.";
-                           c_Warnings.Append(c_Message);
-                           osc_write_log_warning("DBC Export", c_Message);
-                           s32_Error += C_WARN;
+                           c_CanMessageIdsWithExtended.emplace(C_OscCanMessageUniqueId(c_TxIter->u32_CanId,
+                                                                                       c_TxIter->q_IsExtended));
+                           c_CanMessageIds.insert(c_TxIter->u32_CanId);
+                           // count signals
+                           u32_NumOfInputSignals += c_TxIter->c_Signals.size();
+                        }
+                        else
+                        {
+                           const std::set<C_OscCanMessageUniqueId>::const_iterator c_IterWithExtended =
+                              c_CanMessageIdsWithExtended.find(C_OscCanMessageUniqueId(c_TxIter->u32_CanId,
+                                                                                       c_TxIter
+                                                                                       ->q_IsExtended));
+                           if (c_IterWithExtended == c_CanMessageIdsWithExtended.end())
+                           {
+                              const stw::scl::C_SclString c_Message = "Can't export message \"" +
+                                                                      c_TxIter->c_Name + "\" in bus \"" +
+                                                                      stw::scl::C_SclString::IntToStr(this->mu32_Index)
+                                                                      +
+                                                                      "\" because message ID is not unique.";
+                              c_Warnings.Append(c_Message);
+                              osc_write_log_warning("DBC Export", c_Message);
+                              s32_Error += C_WARN;
+                           }
                         }
                      }
                   }
@@ -988,36 +1000,44 @@ void C_SdHandlerWidget::m_Export(void)
                   std::vector<C_OscCanMessage>::const_iterator c_RxIter;
                   for (c_RxIter = rc_RxMsgs.begin(); c_RxIter != rc_RxMsgs.end(); ++c_RxIter)
                   {
-                     C_CieConverter::C_CieNodeMessage c_CurrentMessage;
-                     s32_Error += C_CieDataPoolListAdapter::h_ConvertToDbcImportMessage(this->mu32_Index, e_ComType,
-                                                                                        *c_RxIter, c_CurrentMessage,
-                                                                                        c_Warnings);
-                     c_CurrentCieNode.c_RxMessages.push_back(c_CurrentMessage);
-                     // for counting messages and signals
-                     const std::set<uint32_t>::const_iterator c_Iter = c_CanMessageIds.find(c_RxIter->u32_CanId);
-                     if (c_Iter == c_CanMessageIds.end())
+                     if ((e_ComType == C_OscCanProtocol::eCAN_OPEN) && (!c_RxIter->q_CanOpenManagerMessageActive))
                      {
-                        c_CanMessageIdsWithExtended.emplace(C_OscCanMessageUniqueId(c_RxIter->u32_CanId,
-                                                                                    c_RxIter->q_IsExtended));
-                        c_CanMessageIds.insert(c_RxIter->u32_CanId);
-                        // count signals
-                        u32_NumOfInputSignals += c_RxIter->c_Signals.size();
+                        //Skip inactive message
                      }
                      else
                      {
-                        const std::set<C_OscCanMessageUniqueId>::const_iterator c_IterWithExtended =
-                           c_CanMessageIdsWithExtended.find(C_OscCanMessageUniqueId(c_RxIter->u32_CanId,
-                                                                                    c_RxIter
-                                                                                    ->q_IsExtended));
-                        if (c_IterWithExtended == c_CanMessageIdsWithExtended.end())
+                        C_CieConverter::C_CieNodeMessage c_CurrentMessage;
+                        s32_Error += C_CieDataPoolListAdapter::h_ConvertToDbcImportMessage(this->mu32_Index, e_ComType,
+                                                                                           *c_RxIter, c_CurrentMessage,
+                                                                                           c_Warnings);
+                        c_CurrentCieNode.c_RxMessages.push_back(c_CurrentMessage);
+                        // for counting messages and signals
+                        const std::set<uint32_t>::const_iterator c_Iter = c_CanMessageIds.find(c_RxIter->u32_CanId);
+                        if (c_Iter == c_CanMessageIds.end())
                         {
-                           const stw::scl::C_SclString c_Message = "Can't export message \"" +
-                                                                   c_RxIter->c_Name + "\" in bus \"" +
-                                                                   stw::scl::C_SclString::IntToStr(this->mu32_Index) +
-                                                                   "\" because message ID is not unique. Message is ignored.";
-                           c_Warnings.Append(c_Message);
-                           osc_write_log_warning("DBC Export", c_Message);
-                           s32_Error += C_WARN;
+                           c_CanMessageIdsWithExtended.emplace(C_OscCanMessageUniqueId(c_RxIter->u32_CanId,
+                                                                                       c_RxIter->q_IsExtended));
+                           c_CanMessageIds.insert(c_RxIter->u32_CanId);
+                           // count signals
+                           u32_NumOfInputSignals += c_RxIter->c_Signals.size();
+                        }
+                        else
+                        {
+                           const std::set<C_OscCanMessageUniqueId>::const_iterator c_IterWithExtended =
+                              c_CanMessageIdsWithExtended.find(C_OscCanMessageUniqueId(c_RxIter->u32_CanId,
+                                                                                       c_RxIter
+                                                                                       ->q_IsExtended));
+                           if (c_IterWithExtended == c_CanMessageIdsWithExtended.end())
+                           {
+                              const stw::scl::C_SclString c_Message = "Can't export message \"" +
+                                                                      c_RxIter->c_Name + "\" in bus \"" +
+                                                                      stw::scl::C_SclString::IntToStr(this->mu32_Index)
+                                                                      +
+                                                                      "\" because message ID is not unique. Message is ignored.";
+                              c_Warnings.Append(c_Message);
+                              osc_write_log_warning("DBC Export", c_Message);
+                              s32_Error += C_WARN;
+                           }
                         }
                      }
                   }
@@ -1049,17 +1069,85 @@ void C_SdHandlerWidget::m_Export(void)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Create import popup
+
+   \return
+   QPointer<C_OgePopUpDialog>
+*/
+//----------------------------------------------------------------------------------------------------------------------
+const QPointer<C_OgePopUpDialog> stw::opensyde_gui::C_SdHandlerWidget::m_CreateImportPopupDialog(void)
+{
+   //Size of the popup
+   const uint16_t u16_WIDTH = 650;
+   const uint16_t u16_HEIGHT = 350;
+
+   const QPointer<C_OgePopUpDialog> c_PopUpDialog = new C_OgePopUpDialog(this, this);
+
+   c_PopUpDialog->SetSize(QSize(u16_WIDTH, u16_HEIGHT));
+
+   return c_PopUpDialog;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 /*! \brief  Call for DBC/EDS/DCF import functionality.
 */
 //----------------------------------------------------------------------------------------------------------------------
-void C_SdHandlerWidget::m_Import(void) const
+void C_SdHandlerWidget::m_TriggerImport(void)
 {
-   // only available on bus edit
-   tgl_assert(this->mpc_ActBusEdit != NULL);
-   if (this->mpc_ActBusEdit != NULL)
+   if (m_CheckImportPossible())
    {
-      this->mpc_ActBusEdit->ImportMessages();
+      //Node
+      const C_OscSystemBus * const pc_Bus = C_PuiSdHandler::h_GetInstance()->GetOscBus(mu32_Index);
+
+      tgl_assert((pc_Bus != NULL) && (mpc_ActBusEdit != NULL));
+      if ((pc_Bus != NULL) && (mpc_ActBusEdit != NULL))
+      {
+         const stw::scl::C_SclString c_BusName = pc_Bus->c_Name;
+
+         const QPointer<C_OgePopUpDialog> c_PopUpDialog = m_CreateImportPopupDialog();
+         C_SdBueImportCommMessagesWidget * const pc_ImportCommMessagesWidget = new C_SdBueImportCommMessagesWidget(
+            *c_PopUpDialog,
+            c_BusName);
+
+         C_OscCanProtocol::E_Type e_CurrentProtocolView;
+
+         //Open tab (before interacting with it!)
+         mpc_ActBusEdit->ChangeToCommMessagesTab();
+
+         e_CurrentProtocolView = mpc_ActBusEdit->GetActProtocol();
+
+         pc_ImportCommMessagesWidget->SetDefaultCommunicationProtocol(e_CurrentProtocolView);
+
+         if (c_PopUpDialog->exec() == static_cast<int32_t>(QDialog::Accepted))
+         {
+            const C_OscCanProtocol::E_Type e_SelectedCommProtocol =
+               pc_ImportCommMessagesWidget->GetSelectedCommunicationProtocol();
+            m_ContinueImporting(e_SelectedCommProtocol);
+         }
+
+         if (c_PopUpDialog != NULL)
+         {
+            c_PopUpDialog->HideOverlay();
+            c_PopUpDialog->deleteLater();
+         }
+
+         delete (pc_ImportCommMessagesWidget);
+      }
    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Continue Importing
+
+   Change Protocol tab view and open file explorer
+
+   \param[in]       ore_Protocol     Communication protocol defined in the combo box
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SdHandlerWidget::m_ContinueImporting(const C_OscCanProtocol::E_Type & ore_Protocol)
+{
+   m_SwitchProtocolTab(ore_Protocol);
+   m_Import();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1187,30 +1275,132 @@ void C_SdHandlerWidget::m_RtfExport(void)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-/*! \brief  calls wrapper function in C_SdNdeNodeEditWidget when button for TSP import is clicked
+/*! \brief  Show warning unstored Project popup message
+
+   \return
+   C_OgeWiCustomMessage *
 */
 //----------------------------------------------------------------------------------------------------------------------
-void C_SdHandlerWidget::m_TspImport()
+C_OgeWiCustomMessage * C_SdHandlerWidget::m_ShowWarningUnstoredProjectPopupMessage()
+{
+   C_OgeWiCustomMessage * const pc_MessageBox = new C_OgeWiCustomMessage(this);
+
+   pc_MessageBox->SetType(C_OgeWiCustomMessage::eWARNING);
+
+   pc_MessageBox->SetHeading(C_GtGetText::h_GetText("Import TSP"));
+   pc_MessageBox->SetDescription(C_GtGetText::h_GetText(
+                                    "This project is not saved yet. Adding Data Blocks might cause "
+                                    "problems with file or directory paths."));
+   pc_MessageBox->SetDetails(C_GtGetText::h_GetText(
+                                "Paths that are handled as relative to *.syde file can not be resolved correctly!"));
+   pc_MessageBox->SetOkButtonText(C_GtGetText::h_GetText("Continue"));
+   pc_MessageBox->SetCustomMinHeight(230, 270);
+   pc_MessageBox->SetCancelButtonText(C_GtGetText::h_GetText("Cancel"));
+
+   return pc_MessageBox;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Switch communication protocol tab
+
+   \param[in]       oe_Protocol     Currently selected protocol
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SdHandlerWidget::m_SwitchProtocolTab(const C_OscCanProtocol::E_Type & ore_Protocol) const
+{
+   // only available on bus edit
+   tgl_assert(this->mpc_ActBusEdit != NULL);
+
+   if (this->mpc_ActBusEdit != NULL)
+   {
+      mpc_ActBusEdit->ChangeProtocolTab(ore_Protocol);
+   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Open file explorer
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SdHandlerWidget::m_Import()
+{
+   // only available on bus edit
+   tgl_assert(this->mpc_ActBusEdit != NULL);
+
+   if (this->mpc_ActBusEdit != NULL)
+   {
+      this->mpc_ActBusEdit->ImportMessages();
+   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Check import possible
+
+   \return
+   Flags
+
+   \retval   True    Import possible
+   \retval   False   Import impossible
+*/
+//----------------------------------------------------------------------------------------------------------------------
+bool C_SdHandlerWidget::m_CheckImportPossible()
+{
+   bool q_Retval;
+
+   std::vector<uint32_t> c_NodeIndexes;
+   std::vector<uint32_t> c_InterfaceIndexes;
+
+   C_PuiSdHandler::h_GetInstance()->GetOscSystemDefinitionConst().GetNodeIndexesOfBus(
+      mu32_Index, c_NodeIndexes, c_InterfaceIndexes);
+
+   if (c_NodeIndexes.size() == 0)
+   {
+      C_OgeWiCustomMessage pc_MessageBox(this);
+      q_Retval = false;
+
+      pc_MessageBox.SetType(C_OgeWiCustomMessage::eERROR);
+
+      pc_MessageBox.SetHeading(C_GtGetText::h_GetText("Import Messages"));
+      pc_MessageBox.SetDescription(C_GtGetText::h_GetText(
+                                      "Cannot import messages without any connected nodes."));
+      pc_MessageBox.SetCustomMinHeight(230, 270);
+      pc_MessageBox.Execute();
+   }
+   else
+   {
+      q_Retval = true;
+   }
+   return q_Retval;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Create warning message box if unsaved project is used and calls TSP import function of node edit page
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SdHandlerWidget::m_TspImport(const bool oq_IsNodeNew)
 {
    if (C_PuiProject::h_GetInstance()->IsEmptyProject() == true)
    {
-      // warn user
-      C_OgeWiCustomMessage c_MessageBox(this);
-      c_MessageBox.SetType(C_OgeWiCustomMessage::eWARNING);
-      c_MessageBox.SetHeading(C_GtGetText::h_GetText("Import TSP"));
-      c_MessageBox.SetDescription(C_GtGetText::h_GetText(
-                                     "This project is not saved yet. Adding Data Blocks might cause "
-                                     "problems with file or directory paths."));
-      c_MessageBox.SetDetails(C_GtGetText::h_GetText(
-                                 "Paths that are handled as relative to *.syde file can not be resolved correctly!"));
-      c_MessageBox.SetOkButtonText(C_GtGetText::h_GetText("Continue"));
-      c_MessageBox.SetCustomMinHeight(230, 270);
-      c_MessageBox.SetCancelButtonText(C_GtGetText::h_GetText("Cancel"));
-      if (c_MessageBox.Execute() == C_OgeWiCustomMessage::eOK)
+      C_OgeWiCustomMessage pc_MessageBox(this);
+
+      pc_MessageBox.SetType(C_OgeWiCustomMessage::eWARNING);
+
+      pc_MessageBox.SetHeading(C_GtGetText::h_GetText("Import TSP"));
+      pc_MessageBox.SetDescription(C_GtGetText::h_GetText(
+                                      "This project is not saved yet. Adding Data Blocks might cause "
+                                      "problems with file or directory paths."));
+      pc_MessageBox.SetDetails(C_GtGetText::h_GetText(
+                                  "Paths that are handled as relative to *.syde file can not be resolved correctly!"));
+      pc_MessageBox.SetOkButtonText(C_GtGetText::h_GetText("Continue"));
+      pc_MessageBox.SetCustomMinHeight(230, 270);
+      pc_MessageBox.SetCancelButtonText(C_GtGetText::h_GetText("Cancel"));
+
+      const C_OgeWiCustomMessage::E_Outputs e_Output = pc_MessageBox.Execute();
+
+      if (e_Output == C_OgeWiCustomMessage::eOK)
       {
          if (mpc_ActNodeEdit != NULL)
          {
-            mpc_ActNodeEdit->AddFromTsp();
+            mpc_ActNodeEdit->AddFromTsp(oq_IsNodeNew);
          }
       }
    }
@@ -1218,9 +1408,19 @@ void C_SdHandlerWidget::m_TspImport()
    {
       if (mpc_ActNodeEdit != NULL)
       {
-         mpc_ActNodeEdit->AddFromTsp();
+         mpc_ActNodeEdit->AddFromTsp(oq_IsNodeNew);
       }
    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+/*! \brief  Set Information for new node to avoid warning message box
+ *  calls TSP import function of node edit page
+*/
+//----------------------------------------------------------------------------------------------------------------------
+void C_SdHandlerWidget::m_TspImportForNewNode()
+{
+   this->m_TspImport(true);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

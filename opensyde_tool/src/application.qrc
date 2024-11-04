@@ -684,5 +684,13 @@
         <file>images/system_views/IconScreenshotDark.svg</file>
         <file>images/system_views/IconScreenshotInAction.svg</file>
         <file>images/system_views/IconScreenshotInActionDark.svg</file>
+        <file>images/system_views/dashboards/tab_chart/IconExportCSV.svg</file>
+        <file>images/system_views/dashboards/tab_chart/IconExportCSVDark.svg</file>
+        <file>images/system_views/dashboards/tab_chart/IconExportCSVDisabled.svg</file>
+        <file>images/main_page_and_navi_bar/GlobalSettings.svg</file>
+        <file>images/main_page_and_navi_bar/GlobalSettingsDisabled.svg</file>
+        <file>images/IconLogging.svg</file>
+        <file>images/main_page_and_navi_bar/IconApp.svg</file>
+        <file>images/main_page_and_navi_bar/IconProjOpen.svg</file>
     </qresource>
 </RCC>

@@ -23,9 +23,11 @@
 
 #include "C_ImpUtil.hpp"
 #include "TglUtils.hpp"
+#include "TglFile.hpp"
 #include "stwerrors.hpp"
 #include "constants.hpp"
 #include "C_GtGetText.hpp"
+#include "C_UsHandler.hpp"
 #include "C_PuiProject.hpp"
 #include "C_PuiSdHandler.hpp"
 #include "C_OscLoggingHandler.hpp"
@@ -35,6 +37,7 @@
 #include "C_PopUtil.hpp"
 #include "C_OscUtils.hpp"
 #include "C_PuiUtil.hpp"
+#include "C_SdCodeGenerationDialog.hpp"
 
 /* -- Used Namespaces ----------------------------------------------------------------------------------------------- */
 using namespace stw::scl;
@@ -602,7 +605,6 @@ int32_t C_ImpUtil::h_OpenIde(const QString & orc_IdeExeCall)
       s32_Retval = C_CONFIG;
       osc_write_log_error("Open IDE", "No path to IDE executable given.");
    }
-
    return s32_Retval;
 }
 
@@ -751,7 +753,9 @@ QString C_ImpUtil::h_AskUserToSaveRelativePath(QWidget * const opc_Parent, const
       // ask user
       C_OgeWiCustomMessage c_Message(opc_Parent, C_OgeWiCustomMessage::eQUESTION);
       c_Message.SetHeading(C_GtGetText::h_GetText("Relative Path"));
-      c_Message.SetDescription(C_GtGetText::h_GetText("Do you want to save the selected path relative or absolute?"));
+      c_Message.SetDescription(static_cast<QString>(C_GtGetText::h_GetText(
+                                                       "Do you want to save the selected path (%1) relative or absolute?")).arg(
+                                  c_PathAbsolute));
       c_Message.SetDetails(static_cast<QString>(C_GtGetText::h_GetText("Relative path: %1 \nAbsolute path: %2")).
                            arg(c_PathRelative).arg(c_PathAbsolute));
       c_Message.SetOkButtonText(C_GtGetText::h_GetText("Relative"));
@@ -931,22 +935,23 @@ QString C_ImpUtil::h_FormatSourceFileInfoForReport(const QString & orc_FilePath,
 */
 //----------------------------------------------------------------------------------------------------------------------
 #ifdef _WIN32
+//lint -e715 false positive: orc_ExeName is referenced in call of std::wcscmp, but somehow PC Lint does not get this
 void C_ImpUtil::mh_GetExistingApplicationHandle(const std::wstring & orc_ExeName, std::vector<HWND> & orc_Windows)
 {
-   PROCESSENTRY32 c_Entry;
+   PROCESSENTRY32W c_Entry;
    bool q_Exists = false;
    HANDLE pv_Snapshot;
    uint32_t u32_ProcessId = 0;
 
    //Get process ID
-   c_Entry.dwSize = sizeof(PROCESSENTRY32);
+   c_Entry.dwSize = sizeof(PROCESSENTRY32W);
 
    pv_Snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
    //lint -e{909} Windows library interface
-   if (Process32First(pv_Snapshot, &c_Entry) != 0)
+   if (Process32FirstW(pv_Snapshot, &c_Entry) != 0)
    {
-      while (Process32Next(pv_Snapshot, &c_Entry) != 0)
+      while (Process32NextW(pv_Snapshot, &c_Entry) != 0)
       {
          if (std::wcscmp(c_Entry.szExeFile, orc_ExeName.c_str()) == 0) //lint !e64 //Windows library interface
          {
@@ -1081,10 +1086,6 @@ int32_t C_ImpUtil::mh_ExecuteCodeGenerator(const QString & orc_NodeName, const Q
    {
       c_Arguments.push_back("-e"); // erase folder (only if user confirmed)
    }
-
-   c_ErrorText = static_cast<C_SclString>("Calling code generator with command line: \"") + c_CodeGenFileInfo.absoluteFilePath().toStdString().c_str() + " " +
-                 c_Arguments.join(' ').toStdString().c_str() + "\"";
-   osc_write_log_info("Generate Files", c_ErrorText);
 
    // call file generation exe with arguments
    pc_Process->start(c_CodeGenFileInfo.absoluteFilePath(), c_Arguments);

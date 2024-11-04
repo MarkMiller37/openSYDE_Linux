@@ -54,6 +54,7 @@ public:
                                   const Qt::KeyboardModifier & ore_CheckKeyModifier);
    static bool h_CheckStyleState(const QStyle::State & orc_ActiveState, const QStyle::StateFlag & ore_CheckState);
    static QString h_GetExePath(void);
+   static void h_SetCurrentDirectoryToExeDirectory(void);
    static QString h_GetPemDbPath(void);
    static QString h_GetApplicationVersion(const bool oq_UseStwFormat = true);
    static QString h_CheckAndReplaceWithExePathIfNecessary(const QString & orc_Path);
@@ -70,6 +71,7 @@ public:
    static QString h_ConcatPathIfNecessary(const QString & orc_BaseDir, const QString & orc_RelativeOrAbsolutePath);
    static stw::scl::C_SclString h_GetUniqueName(const std::map<stw::scl::C_SclString, bool> & orc_ExistingStrings,
                                                 const stw::scl::C_SclString & orc_ProposedName,
+                                                const uint32_t ou32_MaxCharLimit,
                                                 const stw::scl::C_SclString & orc_SkipName = "");
    static QString h_GetUniqueNameQt(const std::map<stw::scl::C_SclString, bool> & orc_ExistingStrings,
                                     const QString & orc_ProposedName);
@@ -90,6 +92,11 @@ public:
 
 private:
    C_Uti(void);
+
+   static void mh_GetBaseNameAndCurrentConflictNumberFromString(const stw::scl::C_SclString & orc_ConflictingValue,
+                                                                const stw::scl::C_SclString & orc_SkipName,
+                                                                stw::scl::C_SclString & orc_CutString,
+                                                                int32_t & ors32_Number);
 };
 
 /* -- Extern Global Variables --------------------------------------------------------------------------------------- */

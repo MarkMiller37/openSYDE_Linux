@@ -104,14 +104,16 @@ void C_NagAboutDialog::InitStaticNames(void) const
    c_QtVersion += C_GtGetText::h_GetText(" by The Qt Company (linked dynamically)\n");
    c_Text += c_QtVersion;
    c_Text += C_GtGetText::h_GetText("    - gettext by the Free Software Foundation\n");
-   c_Text += C_GtGetText::h_GetText("    - Vector::DBC Module by Tobias Lorenz\n");
-   c_Text += C_GtGetText::h_GetText("    - Bison\n");
-   c_Text += C_GtGetText::h_GetText("    - Flex\n");
    c_Text += C_GtGetText::h_GetText("    - TinyXML-2 by Lee Thomason and others\n");
    c_Text += C_GtGetText::h_GetText("    - The MinGW Runtime\n");
-   c_Text += C_GtGetText::h_GetText("    - Miniz\n");
-   c_Text += C_GtGetText::h_GetText("    - AES implementation by SergeyBel\n");
-   c_Text += C_GtGetText::h_GetText("    - OpenSSL\n");
+
+   //   c_Text += C_GtGetText::h_GetText("    - Vector::DBC Module by Tobias Lorenz\n");
+   //   c_Text += C_GtGetText::h_GetText("    - Bison\n");
+   //   c_Text += C_GtGetText::h_GetText("    - Flex\n");
+
+   //   c_Text += C_GtGetText::h_GetText("    - Miniz\n");
+   //   c_Text += C_GtGetText::h_GetText("    - AES implementation by SergeyBel\n");
+   //   c_Text += C_GtGetText::h_GetText("    - OpenSSL\n");
 
    if (this->mc_OptionalComponents != "")
    {
