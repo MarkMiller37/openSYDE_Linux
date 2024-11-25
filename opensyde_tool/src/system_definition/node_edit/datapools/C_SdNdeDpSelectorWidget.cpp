@@ -565,15 +565,13 @@ void C_SdNdeDpSelectorWidget::m_SetupContextMenu(void)
 {
    this->mpc_ContextMenu = new stw::opensyde_gui_elements::C_OgeContextMenu(this);
 
-   this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Add new Datapool"), this,
-                                    &C_SdNdeDpSelectorWidget::m_AddNewDatapool,
-                                    static_cast<int32_t>(Qt::CTRL) +
-                                    static_cast<int32_t>(Qt::Key_Plus));
+   this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Add new Datapool"), static_cast<int32_t>(Qt::CTRL) +
+                                    static_cast<int32_t>(Qt::Key_Plus), this,
+                                    &C_SdNdeDpSelectorWidget::m_AddNewDatapool);
    this->mpc_ContextMenu->addSeparator();
-   this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Paste"), this,
-                                    &C_SdNdeDpSelectorWidget::m_PasteDatapool,
-                                    static_cast<int32_t>(Qt::CTRL) +
-                                    static_cast<int32_t>(Qt::Key_V));
+   this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Paste"), static_cast<int32_t>(Qt::CTRL) +
+                                    static_cast<int32_t>(Qt::Key_V), this,
+                                    &C_SdNdeDpSelectorWidget::m_PasteDatapool);
 
    this->setContextMenuPolicy(Qt::CustomContextMenu);
 

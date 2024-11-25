@@ -632,9 +632,9 @@ void C_SyvDaChaWidget::m_SetupContextMenu(void)
    this->mpc_ContextMenu = new C_OgeContextMenu(this);
 
    this->mpc_ActionAdd = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Add data element(s)"),
-                                                          this, &C_SyvDaChaWidget::m_AddNewDataElement,
                                                           static_cast<int32_t>(Qt::CTRL) +
-                                                          static_cast<int32_t>(Qt::Key_Plus));
+                                                          static_cast<int32_t>(Qt::Key_Plus), this,
+                                                          &C_SyvDaChaWidget::m_AddNewDataElement);
    this->mpc_ContextMenu->addSeparator();
 
    this->mpc_ActionConfigDataElement =
@@ -643,8 +643,8 @@ void C_SyvDaChaWidget::m_SetupContextMenu(void)
    this->mpc_ContextMenu->addSeparator();
 
    this->mpc_ActionRemove = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Remove"),
-                                                             this, &C_SyvDaChaWidget::m_RemoveDataElement,
-                                                             static_cast<int32_t>(Qt::Key_Delete));
+                                                             static_cast<int32_t>(Qt::Key_Delete), this, 
+                                                             &C_SyvDaChaWidget::m_RemoveDataElement);
    this->mpc_ActionRemoveAll = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Remove all"),
                                                                 this, &C_SyvDaChaWidget::m_RemoveAllDataElements);
 

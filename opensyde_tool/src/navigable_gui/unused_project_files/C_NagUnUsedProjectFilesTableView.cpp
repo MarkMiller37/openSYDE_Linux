@@ -328,13 +328,13 @@ void C_NagUnUsedProjectFilesTableView::m_SetupContextMenu()
    this->mpc_ContextMenu = new C_OgeContextMenu(this);
 
    this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Select all"),
+                                    static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A), 
                                     this,
-                                    &C_NagUnUsedProjectFilesTableView::SelectAllFiles,
-                                    static_cast<int32_t>(Qt::CTRL) + static_cast<int32_t>(Qt::Key_A));
+                                    &C_NagUnUsedProjectFilesTableView::SelectAllFiles);
    this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText("Delete selected"),
+                                    static_cast<int32_t>(Qt::Key_Delete),
                                     this,
-                                    &C_NagUnUsedProjectFilesTableView::DeleteSelectedFiles,
-                                    static_cast<int32_t>(Qt::Key_Delete));
+                                    &C_NagUnUsedProjectFilesTableView::DeleteSelectedFiles);
 
    this->setContextMenuPolicy(Qt::CustomContextMenu);
    connect(this, &C_NagUnUsedProjectFilesTableView::customContextMenuRequested, this,

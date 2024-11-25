@@ -48,9 +48,9 @@ C_SyvDaContextMenuManager::C_SyvDaContextMenuManager() :
                                                                       "Edit Properties"), this,
                                                                    &C_SyvDaContextMenuManager::m_EditProperties);
    this->mpc_ActionEditContent = this->mc_ContextMenu.addAction(C_GtGetText::h_GetText(
-                                                                   "Edit Content"), this,
-                                                                &C_SyvDaContextMenuManager::m_EditContent,
-                                                                static_cast<int32_t>(Qt::Key_F2));
+                                                                   "Edit Content"), 
+                                                                static_cast<int32_t>(Qt::Key_F2), this,
+                                                                &C_SyvDaContextMenuManager::m_EditContent);
    this->mpc_ActionEditSeparator = this->mc_ContextMenu.addSeparator();
 
    //move to right place

@@ -1656,15 +1656,13 @@ void C_SdNdeDpSelectorListWidget::m_SetupContextMenu(void)
    this->mpc_ContextMenu = new stw::opensyde_gui_elements::C_OgeContextMenu(this);
 
    this->mpc_AddAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                             "Add new Datapool"), this,
-                                                          &C_SdNdeDpSelectorListWidget::AddNewDatapool,
-                                                          static_cast<int32_t>(Qt::CTRL) +
-                                                          static_cast<int32_t>(Qt::Key_Plus));
+                                                             "Add new Datapool"), static_cast<int32_t>(Qt::CTRL) +
+                                                          static_cast<int32_t>(Qt::Key_Plus), this,
+                                                          &C_SdNdeDpSelectorListWidget::AddNewDatapool);
 
    this->mpc_EditAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                              "Edit Properties"), this,
-                                                           &C_SdNdeDpSelectorListWidget::m_Edit,
-                                                           static_cast<int32_t>(Qt::Key_F2));
+                                                              "Edit Properties"), static_cast<int32_t>(Qt::Key_F2), this,
+                                                           &C_SdNdeDpSelectorListWidget::m_Edit);
 
    this->mpc_EditContentAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
                                                                      "Edit Content"), this,
@@ -1673,46 +1671,39 @@ void C_SdNdeDpSelectorListWidget::m_SetupContextMenu(void)
    this->mpc_EditActionSeparator = this->mpc_ContextMenu->addSeparator();
 
    this->mpc_CutAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                             "Cut"), this, &C_SdNdeDpSelectorListWidget::m_Cut,
-                                                          static_cast<int32_t>(Qt::CTRL) +
-                                                          static_cast<int32_t>(Qt::Key_X));
+                                                             "Cut"), static_cast<int32_t>(Qt::CTRL) +
+                                                          static_cast<int32_t>(Qt::Key_X), this,  &C_SdNdeDpSelectorListWidget::m_Cut);
    this->mpc_CopyAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                              "Copy"), this, &C_SdNdeDpSelectorListWidget::m_Copy,
-                                                           static_cast<int32_t>(Qt::CTRL) +
-                                                           static_cast<int32_t>(Qt::Key_C));
+                                                              "Copy"), static_cast<int32_t>(Qt::CTRL) +
+                                                           static_cast<int32_t>(Qt::Key_C), this,  &C_SdNdeDpSelectorListWidget::m_Copy);
    this->mpc_PasteAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                               "Paste"), this, &C_SdNdeDpSelectorListWidget::Paste,
-                                                            static_cast<int32_t>(Qt::CTRL) +
-                                                            static_cast<int32_t>(Qt::Key_V));
+                                                               "Paste"), static_cast<int32_t>(Qt::CTRL) +
+                                                            static_cast<int32_t>(Qt::Key_V), this,  &C_SdNdeDpSelectorListWidget::Paste);
 
    this->mpc_MoveActionSeparator = this->mpc_ContextMenu->addSeparator();
 
    this->mpc_MoveLeftAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                                  "Move Left"), this,
-                                                               &C_SdNdeDpSelectorListWidget::m_MoveLeft,
-                                                               static_cast<int32_t>(Qt::CTRL) +
-                                                               static_cast<int32_t>(Qt::Key_Left));
+                                                                  "Move Left"), static_cast<int32_t>(Qt::CTRL) +
+                                                               static_cast<int32_t>(Qt::Key_Left), this, 
+                                                               &C_SdNdeDpSelectorListWidget::m_MoveLeft);
    this->mpc_MoveRightAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                                   "Move Right"), this,
-                                                                &C_SdNdeDpSelectorListWidget::m_MoveRight,
-                                                                static_cast<int32_t>(Qt::CTRL) +
-                                                                static_cast<int32_t>(Qt::Key_Right));
+                                                                   "Move Right"), static_cast<int32_t>(Qt::CTRL) +
+                                                                static_cast<int32_t>(Qt::Key_Right), this, 
+                                                                &C_SdNdeDpSelectorListWidget::m_MoveRight);
    this->mpc_MoveUpAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                                "Move Up"), this,
-                                                             &C_SdNdeDpSelectorListWidget::m_MoveUp,
-                                                             static_cast<int32_t>(Qt::CTRL) +
-                                                             static_cast<int32_t>(Qt::Key_Up));
+                                                                "Move Up"), static_cast<int32_t>(Qt::CTRL) +
+                                                             static_cast<int32_t>(Qt::Key_Up), this, 
+                                                             &C_SdNdeDpSelectorListWidget::m_MoveUp);
    this->mpc_MoveDownAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                                  "Move Down"), this,
-                                                               &C_SdNdeDpSelectorListWidget::m_MoveDown,
-                                                               static_cast<int32_t>(Qt::CTRL) +
-                                                               static_cast<int32_t>(Qt::Key_Down));
+                                                                  "Move Down"), static_cast<int32_t>(Qt::CTRL) +
+                                                               static_cast<int32_t>(Qt::Key_Down), this, 
+                                                               &C_SdNdeDpSelectorListWidget::m_MoveDown);
 
    this->mpc_DeleteActionSeparator = this->mpc_ContextMenu->addSeparator();
 
    this->mpc_DeleteAction = this->mpc_ContextMenu->addAction(C_GtGetText::h_GetText(
-                                                                "Delete"), this, &C_SdNdeDpSelectorListWidget::m_DeleteSlot,
-                                                             static_cast<int32_t>(Qt::Key_Delete));
+                                                                "Delete"), static_cast<int32_t>(Qt::Key_Delete), this, 
+                                                                &C_SdNdeDpSelectorListWidget::m_DeleteSlot);
 
    this->setContextMenuPolicy(Qt::CustomContextMenu);
 
