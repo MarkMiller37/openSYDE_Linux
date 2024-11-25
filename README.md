@@ -7,10 +7,10 @@ Purpose of this fork:
 * Convert from qmake to cmake project
 * Upgrade to Qt 6.6
 
-Status:
-* GUI builds on with
-** PIOS 64bit on Raspberry Pi
-** GCC 12.2
+Status of upgrade to R24-0D:
+* GUI builds on
+  * PIOS 64bit on Raspberry Pi
+  * GCC 12.2
 * No further retests done
 
 Status before upgrading to R24-0D:
