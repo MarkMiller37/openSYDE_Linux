@@ -783,7 +783,7 @@ bool C_CamGenTableModel::setData(const QModelIndex & orc_Index, const QVariant &
          }
          else if (os32_Role == static_cast<int32_t>(Qt::CheckStateRole))
          {
-            if (orc_Value.type() == QMetaType::Int)
+            if (orc_Value.typeId() == QMetaType::Int)
             {
                bool q_Continue = false;
                C_CamProMessageData::E_GenericBoolDataSelector e_Selector;

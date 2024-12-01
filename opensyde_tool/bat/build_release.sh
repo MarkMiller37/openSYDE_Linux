@@ -13,7 +13,7 @@ echo "configure with cmake"
 cmake -S ../pjt/openSYDE -B ../temp_openSYDE_Release -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 echo "build with cmake/ninja"
-cmake --build . --parallel 4 --target all install
+cmake --build . --parallel 4 --target all install > buildlog.txt
 
 #return
 cd ../bat

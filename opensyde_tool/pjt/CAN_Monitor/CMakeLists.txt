@@ -281,6 +281,8 @@ set(PROJECT_SOURCES
     ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubAbout.hpp
     ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubDarkBrowse.cpp
     ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubDarkBrowse.hpp
+    ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubPathVariablesBase.cpp
+    ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubPathVariablesBase.hpp
     ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubPathVariables.cpp
     ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubPathVariables.hpp
     ../../src/can_monitor/can_monitor_gui_elements/push_button/C_CamOgePubProjOp.cpp
@@ -296,6 +298,8 @@ set(PROJECT_SOURCES
     ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSectionHeader.cpp
     ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSectionHeader.hpp
     ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSectionHeader.ui
+    ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSettingsBase.cpp
+    ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSettingsBase.hpp
     ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSettingSubSection.cpp
     ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSettingSubSection.hpp
     ../../src/can_monitor/can_monitor_gui_elements/widget/C_CamOgeWiSettingSubSection.ui
@@ -320,6 +324,8 @@ set(PROJECT_SOURCES
     ../../src/can_monitor/can_monitor_settings/C_CamMosDllWidget.cpp
     ../../src/can_monitor/can_monitor_settings/C_CamMosDllWidget.hpp
     ../../src/can_monitor/can_monitor_settings/C_CamMosDllWidget.ui
+    ../../src/can_monitor/can_monitor_settings/C_CamMosDllWidgetLogic.cpp
+    ../../src/can_monitor/can_monitor_settings/C_CamMosDllWidgetLogic.hpp
     ../../src/can_monitor/can_monitor_settings/C_CamMosFilterItemWidget.cpp
     ../../src/can_monitor/can_monitor_settings/C_CamMosFilterItemWidget.hpp
     ../../src/can_monitor/can_monitor_settings/C_CamMosFilterItemWidget.ui
@@ -431,6 +437,8 @@ set(PROJECT_SOURCES
     ../../src/can_monitor/user_settings/C_UsHandler.hpp
     ../../src/can_monitor/util/C_CamUti.cpp
     ../../src/can_monitor/util/C_CamUti.hpp
+    ../../src/can_monitor/util/C_CamUtiGeneric.cpp
+    ../../src/can_monitor/util/C_CamUtiGeneric.hpp
     ../../src/can_monitor/util/C_CamUtiStyleSheets.cpp
     ../../src/can_monitor/util/C_CamUtiStyleSheets.hpp
     ../../src/com_import_export/C_CieConverter.cpp

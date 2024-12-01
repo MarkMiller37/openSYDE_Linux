@@ -352,7 +352,7 @@ bool C_CamMosFilterTableModel::setData(const QModelIndex & orc_Index, const QVar
 
             if (os32_Role == static_cast<int32_t>(Qt::CheckStateRole))
             {
-               if (orc_Value.type() == QMetaType::Int)
+               if (orc_Value.typeId() == QMetaType::Int)
                {
                   switch (e_Col)
                   {

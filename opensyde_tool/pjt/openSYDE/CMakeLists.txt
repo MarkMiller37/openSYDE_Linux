@@ -2082,8 +2082,8 @@ set_property(SOURCE ../../libs/dbc_driver_library/src/Vector/DBC/stack.hh PROPER
 # add QCustomPlot as static library
 add_library(qcustomplot STATIC IMPORTED)
 
-#set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_linux.a)
-set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_pios.a)
+set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_linux.a)
+#set_target_properties(qcustomplot PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/qcustomplot/libQCustomPlot_qt6_pios.a)
 target_link_libraries(openSYDE PRIVATE opensyde_core qcustomplot OpenSSL::SSL Qt::Core Qt::Widgets Qt::SvgWidgets Qt::PrintSupport)
 
 # define precompiled headers for application
