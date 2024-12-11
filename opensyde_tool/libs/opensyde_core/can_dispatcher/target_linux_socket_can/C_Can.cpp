@@ -381,6 +381,20 @@ int32_t C_Can::CAN_Get_System_Time(uint64_t & oru64_SystemTime) const
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void C_Can::SetDLLName(const stw::scl::C_SclString & orc_DLLName)
+{
+   mc_CanIfName = orc_DLLName;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+stw::scl::C_SclString C_Can::GetDLLName(void) const
+{
+   return mc_CanIfName;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 void C_Can::SetLimitRXID(const uint32_t ou32_LimitRXID)
 {
    mu32_RXID = ou32_LimitRXID;

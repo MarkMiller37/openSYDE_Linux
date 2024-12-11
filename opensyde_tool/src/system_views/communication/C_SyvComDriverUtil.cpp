@@ -154,16 +154,20 @@ int32_t C_SyvComDriverUtil::h_GetOscComDriverParamFromView(const uint32_t ou32_V
                       c_Process.waitForFinished();
 
                       c_Result = c_Process.readAllStandardOutput();
-                      if ((c_Result.contains(c_FilePath) == true) && (oq_InitCan == true))
+                      if (c_Result.contains(c_FilePath) == true) 
                       {
                           *oppc_CanDispatcher = new stw::can::C_Can();
+                          (*oppc_CanDispatcher)->SetDLLName(c_FilePath.toStdString().c_str());
 
-                          //setting bitrate not supported on Linux
-                          s32_Retval = (*oppc_CanDispatcher)->CAN_Init(c_FilePath.toStdString().c_str());
-                          if (s32_Retval != C_NO_ERR)
+                          if (oq_InitCan == true)
                           {
-                              s32_Retval = C_COM;
-                          }
+	                         //setting bitrate not supported on Linux
+	                         s32_Retval = (*oppc_CanDispatcher)->CAN_Init(c_FilePath.toStdString().c_str());
+	                         if (s32_Retval != C_NO_ERR)
+	                         {
+	                            s32_Retval = C_COM;
+	                         }
+                          } 
                       }
                       else
                       {
